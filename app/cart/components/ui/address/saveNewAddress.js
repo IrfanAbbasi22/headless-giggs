@@ -705,7 +705,7 @@ const SaveNewAddress = () => {
                       htmlFor="is_default"
                       className="text-[#4d4d4d] text-sm"
                     >
-                      default Address (optional)
+                      Make it default (optional)
                     </label>
 
                     <span className="text-sm text-[#4d4d4d]">

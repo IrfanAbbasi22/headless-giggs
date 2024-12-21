@@ -152,9 +152,6 @@ const AddressCard = (item) => {
             className="cursor-pointer font-medium leading-tight text-base text-black mb-2 inline-block">
             {cardData.first_name} {cardData.last_name}
           </span>
-            {
-              cardData.id
-            }
           <div className="text-sm text-opacity-50 text-black">
             <div className="text-sm">
               {cardData.email && (
