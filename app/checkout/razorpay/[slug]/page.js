@@ -8,6 +8,8 @@ import { userDetails, userDataToken } from '@/app/cart/store/slices/userSlice';
 import { RazorPay } from '../../../cart/components/payment/razorPay';
 
 import Link from 'next/link';
+import { formatCurrency } from '@/app/components/lib/user/formatCurrency';
+import Skeleton from 'react-loading-skeleton';
 
 function Page() {
   const userData = useSelector(userDetails);
@@ -18,6 +20,47 @@ function Page() {
   const [orderKey, setOrderKey] = useState(null);
   const [userMail, setUserMail] = useState(null);
   const [pageLoader, setPageLoader] = useState(false);
+  const [orderData, setOrderData] = useState({});
+  const [orderDataPreloader, setOrderDataPreloader] = useState(false);
+
+  const fetchOrderDetails = async (id, userToken) => {
+    setOrderDataPreloader(true);
+    const url = `${process.env.NEXT_PUBLIC_WOO_URL}/wc/store/v1/order/${id}`;
+    
+    try {
+      const headers = {
+        "Content-Type": "application/json",
+      };
+  
+      if (userToken?.length > 0) {
+        headers.Authorization = `Bearer ${userToken}`;
+      } else {
+        headers.Authorization =
+          "Basic " +
+          btoa(
+              `${process.env.NEXT_PUBLIC_CONSUMER_KEY}:${process.env.NEXT_PUBLIC_CONSUMER_SECRET}`
+          );
+      }
+  
+      const response = await fetch(url, {
+        method: "GET",
+        headers: headers,
+      });
+  
+      // Check if the response is successful
+      if (!response.ok) {
+        throw new Error("Failed to fetch order details");
+      }
+  
+      // Parse and return the JSON data
+      const data = await response.json();
+      setOrderDataPreloader(false);
+      return data;
+    } catch (error) {
+      console.error("Error fetching order details:", error);
+      return null;
+    }
+  }
 
   const { createRazorPayOrder, openRazorpayModal, verifyRazorPayment } = RazorPay(setPageLoader);
 
@@ -41,6 +84,28 @@ function Page() {
 
   }, []);
 
+  useEffect(() => {
+    if (orderId !== null) {
+      fetchOrderDetails(orderId, userToken)
+        .then((data) => {
+          if (data) {
+            setOrderData(data);
+            initPayment();
+            console.log('Order Details orderData:', data);
+          } else {
+            console.log("Failed to fetch order details.");
+          }
+        })
+        .catch((error) => {
+          console.log("Error fetching order details:", error);
+        })
+        .finally(() => {
+          // setLoading(false);
+        });
+
+    }
+  }, [orderId]);
+
   const initPayment = async () => {
     setPageLoader(true);
     const razorpayResponse = await createRazorPayOrder(orderId, {
@@ -55,14 +120,13 @@ function Page() {
       order_id: orderId,
       order_key: orderKey,
     }
-
     openRazorpayModal(orderData, razorpayResponse);
     setPageLoader(false);
   }
 
   useEffect(()=>{
     if(orderId !== null){
-      initPayment();
+      // initPayment();
     }
 
   }, [orderId])
@@ -97,7 +161,65 @@ function Page() {
             </div>
         </div>
       }
-      <div className='min-h-dvh text-center py-10'>
+      <div className="text-center py-10">
+
+        <div className="container mb-10">
+          <div className="grid grid-cols-4 text-center">
+            <div className="w-full font-bold flex flex-col items-center border-r border-black">
+              <span className="text-xs uppercase font-normal">Order Number</span>
+                {
+                  orderDataPreloader ? (
+                    <div className='w-full'>
+                      <Skeleton width={`80%`} height={24}/>
+                    </div>
+                  ) : (
+                    `#${orderData?.id}`
+                  )
+                }
+            </div>
+            <div className="w-full font-bold flex flex-col items-center border-r border-black">
+              <span className="text-xs uppercase font-normal">Date</span>
+                {
+                  orderDataPreloader ? (
+                    <div className='w-full'>
+                      <Skeleton width={`80%`} height={24}/>
+                    </div>
+                  ) : (
+                    orderData?.id
+                  )
+                }
+            </div>
+            <div className="w-full font-bold flex flex-col items-center border-r border-black">
+              <span className="text-xs uppercase font-normal">Total</span>
+                {
+                  orderDataPreloader ? (
+                    <div className='w-full'>
+                      <Skeleton width={`80%`} height={24}/>
+                    </div>
+                  ) : (
+                    orderData?.totals?.total_price && 
+                    formatCurrency(orderData?.totals?.total_price, orderData?.totals)
+                    
+                  )
+                }
+            </div>
+            <div className="w-full font-bold flex flex-col items-center">
+              <span className="text-xs uppercase font-normal">Payment Method</span>
+                {
+                  orderDataPreloader ? (
+                    <div className='w-full'>
+                      <Skeleton width={`80%`} height={24}/>
+                    </div>
+                  ) : (
+                    orderData?.payment_method_title
+                  )
+                }
+                50512
+            </div>
+          </div>
+
+        </div>
+        
         <p>
           Thank you for your order, please click the button below to pay with Razorpay.
         </p>

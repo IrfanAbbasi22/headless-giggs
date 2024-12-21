@@ -139,13 +139,15 @@ const Header = () => {
             {/* Desktop */}
             <div className="flex gap-6 items-center justify-end md:w-1/3   lg:gap-5  xl:gap-[34px]">
               <span className="hidden lg:block">
-                <Image
-                  src={`/assets/icons/Categories.svg`}
-                  width={20}
-                  height={20}
-                  alt="icon"
-                  className=" cursor-pointer max-w-6 lg:w-6 lg:h-6"
-                />
+                <Link href={"/shop"}>
+                  <Image
+                    src={`/assets/icons/Categories.svg`}
+                    width={20}
+                    height={20}
+                    alt="icon"
+                    className=" cursor-pointer max-w-6 lg:w-6 lg:h-6"
+                  />
+                </Link>
               </span>
               <Link
                 href={`/cart`}

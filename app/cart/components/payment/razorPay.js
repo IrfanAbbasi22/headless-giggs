@@ -44,6 +44,7 @@ export const RazorPay = (setPageLoader) => {
     let razorpayScriptLoaded = false; // Flag to track if the script is loaded
     
     const openRazorpayModal = (order, razorpayData) => {
+        console.log("razorpayScriptLoaded", razorpayScriptLoaded)
         // Check if Razorpay script is already loaded globally (on the window object)
         if (razorpayScriptLoaded) {
             // If the script is already loaded, open the Razorpay modal directly
@@ -52,6 +53,7 @@ export const RazorPay = (setPageLoader) => {
             // Check if the script is not already present in the document
             const existingScript = document.getElementById("razorpay-checkout-script");
     
+            console.log("razorpayScriptLoaded2", existingScript)
             if (!existingScript) {
                 // Dynamically add the Razorpay Checkout script to the page
                 const script = document.createElement("script");
@@ -66,11 +68,8 @@ export const RazorPay = (setPageLoader) => {
     
                 document.body.appendChild(script);
             } else {
-                // If the script is already in the document but hasn't loaded yet
-                existingScript.onload = () => {
-                    razorpayScriptLoaded = true; // Mark the script as loaded
-                    initializeRazorpay(order, razorpayData);
-                };
+                razorpayScriptLoaded = true; // Mark the script as loaded
+                initializeRazorpay(order, razorpayData);
             }
         }
     };

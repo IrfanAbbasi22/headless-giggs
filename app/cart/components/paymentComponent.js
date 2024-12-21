@@ -120,7 +120,7 @@ const PaymentComponent = () => {
             //     router.push(`/thanks?id=${data.order_id}&orderKey=${data.order_key}&email=${data.billing_address.email}`);
             // }, 1500);
             
-            confettiRef.current.triggerConfettiFromParent();
+            // confettiRef.current.triggerConfettiFromParent();
 
             if(data?.payment_method === 'razorpay'){
                 router.push(`/checkout/razorpay/${data.order_id}/?key=${data.order_key}&email=${data.billing_address.email}`);

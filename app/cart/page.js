@@ -234,28 +234,32 @@ export default function CartData() {
                       </p>
                     </div>
                   )}
-
-                  <div className="cartSidebar-delivery flex flex-col">
-                    <p className="text-sm flex gap-4 justify-between items-center mb-1">
-                      Delivery fee
-                      <span>
-                        {/* TODO: Need Discussion - how to show discount on delivery if it has */}
-                        {/* <del className="text-[grey] mr-1">{formatCurrency(99, cartData.totals)}</del> */}
-                        {cartData.totals.total_shipping === "0" ? (
-                          <span className="text-[#17b31b] font-medium text-sm">
-                            FREE
-                          </span>
-                        ) : (
-                          `${formatCurrency(cartData.totals.total_shipping, cartData.totals)}`
-                        )}
-                      </span>
-                    </p>
-                    {/* TODO: Need Discussion - how to show free delivery note */}
-                    <small className="text-xs text-[grey]">
-                      Free delivery on item total above{" "}
-                      <span className="text-black font-medium">{formatCurrency(1000, cartData.totals)}</span>
-                    </small>
-                  </div>
+                  
+                  {
+                    cartData?.billing_address?.postcode?.length > 0 &&
+                    
+                    <div className="cartSidebar-delivery flex flex-col">
+                      <p className="text-sm flex gap-4 justify-between items-center mb-1">
+                        Delivery fee
+                        <span>
+                          {/* TODO: Need Discussion - how to show discount on delivery if it has */}
+                          {/* <del className="text-[grey] mr-1">{formatCurrency(99, cartData.totals)}</del> */}
+                          {cartData.totals.total_shipping === "0" ? (
+                            <span className="text-[#17b31b] font-medium text-sm">
+                              FREE
+                            </span>
+                          ) : (
+                            `${formatCurrency(cartData.totals.total_shipping, cartData.totals)}`
+                          )}
+                        </span>
+                      </p>
+                      {/* TODO: Need Discussion - how to show free delivery note */}
+                      <small className="text-xs text-[grey]">
+                        Free delivery on item total above{" "}
+                        <span className="text-black font-medium">{formatCurrency(1000, cartData.totals)}</span>
+                      </small>
+                    </div>
+                  }
                   
                   {/* shipping rates */}
                   {
