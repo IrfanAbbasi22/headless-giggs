@@ -1,26 +1,31 @@
 import { useState, useEffect } from "react";
 // redux
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   showUserAddAddressForm,
   setUserAddresses,
+  userDataToken,
 } from "../../../store/slices/userSlice";
 
 import { deleteUserAddress } from "@/app/components/lib/user/deleteUserAddress";
 import DotPulsePreloader from "@/app/components/ui/preloader/dotPulsePreloader";
 import { useUpdateShippingAddress } from "@/app/components/lib/cart/updateShippingAddress";
 import { saveUserNewAddress } from "@/app/components/lib/user/saveUserNewAddress";
+import { getUserAddress } from "@/app/components/lib/user/getUserAddress";
 
-const AddressCard = (item) => {
+const AddressCard = ({ item, setAddress, address, addressLength }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletePreloader, setDeletePreloader] = useState(false);
   const [pagePreloader, setPagePreloader] = useState(false);
-  const cardData = item.item;
+
+  const userToken = useSelector(userDataToken);
+  const cardData = item;
 
   const dispatch = useDispatch();
 
   const handleEditAddress = async () => {
     dispatch(showUserAddAddressForm({ isVisible: true, address: cardData }));
+    // setAddress(address.map((addr) => (addr.id === item.id ? updatedData : addr)));
   };
 
   // console.log('item', item)
@@ -30,7 +35,27 @@ const AddressCard = (item) => {
 
     try {
       const deleteResponse = await deleteUserAddress(cardData?.id);
-      dispatch(setUserAddresses(deleteResponse.addresses));
+      // dispatch(setUserAddresses(deleteResponse.addresses));
+
+      // Filter out the deleted address
+      // setAddress(address.filter((addr) => addr.id !== item.id));
+
+      if (deleteResponse?.addresses) {
+        // dispatch(setUserAddresses(updateDefaultAddress.addresses));
+        // setAddress(updateDefaultAddress.addresses);
+
+        try {
+          // const response = await getUserAddress(userToken, userAddedAddresses?.length, 1);
+          const response = await getUserAddress(userToken, addressLength, 1);
+          if (response?.addresses) {
+            setAddress(response.addresses);
+          }
+            
+        } catch (error) {
+            console.error("Failed to fetch updated addresses:", error);
+        } finally{
+        }
+      }
     } catch (error) {
       console.error("Error while deleting the address:", error);
     } finally {
@@ -85,7 +110,21 @@ const AddressCard = (item) => {
 
       // Dispatch the addresses only if updateDefaultAddress contains addresses
       if (updateDefaultAddress?.addresses) {
-        dispatch(setUserAddresses(updateDefaultAddress.addresses));
+        // dispatch(setUserAddresses(updateDefaultAddress.addresses));
+        // setAddress(updateDefaultAddress.addresses);
+
+        try {
+          // const response = await getUserAddress(userToken, userAddedAddresses?.length, 1);
+          const response = await getUserAddress(userToken, addressLength, 1);
+          if (response?.addresses) {
+            // dispatch(setUserAddresses(response.addresses))
+            setAddress(response.addresses);
+          }
+            
+        } catch (error) {
+            console.error("Failed to fetch updated addresses:", error);
+        } finally{
+        }
       }
 
       // Check if card is active
@@ -150,31 +189,31 @@ const AddressCard = (item) => {
               updateShippingAddressInCart(cardData);
             }} 
             className="cursor-pointer font-medium leading-tight text-base text-black mb-2 inline-block">
-            {cardData.first_name} {cardData.last_name}
+            {cardData?.first_name} {cardData?.last_name}
           </span>
           <div className="text-sm text-opacity-50 text-black">
             <div className="text-sm">
-              {cardData.email && (
+              {cardData?.email && (
                 <p className="mb-2">
-                  Email: <b>{cardData.email}</b>
+                  Email: <b>{cardData?.email}</b>
                 </p>
               )}
 
-              {cardData.phone && (
+              {cardData?.phone && (
                 <p className="mb-2">
-                  Phone: <b>+{cardData.country_ext} {cardData.phone}</b>
+                  Phone: <b>+{cardData?.country_ext} {cardData?.phone}</b>
                 </p>
               )}
-              {cardData.address_1 && <p className="">
-                {cardData.address_1 }&nbsp;
+              {cardData?.address_1 && <p className="">
+                {cardData?.address_1 }&nbsp;
 
                 {
-                  cardData.address_2 &&
-                  cardData.address_2
+                  cardData?.address_2 &&
+                  cardData?.address_2
                 }
               </p>}
               <p className="capitalize">
-                {cardData.city && cardData.city}
+                {cardData?.city && cardData?.city}
                 {cardData?.state && ` ${cardData.state.toUpperCase()} `}
                 {cardData?.postcode && ` ${cardData.postcode}`}
                 {cardData?.country && ` ${cardData.country.toUpperCase()}.`}

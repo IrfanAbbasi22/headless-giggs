@@ -6,7 +6,7 @@ import {
   showUserAddAddressForm,
   showUserAddressForm,
   editUserAddress,
-  setUserAddresses,
+  // setUserAddresses,
   userAddresses,
   userDataToken,
 } from "../../../store/slices/userSlice";
@@ -20,7 +20,7 @@ import DotPulsePreloader from "@/app/components/ui/preloader/dotPulsePreloader";
 import PhoneInput from "react-phone-input-2";
 import { getUserAddress } from "@/app/components/lib/user/getUserAddress";
 
-const SaveNewAddress = ({addressLength=0}) => {
+const SaveNewAddress = ({addressLength=0, setAddress, address }) => {
   const isFormVisible = useSelector(showUserAddressForm);
   const editFormData = useSelector(editUserAddress);
   // const userAddedAddresses = useSelector(userAddresses);
@@ -296,7 +296,8 @@ const SaveNewAddress = ({addressLength=0}) => {
           const response = await getUserAddress(userToken, addressLength, 1);
     
           if (response?.addresses) {
-            dispatch(setUserAddresses(response.addresses))
+            // dispatch(setUserAddresses(response.addresses))
+            setAddress(response.addresses);
           }
             
         } catch (error) {

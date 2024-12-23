@@ -123,12 +123,20 @@ const GetAddress = () => {
                 address.length > 0 && 
 
                 address.map((item, index) => (
-                    <AddressCard key={`addressList${index}`} item={item} />
+                    <AddressCard key={`addressList${index}`} 
+                        item={item} 
+                        setAddress={setAddress}
+                        address={address} 
+                        addressLength={address?.length}
+                    />
                 ))
             }
 
             { showAddAddress &&
-                <SaveNewAddress addressLength={address?.length} />
+                <SaveNewAddress addressLength={address?.length} 
+                    setAddress={setAddress}
+                    address={address}
+                />
             }
         </div> 
 
