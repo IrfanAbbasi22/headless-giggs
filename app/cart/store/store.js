@@ -13,7 +13,30 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
-import storage from 'redux-persist/lib/storage'; // Default to localStorage
+// import storage from 'redux-persist/lib/storage'; // Default to localStorage
+
+
+import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
+
+// Custom storage fallback for SSR
+const createNoopStorage = () => {
+  return {
+    getItem(_key) {
+      return Promise.resolve(null);
+    },
+    setItem(_key, _value) {
+      return Promise.resolve();
+    },
+    removeItem(_key) {
+      return Promise.resolve();
+    },
+  };
+};
+
+const storage =
+  typeof window !== 'undefined'
+    ? createWebStorage('local') // Use localStorage in the browser
+    : createNoopStorage(); // Use noop storage on the server
 
 // Persistence configuration
 const cartPersistConfig = {

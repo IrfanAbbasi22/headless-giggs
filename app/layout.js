@@ -1,8 +1,8 @@
 import { Roboto } from 'next/font/google'
 import "./globals.css";
-import ReduxProvider from "./cart/ReduxProvider";
 import LayoutProvider from "./layoutProvider";
 import LoadCart from './cart/components/lib/loadCart';
+import ReduxProvider from './cart/ReduxProvider';
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -19,10 +19,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-          <LayoutProvider>
-            <LoadCart/>
-            {children}
-          </LayoutProvider>
+          <ReduxProvider>
+            <LayoutProvider>
+              <LoadCart/>
+              {children}
+            </LayoutProvider>
+          </ReduxProvider>
       </body>
     </html>
   );
