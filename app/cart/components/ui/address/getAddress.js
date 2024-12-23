@@ -1,8 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // redux
 import { useDispatch, useSelector } from "react-redux";
-import { setUserAddresses, userAddresses, userDataToken } from "../../../store/slices/userSlice";
+import { 
+    // setUserAddresses, 
+    // userAddresses, 
+    userDataToken } from "../../../store/slices/userSlice";
 import DotPulsePreloader from "@/app/cart/components/ui/dotPulsePreloader";
 import { getUserAddress } from "@/app/components/lib/user/getUserAddress";
 import AddressCard from "./addressCard";
@@ -11,17 +14,20 @@ import Skeleton from "react-loading-skeleton";
 
 const GetAddress = () => {
     const dispatch = useDispatch();
-    const userAddedAddresses = useSelector(userAddresses);
+    // const userAddedAddresses = useSelector(userAddresses);
     const userToken = useSelector(userDataToken);
-    const [address, setAddress] = useState(userAddedAddresses  || []);
+    // const [address, setAddress] = useState(userAddedAddresses  || []);
+    const [address, setAddress] = useState([]);
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(
-        Math.ceil((userAddedAddresses?.length || 0) / 8) || 1
+        // Math.ceil((userAddedAddresses?.length || 0) / 8) || 1
+        Math.ceil((address?.length || 0) / 8) || 1
     );
     const [loadMorePreloader, setLoadMorePreloader] = useState(false);
     const [showAddAddress, setShowAddAddress] = useState(false);
-    const [fetchCalled, setFetchCalled] = useState(false);
+    const hasInitiated = useRef(false);
+    const [nextPageURL, setNextPageURL] = useState(null);
 
     const fetchAddress = async (perPage, curPage) => {
         setLoading(curPage === 1);
@@ -32,14 +38,21 @@ const GetAddress = () => {
       
             if (response?.addresses) {
               setAddress((prevAddresses) => [...prevAddresses, ...response.addresses]);
-              dispatch(setUserAddresses([...userAddedAddresses, ...response.addresses]))
+              setNextPageURL(response?.next_page_url);
+            console.log("response", response);
+              if(!response?.next_page_url && response?.next_page_url === null){
+                setHasMore(false);
+              }else{
+                setHasMore(true);
+              }
+            //   dispatch(setUserAddresses([...userAddedAddresses, ...response.addresses]))
             //   dispatch(setUserAddresses(response.addresses));
 
-              if(response.addresses.length < perPage){
-                setHasMore(false);
-            }else{
-                setHasMore(true);
-            }
+                // if(response.addresses.length < perPage){
+                //     setHasMore(false);
+                // }else{
+                //     setHasMore(true);
+                // }
             }else{
                 setHasMore(false);
             }
@@ -61,19 +74,34 @@ const GetAddress = () => {
         fetchAddress(8, nextPage);
     };
 
-    useEffect(() => {
-        if (!userToken) {
-            return;
-        }
+    // useEffect(() => {
+    //     if (!userToken) {
+    //         return;
+    //     }
 
-        if (!fetchCalled && (!userAddedAddresses || userAddedAddresses.length === 0)) {
-            setFetchCalled(true);
-            fetchAddress(8, 1);
-        } else if (userAddedAddresses && userAddedAddresses.length > 0) {
-            setAddress(userAddedAddresses);
-            setShowAddAddress(true);
+    //     // if (!fetchCalled && (!userAddedAddresses || userAddedAddresses.length === 0)) {
+    //     //     setFetchCalled(true);
+    //     //     fetchAddress(8, 1);
+    //     // } else if (userAddedAddresses && userAddedAddresses.length > 0) {
+    //     //     setAddress(userAddedAddresses);
+    //     //     setShowAddAddress(true);
+    //     // }
+    //     if (!fetchCalled && (!address || address.length === 0)) {
+    //         setFetchCalled(true);
+    //         fetchAddress(1, 1);
+    //     }
+    // }, [fetchCalled]); 
+
+    useEffect(() => {
+        if (!hasInitiated.current) {
+            hasInitiated.current = true;
+            
+            if (userToken) {
+                fetchAddress(8, 1);
+            }
         }
-    }, [userAddedAddresses, fetchCalled]); 
+    }, [userToken]);
+    
 
     if(!showAddAddress){
         return (
@@ -100,7 +128,7 @@ const GetAddress = () => {
             }
 
             { showAddAddress &&
-                <SaveNewAddress />
+                <SaveNewAddress addressLength={address?.length} />
             }
         </div> 
 

@@ -16,13 +16,19 @@ import {
 import storage from 'redux-persist/lib/storage'; // Default to localStorage
 
 // Persistence configuration
-const persistConfig = {
-  key: 'root',
+const cartPersistConfig = {
+  key: 'cart',
   storage,
 };
 
-const cartPersistedReducer = persistReducer(persistConfig, cartReducer);
-const userPersistedReducer = persistReducer(persistConfig, userReducer);
+const userPersistConfig = {
+  key: 'user',
+  storage,
+};
+
+
+const cartPersistedReducer = persistReducer(cartPersistConfig, cartReducer);
+const userPersistedReducer = persistReducer(userPersistConfig, userReducer);
 
 export const store = configureStore({
   reducer: {

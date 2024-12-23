@@ -20,17 +20,20 @@ import DotPulsePreloader from "@/app/components/ui/preloader/dotPulsePreloader";
 import PhoneInput from "react-phone-input-2";
 import { getUserAddress } from "@/app/components/lib/user/getUserAddress";
 
-const SaveNewAddress = () => {
+const SaveNewAddress = ({addressLength=0}) => {
   const isFormVisible = useSelector(showUserAddressForm);
   const editFormData = useSelector(editUserAddress);
-  const userAddedAddresses = useSelector(userAddresses);
+  // const userAddedAddresses = useSelector(userAddresses);
   const billingAddress = useSelector(cartBillingAddress);
   const dispatch = useDispatch();
 
   const userToken = useSelector(userDataToken);
 
   useEffect(() => {
-    if (userToken.length !== 0 && (!userAddedAddresses || userAddedAddresses.length === 0)) {
+    // if (userToken.length !== 0 && (!userAddedAddresses || userAddedAddresses.length === 0)) {
+    //   showModal();
+    // }
+    if (userToken.length !== 0 && (!addressLength || addressLength.length === 0)) {
       showModal();
     }
   }, []);
@@ -289,7 +292,8 @@ const SaveNewAddress = () => {
         closeModal();
 
         try {
-          const response = await getUserAddress(userToken, userAddedAddresses?.length, 1);
+          // const response = await getUserAddress(userToken, userAddedAddresses?.length, 1);
+          const response = await getUserAddress(userToken, addressLength, 1);
     
           if (response?.addresses) {
             dispatch(setUserAddresses(response.addresses))
