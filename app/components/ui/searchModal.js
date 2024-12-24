@@ -136,7 +136,7 @@ const SearchModal = ({ closeSearchPopUp }) => {
             className=" w-full rounded-[10px] leading-none border-[#ced4da] border placeholder:text-sm  placeholder:text-[#767676]   outline-none bg-[#F8F8F7] py-[15px] px-12 md:py-[19px] md:px-[60px]"
           />
           <div className=" absolute  top-[56px] left-5   md:top-4 md:left-5">
-            <Image src={`/assets/icons/search.svg`} alt="search" className="    md:w-6 max-w-6" />
+            <Image src={`/assets/icons/search.svg`} alt="search" width={24} height={24} className="md:w-6 max-w-6" />
           </div>
         </div>
         <>
