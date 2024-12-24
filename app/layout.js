@@ -13,6 +13,7 @@ const roboto = Roboto({
 export const metadata = {
   title: "Giggs",
   description: "Best meat wesbite",
+  robots: "noindex, nofollow", 
 };
 
 export default function RootLayout({ children }) {
