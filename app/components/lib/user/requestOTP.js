@@ -21,15 +21,16 @@ export const reqOTP = async (data) => {
 
     if (!response.ok) {
       const responseError = await response.json();
+      return responseError;
+      
       throw new Error("Failed to request the OTP");
-
-      // return responseError;
     }
 
     const responseData = await response.json();
     return responseData;
   } catch (error) {
     console.error(error.message);
+    // return error;
   }
 };
 

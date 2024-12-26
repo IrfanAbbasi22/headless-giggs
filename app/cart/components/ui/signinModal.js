@@ -6,6 +6,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { showUserModal, updateUserFromServer, isSignInVisible } from "../../store/slices/userSlice";
 import { cartBillingAddress } from "../../store/slices/cartSlice";
 
+import { toast, Bounce } from 'react-toastify';
+
 // Auth
 import { reqOTP, resendOTP } from "@/app/components/lib/user/requestOTP";
 import { verifyOTP } from "@/app/components/lib/user/verifyOTP";
@@ -127,7 +129,7 @@ const SigninModal = () => {
         setIsOtpSent(true);
         setReqData(result);
       } else {
-        setInputErrorMessage(result?.message || "Failed to send OTP");
+        setInputErrorMessage(result?.error || "Failed to send OTP");
       }
     } catch (error) {
       setInputErrorMessage("An error occurred. Please try again later.");
@@ -180,6 +182,18 @@ const SigninModal = () => {
         const loginHandler = await handleUserLogin(result.is_registered, result?.otp_token);
 
         if(loginHandler?.user_token){
+          console.log('asdasdadasdadasdasd', loginHandler?.message)
+          toast.success(loginHandler?.message || 'Login successful!', {
+            position: "bottom-center",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: false,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          });
           // console.log('login message', loginHandler.message );
           dispatch(updateUserFromServer(loginHandler));
           
@@ -258,11 +272,11 @@ const SigninModal = () => {
                     <div className="flex flex-col items-center gap-4 text-[10px] lg:text-sm">
                       <div className="flex flex-wrap gap-x-1 justify-center">
                         By continuing, you agree to our company&apos;s
-                        <Link href={"/"}>
+                        <Link href={"/terms-and-conditions"}>
                           <strong className="text-primary">
                             Terms and conditions
                           </strong></Link> and 
-                          <Link href={"/"}> <strong className="text-primary">Privacy Policy</strong> </Link>
+                          <Link href={"/privacy-policy"}> <strong className="text-primary">Privacy Policy</strong> </Link>
                       </div>
 
                       <button type="submit"

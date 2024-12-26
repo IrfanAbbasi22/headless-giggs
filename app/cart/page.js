@@ -15,9 +15,7 @@ import {
   currentSelectedStep,
   setCurrentStep,
 } from "./store/slices/cartStepsSlice";
-import {
-  showUserModal, isUserLoggedIn
-} from "./store/slices/userSlice";
+import { showUserModal, isUserLoggedIn } from "./store/slices/userSlice";
 
 // UI Components
 import DotPulsePreloader from "../components/ui/preloader/dotPulsePreloader";
@@ -55,12 +53,13 @@ export default function CartData() {
   // console.log('cartdata', cartData);
 
   // Managing Prices Discounts
-  const cartItemsTotalPrice = Array.isArray(cartItems) && cartItems.length > 0 
-    ? cartItems.reduce(
-        (total, item) => total + item.prices.regular_price * item.quantity,
-        0
-      )
-    : 0;
+  const cartItemsTotalPrice =
+    Array.isArray(cartItems) && cartItems.length > 0
+      ? cartItems.reduce(
+          (total, item) => total + item.prices.regular_price * item.quantity,
+          0
+        )
+      : 0;
   const cartItemsPrice = parseInt(cartData?.totals?.total_items ?? 0, 10);
 
   const getPercentageOff = (regularPrice, salePrice) => {
@@ -84,13 +83,15 @@ export default function CartData() {
   const handleAddressFail = (data) => {
     console.log("Failed function called in parent!", data);
     setContinuePreloader(false);
-  }; 
+  };
   // Address Form Handling
 
   const handleShippingRate = async (e) => {
     const id = e.target.value;
-    await updateShippingRates(id); 
-  }
+    await updateShippingRates(id);
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   if (loading) {
     return (
@@ -99,8 +100,8 @@ export default function CartData() {
   }
 
   return (
-    <div className="mb-32">
-      <div className="container flex flex-wrap gap-5 mx-auto pt-16">
+    <div className="mb-20 lg:mb-0">
+      <div className="container flex flex-wrap gap-5 mx-auto  pt-8 lg:pt-16">
         {cartItems?.length > 0 ? (
           <div className="flex flex-wrap w-full max-lg:flex-col gap-y-8">
             {/* Cart Data */}
@@ -120,7 +121,11 @@ export default function CartData() {
 
                   {cartData.totals.total_price && (
                     <span className="text-xl font-medium">
-                      Total {formatCurrency(cartData.totals.total_price, cartData.totals)}
+                      Total{" "}
+                      {formatCurrency(
+                        cartData.totals.total_price,
+                        cartData.totals
+                      )}
                     </span>
                   )}
                 </div>
@@ -147,46 +152,39 @@ export default function CartData() {
                 {/* Address Heading */}
                 <div className="flex justify-between items-center mb-5">
                   <span className="text-xl font-medium">
-                    {!userLoggedInStatus ? (
-                      'Shipping address'
-                    ) : (
-                      'Select a delivery address'
-                    )}
+                    {!userLoggedInStatus
+                      ? "Shipping address"
+                      : "Select a delivery address"}
                   </span>
 
-                  {
-                    !userLoggedInStatus && 
+                  {!userLoggedInStatus && (
                     <>
-                      <button 
+                      <button
                         onClick={() => {
                           dispatch(showUserModal(true));
                         }}
-                        className="border border-primary text-primary transition-all px-3 py-1 text-sm font-medium hover:bg-opacity-10 rounded-md hover:bg-primary">
+                        className="border border-primary text-primary transition-all px-3 py-1 text-sm font-medium hover:bg-opacity-10 rounded-md hover:bg-primary"
+                      >
                         Already a user? Sign in
                       </button>
-                      
-                      
                     </>
-                  }
-
+                  )}
                 </div>
 
-                {
-                  !userLoggedInStatus ? (
-                    <>
-                      {/* Form */}
-                      <ShippingAddress
-                        ref={shippingFormRef}
-                        onSuccess={handleSuccess}
-                        onFailure={handleAddressFail}
-                      />
-                    </> 
-                  ) : (
-                    <>
-                      <GetAddress/>
-                    </>
-                  )
-                }
+                {!userLoggedInStatus ? (
+                  <>
+                    {/* Form */}
+                    <ShippingAddress
+                      ref={shippingFormRef}
+                      onSuccess={handleSuccess}
+                      onFailure={handleAddressFail}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <GetAddress />
+                  </>
+                )}
               </div>
             )}
 
@@ -229,15 +227,17 @@ export default function CartData() {
                       <p className="text-sm flex gap-4 justify-between items-center mb-1">
                         Discount ({cartData?.coupons[0].code.toUpperCase()})
                         <span className="text-[#17b31b] font-medium text-sm">
-                          -{formatCurrency(cartData.totals.total_discount, cartData.totals)}
+                          -
+                          {formatCurrency(
+                            cartData.totals.total_discount,
+                            cartData.totals
+                          )}
                         </span>
                       </p>
                     </div>
                   )}
-                  
-                  {
-                    cartData?.billing_address?.postcode?.length > 0 &&
-                    
+
+                  {cartData?.billing_address?.postcode?.length > 0 && (
                     <div className="cartSidebar-delivery flex flex-col">
                       <p className="text-sm flex gap-4 justify-between items-center mb-1">
                         Delivery fee
@@ -249,30 +249,37 @@ export default function CartData() {
                               FREE
                             </span>
                           ) : (
-                            `${formatCurrency(cartData.totals.total_shipping, cartData.totals)}`
+                            `${formatCurrency(
+                              cartData.totals.total_shipping,
+                              cartData.totals
+                            )}`
                           )}
                         </span>
                       </p>
                       {/* TODO: Need Discussion - how to show free delivery note */}
                       <small className="text-xs text-[grey]">
                         Free delivery on item total above{" "}
-                        <span className="text-black font-medium">{formatCurrency(1000, cartData.totals)}</span>
+                        <span className="text-black font-medium">
+                          {formatCurrency(1000, cartData.totals)}
+                        </span>
                       </small>
                     </div>
-                  }
-                  
-                  {/* shipping rates */}
-                  {
-                    cartData?.billing_address?.postcode?.length > 0 &&
+                  )}
 
+                  {/* shipping rates */}
+                  {cartData?.billing_address?.postcode?.length > 0 && (
                     <div className="cartSidebar-delivery flex flex-col">
                       <p className="text-sm flex flex-col gap-2 mb-1">
                         <label htmlFor="shippingRate">Select shipping</label>
-                        {
-                          cartData.shipping_rates[0].shipping_rates?.length > 0 && (
-                            <span className="flex gap-3 flex-wrap">
-                              {cartData.shipping_rates[0].shipping_rates.map((item, index) => (
-                                <span className="flex items-center gap-1" key={`shippingOpt${item.rate_id}${index}`}>
+                        {cartData.shipping_rates[0].shipping_rates?.length >
+                          0 && (
+                          <span className="flex gap-3 flex-wrap">
+                            {cartData.shipping_rates[0].shipping_rates.map(
+                              (item, index) => (
+                                <span
+                                  className="flex items-center gap-1"
+                                  key={`shippingOpt${item.rate_id}${index}`}
+                                >
                                   <input
                                     type="radio"
                                     id={`shippingRate${item.rate_id}`}
@@ -283,18 +290,24 @@ export default function CartData() {
                                     checked={item.selected}
                                     onChange={(e) => handleShippingRate(e)}
                                   />
-                                  <label htmlFor={`shippingRate${item.rate_id}`} className="text-xs">
-                                    {item.name} - {formatCurrency(item.price, cartData.totals)}
+                                  <label
+                                    htmlFor={`shippingRate${item.rate_id}`}
+                                    className="text-xs"
+                                  >
+                                    {item.name} -{" "}
+                                    {formatCurrency(
+                                      item.price,
+                                      cartData.totals
+                                    )}
                                   </label>
                                 </span>
-                              ))}
-                            </span>
-                          )
-                        }
+                              )
+                            )}
+                          </span>
+                        )}
                       </p>
                     </div>
-                  }
-
+                  )}
 
                   {/* Total */}
                   <div className="grand-total flex flex-col border-dashed border-t border-b border-[#e5e7eb] py-4 my-2">
@@ -302,7 +315,10 @@ export default function CartData() {
                       <h4 className="text-base font-medium flex gap-4 justify-between items-center">
                         Grand total
                         <span>
-                          {formatCurrency(cartData.totals.total_price, cartData.totals)}
+                          {formatCurrency(
+                            cartData.totals.total_price,
+                            cartData.totals
+                          )}
                         </span>
                       </h4>
                     )}
@@ -332,8 +348,12 @@ export default function CartData() {
                               cartItemsTotalPrice,
                               cartItemsPrice
                             )}% `}
-                            ({formatCurrency(cartItemsTotalPrice - cartItemsPrice, cartData.totals)}) saved so
-                            far on this order
+                            (
+                            {formatCurrency(
+                              cartItemsTotalPrice - cartItemsPrice,
+                              cartData.totals
+                            )}
+                            ) saved so far on this order
                           </span>
                           {/* Need Discussion - how to show discount on delivery if it has */}
                           <span
@@ -341,7 +361,9 @@ export default function CartData() {
                               changesPreloader ? "opacity-0" : ""
                             }`}
                           >
-                            Save {formatCurrency(49, cartData.totals)} on delivery fee by adding {formatCurrency(701, cartData.totals)} more to cart
+                            Save {formatCurrency(49, cartData.totals)} on
+                            delivery fee by adding{" "}
+                            {formatCurrency(701, cartData.totals)} more to cart
                           </span>
 
                           {changesPreloader && (
@@ -396,12 +418,14 @@ export default function CartData() {
                             if (currentStep === "cart") {
                               dispatch(setCurrentStep("shipping"));
                             } else if (currentStep === "shipping") {
-                              if(!userLoggedInStatus){
+                              if (!userLoggedInStatus) {
                                 handleFormSubmit();
-                              }else{
-                                dispatch(setCurrentStep("payment"))
+                              } else {
+                                dispatch(setCurrentStep("payment"));
                               }
                             }
+
+                            window.scrollTo({ top: 0, behavior: "smooth" });
                           }}
                         >
                           Continue
@@ -442,12 +466,6 @@ export default function CartData() {
           </div>
         )}
       </div>
-      
-      {
-        cartItems?.length > 0 && (
-          <SecurePayment />
-        )
-      }
 
       {/* Pickup Order */}
       {/* <div className="pickupOrder fixed z-50 left-0 right-0 top-0 bottom-0 w-full bg-opacity-50 bg-black flex flex-col gap-6 items-center justify-end lg:justify-center">
@@ -526,13 +544,18 @@ export default function CartData() {
         </div>
       </div> */}
 
-      {
-        (cartRecomendedProducts.length > 0 && currentStep === "cart") &&
+      {cartRecomendedProducts.length > 0 && currentStep === "cart" && (
         <>
           {/* Recomended Products */}
-          <SwiperProducts heading={`Recomended Products`} products={cartRecomendedProducts}/>
+          <SwiperProducts
+            heading={`Recomended Products`}
+            products={cartRecomendedProducts}
+          />
         </>
-      }
+      )}
+      <div className={`${cartRecomendedProducts.length === 0 ? "mt-10" : ""}`}>
+        {cartItems?.length > 0 && <SecurePayment />}
+      </div>
     </div>
   );
 }

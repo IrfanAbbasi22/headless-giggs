@@ -13,7 +13,11 @@ const locationModal = ({ closeLocationModal }) => {
       <div className=" flex flex-col relative items-center gap-5  my-2     w-[93%]  md:max-w-[500px] text-center bg-white rounded-md overflow-y-auto  max-h-screen">
         <form className=" flex flex-col md:flex-row gap-4 md:gap-10 items-center  p-[15px]    md:p-8  ">
           <p className=" absolute top-1  right-2  md:top-2 md:right-3 ">
-            <RxCross2 size={22} onClick={() => closeLocationModal()} />
+            <RxCross2
+              size={22}
+              onClick={() => closeLocationModal()}
+              className="  cursor-pointer"
+            />
           </p>
           <div>
             <Image
@@ -58,7 +62,11 @@ const locationModal = ({ closeLocationModal }) => {
           </div>
           <div className=" text-xs ">
             <strong>Note</strong>: <span>For other city please</span>
-            <Link href={"/"} className=" ml-1">
+            <Link
+              href={"/contact-us"}
+              onClick={() => closeLocationModal()}
+              className=" ml-1"
+            >
               <span className=" text-primary cursor-pointer hover:text-primary-hover">
                 contact us
               </span>

@@ -57,24 +57,28 @@ const Header = () => {
     setSearchPopUp(false);
   };
 
-  useEffect(() => {
-    const onScroll = () => setOffset(window.scrollY);
+  // useEffect(() => {
+  //   const onScroll = () => setOffset(window.scrollY);
 
-    // console.log(offset);
-    window.removeEventListener("scroll", onScroll);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  //   // console.log(offset);
+  //   window.removeEventListener("scroll", onScroll);
+  //   window.addEventListener("scroll", onScroll, { passive: true });
+  //   return () => window.removeEventListener("scroll", onScroll);
+  // }, []);
 
   return (
     <>
       <header className=" fixed z-30 bg-white  top-0  w-full">
-        {offset < 50 && <TopBanner />}
-        <main className="container mx-auto px-5  py-4">
+        <TopBanner />
+        {/* {offset < 50 && <TopBanner />} */}
+        <main className="container mx-auto px-5  py-4 ">
           <div className="flex items-center justify-between">
             <div className=" w-1/3  hidden lg:flex items-center gap-12">
               <div onClick={openLocationModal} className=" flex flex-col">
-                <div className=" flex gap-1 items-center cursor-pointer">
+                <div
+                  className=" flex gap-1 items-center cursor-pointer"
+                  title="Check Delivery"
+                >
                   <span>
                     <Image
                       src={`/assets/icons/location.svg`}
@@ -102,6 +106,7 @@ const Header = () => {
                   height={20}
                   alt="search-icon"
                   className=" cursor-pointer max-w-6 lg:w-6 lg:h-6"
+                  title="Search"
                 />
               </div>
             </div>
@@ -131,7 +136,7 @@ const Header = () => {
                   width={75}
                   height={36}
                   alt="logo"
-                  className="  h-9"
+                  className="h-9"
                 />
               </Link>
             </div>
@@ -146,6 +151,7 @@ const Header = () => {
                     height={20}
                     alt="icon"
                     className=" cursor-pointer max-w-6 lg:w-6 lg:h-6"
+                    title="Shop"
                   />
                 </Link>
               </span>
@@ -167,6 +173,7 @@ const Header = () => {
                   width={20}
                   height={20}
                   className=" cursor-pointer max-w-6 lg:w-6 lg:h-6"
+                  title="See Your Cart"
                 />
               </Link>
 
@@ -179,6 +186,7 @@ const Header = () => {
                     src={`/assets/icons/user.svg`}
                     onClick={() => setUserToggle(!userToggle)}
                     alt="user"
+                    title="My Account"
                   />
                 </Link>
               ) : (
@@ -191,6 +199,7 @@ const Header = () => {
                   }}
                   src={`/assets/icons/Login.svg`}
                   alt="login"
+                  title="Login/Signup"
                 />
               )}
 
@@ -230,75 +239,6 @@ const Header = () => {
               </div>
             </div>
           </div>
-
-          {/* {toggle && (
-            <div className="fixed   lg:hidden inset-0 z-50 bg-white">
-              <div className="flex   items-center justify-between p-4">
-                <div>
-                  <Image
-                    width={100}
-                    height={50}
-                    src={`/assets/images/giggsLogo.png`}
-                    alt="logo"
-                    className="max-w-[110px]"
-                  />
-                </div>
-
-                <span onClick={() => setToggle(false)}>
-                  <RxCross2 size={22} />
-                </span>
-              </div>
-
-              <ul className="flex flex-col font-normal   gap-4  py-6 px-6">
-                <li className="flex items-center  gap-2">
-                  <Image
-                    width={16}
-                    height={16}
-                    src={`/assets/icons/Login.svg`}
-                    alt="icon"
-                    className="  "
-                  />
-                  <span className="  text-base ">Login</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Image
-                    width={16}
-                    height={16}
-                    src={`/assets/icons/Categories.svg`}
-                    alt="icon"
-                    className="  "
-                  />
-                  <span className=" text-base"> Category</span>
-                  <Image
-                    width={16}
-                    height={16}
-                    src={`/assets/icons/down-arrow.svg`}
-                    onClick={() => setDropdownOpen(!dropdownOpen)}
-                    alt="arrow"
-                    className="  "
-                  />
-                </li>
-
-                {dropdownOpen && (
-                  <ul className="pl-6 text-sm font-normal flex flex-col gap-4">
-                    {dropdownItems.map((item, index) => (
-                      <li key={index}>{item.label}</li>
-                    ))}
-                  </ul>
-                )}
-
-                <li>
-                  <button
-                    className={` ${
-                      dropdownOpen === true ? "mt-4" : null
-                    }      w-40   bg-[#FF5D58] text-white  h-14 rounded-3xl `}
-                  >
-                    Download the App
-                  </button>
-                </li>
-              </ul>
-            </div>
-          )} */}
         </main>
         <BottomNavbar
           openLocationModal={openLocationModal}

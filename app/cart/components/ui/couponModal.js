@@ -15,7 +15,6 @@ export default function AppliedDiscountModal() {
     useEffect(()=>{
         if(appliedCouponData === true){
             confettiRef.current.triggerConfettiFromParent();
-            document.body.classList.add('overflow-hidden');
         }
     }, [appliedCouponData]);
     
@@ -46,10 +45,7 @@ export default function AppliedDiscountModal() {
                         <div className="h-[2px] w-12 bg-[#1a181e] mx-auto"></div>
             
                         <button className="bg-primary font-medium text-base py-3 px-5 text-white max-h-max mx-auto rounded-md hover:bg-primary-hover transition-all" 
-                            onClick={() => {
-                                dispatch(couponApplied(false));
-                                document.body.classList.remove('overflow-hidden');
-                            }}>
+                            onClick={() => {dispatch(couponApplied(false))}}>
                             Awesome!
                         </button>
 

@@ -1,3 +1,5 @@
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import CartHeader from "./components/cartHeader";
 import "../globals.css";
 import ReduxProvider from "./ReduxProvider";
@@ -14,6 +16,7 @@ export default function CartLayout({ children }) {
         <CartHeader />
         {children}
       </ReduxProvider>
+      <ToastContainer/>
     </>
   );
 }

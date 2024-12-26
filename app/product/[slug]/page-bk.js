@@ -11,42 +11,18 @@ import PdpDesc from "@/app/sections/PdpDesc";
 import QuantityInc from "@/app/components/ui/QuantityInc";
 import PdpTimer from "@/app/components/ui/PdpTimer";
 
-// export const revalidate = 10;
-// export const dynamicParams = true; 
-
 // Static generation for dynamic slugs
 export async function generateStaticParams() {
-  console.log('Fetching product slugs from WooCommerce...');
   const url = `${process.env.NEXT_PUBLIC_WOO_URL}/wc/v3/products`;
-  
-  let slugs = [];
-  let page = 1;
-  const perPage = 100; // Max number of products per page
 
-  while (true) {
-    const response = await fetch(`${url}?page=${page}&per_page=${perPage}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Basic " + btoa(
-          `${process.env.NEXT_PUBLIC_CONSUMER_KEY}:${process.env.NEXT_PUBLIC_CONSUMER_SECRET}`
-        ),
-      },
-    });
+  // Fetching the list of products
+  const response = await fetchProducts();
 
-    const data = await response.json();
-    
-    if (data.length === 0) break; // No more products, exit loop
-    
-    // Extract the slugs from the response data
-    const pageSlugs = data.map((product) => `${product.slug}`);
-    slugs = [...slugs, ...pageSlugs];
-    
-    page++; // Move to the next page
-  }
+  const data = await response.json();
 
-  console.log('Slugs:', slugs, 'Total Products:', slugs.length);
-  
+  const slugs = data.map((product) => `${product.slug}`);
+
+  // console.log('slugs', slugs);
   return slugs.map((slug) => ({
     slug,
   }));

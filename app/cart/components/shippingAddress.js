@@ -58,9 +58,10 @@ const ShippingForm = forwardRef((props, ref) => {
 
             if(res?.error){
                 setFormError(res?.error || "An error occurred while fetching states.");
+                setStates([]);
+            }else{
+                setStates(res);
             }
-
-            setStates(res);
         } catch (err) {
             console.error("Failed top load States");
         }
@@ -541,36 +542,39 @@ const ShippingForm = forwardRef((props, ref) => {
                     )}
                 </div>
 
-                <div className="form-group w-full md:w-[calc(50%-12px)] flex flex-col gap-2 pb-8 relative">
-                    <label htmlFor="shippingFormState" className="text-[#4d4d4d] text-sm">
-                        State <span className="text-red-600">*</span>
-                    </label>
-                    <select
-                        name="state"
-                        id="shippingFormState"
-                        className={`py-[10px] px-4 border ${
-                        errors.state ? "border-red-600" : "border-[#d9d9d9]"
-                        } rounded-md outline-none transition-all focus:border-primary`}
-                        value={formData.state}
-                        onBlur={handleBlur}
-                        onChange={handleInputChange}
-                    >
-                        <option value="" hidden defaultValue={true}>
-                            Select State
-                        </option>
-                        {states && Object.keys(states).length > 0 && (
-                            Object.entries(states).map(([code, name]) => (
-                                <option key={`stateCode-${code}`} value={code}>{name}</option>
-                            ))
-                            )
-                        }
-                    </select>
-                    {errors.state && (
-                        <small className="absolute left-0 bottom-3 text-xs text-red-600">
-                            {errors.state}
-                        </small>
-                    )}
-                </div>
+                {
+                    Object.keys(states).length > 0 &&
+                    <div className="form-group w-full md:w-[calc(50%-12px)] flex flex-col gap-2 pb-8 relative">
+                        <label htmlFor="shippingFormState" className="text-[#4d4d4d] text-sm">
+                            State <span className="text-red-600">*</span>
+                        </label>
+                        <select
+                            name="state"
+                            id="shippingFormState"
+                            className={`py-[10px] px-4 border ${
+                            errors.state ? "border-red-600" : "border-[#d9d9d9]"
+                            } rounded-md outline-none transition-all focus:border-primary`}
+                            value={formData.state}
+                            onBlur={handleBlur}
+                            onChange={handleInputChange}
+                        >
+                            <option value="" hidden defaultValue={true}>
+                                Select State
+                            </option>
+                            {states && Object.keys(states).length > 0 && (
+                                Object.entries(states).map(([code, name]) => (
+                                    <option key={`stateCode-${code}`} value={code}>{name}</option>
+                                ))
+                                )
+                            }
+                        </select>
+                        {errors.state && (
+                            <small className="absolute left-0 bottom-3 text-xs text-red-600">
+                                {errors.state}
+                            </small>
+                        )}
+                    </div>
+                }
 
                 { FormError &&
                     <div className="form-group w-full text-sm text-red-600 pb-8">

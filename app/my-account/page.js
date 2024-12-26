@@ -41,18 +41,18 @@ const MENU_ITEMS = [
   },
 ];
 const userLogin = Cookies.get("user_token");
-const Page = () => {
+const MyAccount = () => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(isUserLoggedIn);
   const userData = useSelector(userDetails);
   const { handleLogout } = useHandleUserLogout();
   const [logoutModal, setLogoutModal] = useState(false);
-
+  const [selectedOrder, setSelectedOrder] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
     if (!isLoggedIn) {
-      router.push('/login');
+      router.push("/login");
     }
   }, [isLoggedIn, router]);
 
@@ -187,4 +187,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default MyAccount;

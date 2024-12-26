@@ -8,7 +8,8 @@ import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
 import {
   addToCart,
-  loadCartFromWoo, cartDetails
+  loadCartFromWoo,
+  cartDetails,
 } from "../../cart/store/slices/cartSlice";
 import { openModal } from "../../cart/store/slices/productDetailModalSlice";
 import { fetchProductDetails } from "../lib/cart/fetchProductDetails";
@@ -16,12 +17,13 @@ import { fetchWooCommerceCart } from "../lib/cart/fetchAndSyncCart";
 import { addToCartAPI } from "../lib/cart/addToCart";
 import { removeItemFromCart } from "../lib/cart/removeItemFromCart";
 import { formatCurrency } from "../lib/user/formatCurrency";
+import { toast, Bounce } from 'react-toastify';
 
 export default function ProductCard({ product, gridClass }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  
+
   // Variation Management
   const [selectedVariation, setSelectedVariation] = useState(null);
   const handleVariationChange = (variationId) => {
@@ -30,7 +32,7 @@ export default function ProductCard({ product, gridClass }) {
     );
     setSelectedVariation(variation);
   };
-  
+
   useEffect(() => {
     if (
       product?.nwe_available_variations &&
@@ -45,12 +47,12 @@ export default function ProductCard({ product, gridClass }) {
   const cartDetailsData = useSelector(cartDetails);
   const cartItem = useSelector((state) =>
     state.cart.items.find((item) =>
-      product.type === 'variable'
+      product.type === "variable"
         ? item.id === selectedVariation?.variation_id
         : item.id === product.id
     )
   );
-  
+
   const isAdded = Boolean(cartItem);
 
   // Add to Cart
@@ -67,19 +69,30 @@ export default function ProductCard({ product, gridClass }) {
 
     //   return;
     // }
-    
-    let productID; 
 
-    if(product.type === "variable" && selectedVariation?.variation_id){
-      productID = selectedVariation?.variation_id
-    }else{
-      productID = product.id
+    let productID;
+
+    if (product.type === "variable" && selectedVariation?.variation_id) {
+      productID = selectedVariation?.variation_id;
+    } else {
+      productID = product.id;
     }
 
     try {
       const res = await addToCartAPI(productID, quantity);
       dispatch(addToCart(product));
       dispatch(loadCartFromWoo(res));
+      toast.success(`${product.name} added to cart.`, {
+        position: "bottom-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
     } catch (err) {
       setError("Failed to add product to cart.");
     } finally {
@@ -158,38 +171,39 @@ export default function ProductCard({ product, gridClass }) {
           />
         </Link>
 
-        {
-          product.type === "variable" ? (
-              <>
-                {
-                  product.on_sale && selectedVariation?.display_price !== selectedVariation?.display_regular_price &&
-                  <div className="absolute top-2 md:top-3 left-3 rounded md:rounded-lg bg-[#24C300]">
-                    <p className="py-1 px-2 md:py-2 md:px-3 font-normal text-[7px] md:text-xs text-white">
-                      {(
-                        ((selectedVariation?.display_regular_price - selectedVariation?.display_price) /
+        {product.type === "variable" ? (
+          <>
+            {product.on_sale &&
+              selectedVariation?.display_price !==
+                selectedVariation?.display_regular_price && (
+                <div className="absolute top-2 md:top-3 left-3 rounded md:rounded-lg bg-[#157101]">
+                  <p className="py-1 px-2 md:py-2 md:px-3 font-normal text-[7px] md:text-xs text-white">
+                    {(
+                      ((selectedVariation?.display_regular_price -
+                        selectedVariation?.display_price) /
                         selectedVariation?.display_regular_price) *
-                        100
-                      ).toFixed()}
-                      % OFF
-                    </p>
-                  </div>
-                }
-              </>
-          ) : (
-            product.on_sale && product.regular_price && (
-              <div className="absolute top-2 md:top-3 left-3 rounded md:rounded-lg bg-[#24C300]">
-                <p className="py-1 px-2 md:py-2 md:px-3 font-normal text-[7px] md:text-xs text-white">
-                  {(
-                    ((product.regular_price - product.price) /
-                      product.regular_price) *
-                    100
-                  ).toFixed()}
-                  % OFF
-                </p>
-              </div>
-            )
+                      100
+                    ).toFixed()}
+                    % OFF
+                  </p>
+                </div>
+              )}
+          </>
+        ) : (
+          product.on_sale &&
+          product.regular_price && (
+            <div className="absolute top-2 md:top-3 left-3 rounded md:rounded-lg bg-[#157101]">
+              <p className="py-1 px-2 md:py-2 md:px-3 font-normal text-[7px] md:text-xs text-white">
+                {(
+                  ((product.regular_price - product.price) /
+                    product.regular_price) *
+                  100
+                ).toFixed()}
+                % OFF
+              </p>
+            </div>
           )
-        }
+        )}
       </div>
 
       <div className=" flex flex-col">
@@ -227,53 +241,66 @@ export default function ProductCard({ product, gridClass }) {
         )}
 
         <div className="text-sm font-medium flex items-center mb-1">
-          {
-            product.type === "variable" ? (
-              <div className="pr-1">
-                {selectedVariation?.display_price && (
-                  <span className="discountedPrice font-semibold pr-1">
-                    {formatCurrency(selectedVariation.display_price, cartDetailsData?.totals)}
-                  </span>
-                )}
+          {product.type === "variable" ? (
+            <div className="pr-1">
+              {selectedVariation?.display_price && (
+                <span className="discountedPrice font-semibold pr-1">
+                  {formatCurrency(
+                    selectedVariation.display_price,
+                    cartDetailsData?.totals
+                  )}
+                </span>
+              )}
 
-                {
-                  selectedVariation?.display_regular_price && selectedVariation?.display_price !== selectedVariation?.display_regular_price && (
-                    <del className="originalPrice text-sm text-black opacity-50">
-                      {formatCurrency(selectedVariation?.display_regular_price, cartDetailsData?.totals)}
-                    </del>
-                  ) 
-                }
-              </div>
-            ) : (
-              <div className="pr-1">
-                {product.price && (
-                  <span className="discountedPrice font-semibold pr-1">
-                    {formatCurrency(product.price, cartDetailsData?.totals)}
-                  </span>
-                )}
-                {product.regular_price && (
+              {selectedVariation?.display_regular_price &&
+                selectedVariation?.display_price !==
+                  selectedVariation?.display_regular_price && (
                   <del className="originalPrice text-sm text-black opacity-50">
-                    {formatCurrency(product.regular_price, cartDetailsData?.totals)}
+                    {formatCurrency(
+                      selectedVariation?.display_regular_price,
+                      cartDetailsData?.totals
+                    )}
                   </del>
                 )}
-              </div>
-            )
-          }
+            </div>
+          ) : (
+            <div className="pr-1">
+              {product.price && (
+                <span className="discountedPrice font-semibold pr-1">
+                  {formatCurrency(product.price, cartDetailsData?.totals)}
+                </span>
+              )}
+              {product.regular_price && (
+                <del className="originalPrice text-sm text-black opacity-50">
+                  {formatCurrency(
+                    product.regular_price,
+                    cartDetailsData?.totals
+                  )}
+                </del>
+              )}
+            </div>
+          )}
 
           <span className="border-s border-[#2C2929] pl-1">
             {/* Variations Dropdown */}
-            {product?.nwe_available_variations && product?.nwe_available_variations?.length > 0 && (
-              <select
-                onChange={(e) => handleVariationChange(e.target.value)}
-                className="border rounded px-2 py-1 text-sm w-full"
-              >
-                {product.nwe_available_variations.map((variation) => (
-                  <option key={`varItemID${variation.variation_id}`} value={variation.variation_id}>
-                    {Object.entries(variation.attributes).map(([key, value]) => `${value}`).join(", ")}
-                  </option>
-                ))}
-              </select>
-            )}
+            {product?.nwe_available_variations &&
+              product?.nwe_available_variations?.length > 0 && (
+                <select
+                  onChange={(e) => handleVariationChange(e.target.value)}
+                  className="border rounded px-2 py-1 text-sm w-full"
+                >
+                  {product.nwe_available_variations.map((variation) => (
+                    <option
+                      key={`varItemID${variation.variation_id}`}
+                      value={variation.variation_id}
+                    >
+                      {Object.entries(variation.attributes)
+                        .map(([key, value]) => `${value}`)
+                        .join(", ")}
+                    </option>
+                  ))}
+                </select>
+              )}
           </span>
         </div>
 
@@ -313,21 +340,51 @@ export default function ProductCard({ product, gridClass }) {
                     className="w-full h-full max-w-6 min-w-6 md:max-w-8 md:min-w-8 px-[6px] md:px-2 disabled:opacity-50"
                     onClick={() => handleQtyChange(1)}
                     disabled={
-                        product.stock_status != "instock" || loading || 
-                        (product.stock_quantity != null
-                          ? cartItem?.quantity >= product.stock_quantity
-                          : cartItem?.quantity >= 20)
-                    }>
-                    <svg className="w-full h-auto" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M12 10C12 10 9.05403 6.00001 7.99997 6C6.9459 5.99999 4 10 4 10" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      product.stock_status != "instock" ||
+                      loading ||
+                      (product.stock_quantity != null
+                        ? cartItem?.quantity >= product.stock_quantity
+                        : cartItem?.quantity >= 20)
+                    }
+                  >
+                    <svg
+                      className="w-full h-auto"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                    >
+                      <path
+                        d="M12 10C12 10 9.05403 6.00001 7.99997 6C6.9459 5.99999 4 10 4 10"
+                        stroke="white"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                   </button>
 
-                  <button className="w-full h-full max-w-6 min-w-6 md:max-w-8 md:min-w-8 px-[6px] md:px-2 disabled:opacity-50"
-                    onClick={() => handleQtyChange(-1)} 
-                    disabled={cartItem?.quantity <= 0 || loading}>
-                    <svg className="w-full h-auto" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M12 6.00003C12 6.00003 9.05407 10 8 10C6.94587 10 4 6 4 6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <button
+                    className="w-full h-full max-w-6 min-w-6 md:max-w-8 md:min-w-8 px-[6px] md:px-2 disabled:opacity-50"
+                    onClick={() => handleQtyChange(-1)}
+                    disabled={cartItem?.quantity <= 0 || loading}
+                  >
+                    <svg
+                      className="w-full h-auto"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                    >
+                      <path
+                        d="M12 6.00003C12 6.00003 9.05407 10 8 10C6.94587 10 4 6 4 6"
+                        stroke="white"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                   </button>
                 </div>

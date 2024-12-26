@@ -3,7 +3,7 @@ import Image from "next/image";
 const SecurePayment = () => {
   return (
     <>
-      <div className="w-full lg:fixed lg:left-0 lg:bottom-0 py-4 lg:border-t lg:border-t-[#e6e6e6] bg-white lg:shadow-[0_0_10px_0_rgba(0,0,0,0.15)] z-10">
+      <div className="w-full  border-t border-t-[#E6E6E6] lg:left-0 lg:bottom-0 py-4  bg-white  z-10">
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row justify-center md:justify-between items-center gap-3">
             <Image

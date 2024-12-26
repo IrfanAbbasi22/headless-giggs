@@ -2,12 +2,13 @@
 import Image from "next/image";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
 import { userDataToken } from "../cart/store/slices/userSlice";
 import { useSelector } from "react-redux";
 import { formatCurrency } from "../components/lib/user/formatCurrency";
+import Confetti from "../cart/components/confetti";
 
 // import { useRouter } from "next/router";
 
@@ -27,7 +28,7 @@ export const fetchOrderDetails = async (id, userToken) => {
       headers.Authorization =
         "Basic " +
         btoa(
-            `${process.env.NEXT_PUBLIC_CONSUMER_KEY}:${process.env.NEXT_PUBLIC_CONSUMER_SECRET}`
+          `${process.env.NEXT_PUBLIC_CONSUMER_KEY}:${process.env.NEXT_PUBLIC_CONSUMER_SECRET}`
         );
     }
 
@@ -51,6 +52,9 @@ export const fetchOrderDetails = async (id, userToken) => {
 };
 
 export default function ThanksScreen({ data }) {
+  // Call Confetti
+  const confettiRef = useRef();
+
   const userToken = useSelector(userDataToken);
   // console.log('userToken', userToken.length)
 
@@ -71,7 +75,8 @@ export default function ThanksScreen({ data }) {
       .then((data) => {
         if (data) {
           setOrderData(data);
-          console.log('Order Details orderData:', data);
+          confettiRef.current.triggerConfettiFromParent();
+          console.log("Order Details orderData:", data);
         } else {
           console.log("Failed to fetch order details.");
         }
@@ -171,12 +176,16 @@ export default function ThanksScreen({ data }) {
                   />
                   <div>
                     <p className="font-bold text-lg">
-                      Hi {`${orderData?.billing_address?.first_name} ${orderData?.billing_address?.last_name}`}
+                      Hi{" "}
+                      {`${orderData?.billing_address?.first_name} ${orderData?.billing_address?.last_name}`}
                     </p>
-                    {
-                        orderData?.status &&
-                        <p className="text-sm">Your order has {orderData?.status}</p>
-                    }
+                    {orderData?.status && (
+                      // <p className="text-sm">Your order has {orderData?.status}</p>
+                      <p className="text-sm">
+                        Your order is {orderData?.status} and payment is done
+                        through
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -191,24 +200,25 @@ export default function ThanksScreen({ data }) {
                     Your Expected Date of Delivery is{" "}
                     <strong>5 Sep 2023</strong>{" "}
                   </p> */}
-                  {
-                    orderData?.date_created &&
+                  {orderData?.date_created && (
                     <p className="">
                       Order placed on{" "}
                       <strong>
-                        {new Date(orderData.date_created).toLocaleString('en-GB', {
-                            day: '2-digit',
-                            month: 'short',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
+                        {new Date(orderData.date_created).toLocaleString(
+                          "en-GB",
+                          {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
                             hour12: false,
-                        })}
+                          }
+                        )}
                       </strong>
                     </p>
-                  }
-                  {
-                    orderData?.payment_method &&
+                  )}
+                  {orderData?.payment_method && (
                     <p className="">
                       Your payment is done through{" "}
                       <strong className="uppercase">
@@ -216,22 +226,25 @@ export default function ThanksScreen({ data }) {
                       </strong>
                       .
                     </p>
-                  }
+                  )}
                 </div>
 
                 <div className="py-4 text-sm">
                   <h3 className="font-semibold mb-2">Shipping Address</h3>
                   <p className="lg:w-8/12">
-                    {orderData?.shipping_address?.address_1},{" "} <br/>
-                    {orderData?.shipping_address?.address_2}, {orderData?.shipping_address?.city}{" "}
-                    - {orderData?.shipping_address?.postcode}, <br/>
-                    {orderData?.shipping_address?.state.toUpperCase()}, {orderData?.shipping_address?.country.toUpperCase()} 
+                    {orderData?.shipping_address?.address_1}, <br />
+                    {orderData?.shipping_address?.address_2},{" "}
+                    {orderData?.shipping_address?.city} -{" "}
+                    {orderData?.shipping_address?.postcode}, <br />
+                    {orderData?.shipping_address?.state.toUpperCase()},{" "}
+                    {orderData?.shipping_address?.country.toUpperCase()}
                   </p>
                   <p>
                     Mobile/WhatsApp :-{" "}
                     {/* TODO: country ext missing in the API */}
                     <a href={`tel:${orderData?.shipping_address?.phone}`}>
-                      {orderData?.billing?.country_ext}{orderData?.shipping_address?.phone}
+                      {orderData?.billing?.country_ext}
+                      {orderData?.shipping_address?.phone}
                     </a>
                   </p>
 
@@ -241,22 +254,25 @@ export default function ThanksScreen({ data }) {
                   </h3>
                 </div>
                 <div className="mt-2 flex items-center">
-                  <a href="#" className="mr-4">
+                  <Link href={"https://g.co/kgs/uj1oNLU"} className="mr-4">
                     <Image
                       src={`/assets/icons/google-icon.svg`}
                       width={24}
                       height={24}
                       alt="google Icon"
                     />
-                  </a>
-                  <a href="#" className="border-l border-[#D6D6D6] pl-4">
+                  </Link>
+                  <Link
+                    href={"https://g.co/kgs/uj1oNLU"}
+                    className="border-l border-[#D6D6D6] pl-4"
+                  >
                     <Image
                       src={`/assets/icons/tripadvisor-icon.svg`}
                       width={24}
                       height={24}
                       alt="tripad Icon"
                     />
-                  </a>
+                  </Link>
                 </div>
               </div>
 
@@ -284,7 +300,10 @@ export default function ThanksScreen({ data }) {
                             <p>Qty: {item?.quantity}</p>
                           </div>
                           <strong className="text-base">
-                            {formatCurrency(item?.quantity*item?.prices.price, orderData?.totals)}
+                            {formatCurrency(
+                              item?.quantity * item?.prices.price,
+                              orderData?.totals
+                            )}
                           </strong>
                         </div>
                       );
@@ -293,37 +312,60 @@ export default function ThanksScreen({ data }) {
                   <div className="flex justify-between items-center text-sm my-3">
                     <span>Subtotal</span>
                     <span>
-                      {formatCurrency(orderData?.totals?.subtotal, orderData?.totals)}
+                      {formatCurrency(
+                        parseFloat(orderData?.totals?.subtotal / 100),
+                        orderData?.totals
+                      )}
                     </span>
                   </div>
 
-                  { 
-                    orderData?.totals?.total_discount > 0 && 
+                  {orderData?.totals?.total_discount > 0 && (
                     <div className="flex justify-between items-center text-sm mb-3">
                       <span>Discount</span>
-                      <span className="text-green-600">-{formatCurrency(orderData?.totals?.total_discount, orderData?.totals)}</span>
+                      <span className="text-green-600">
+                        -
+                        {formatCurrency(
+                          parseFloat(orderData?.totals?.total_discount / 100),
+                          orderData?.totals
+                        )}
+                      </span>
                     </div>
-                  }
+                  )}
 
                   <div className="flex justify-between items-center text-sm">
                     <span>Shipping</span>
-                    <span>{formatCurrency(orderData?.totals?.total_shipping, orderData?.totals)}</span>
+                    <span>
+                      {formatCurrency(
+                        parseFloat(orderData?.totals?.total_shipping / 100),
+                        orderData?.totals
+                      )}
+                    </span>
                   </div>
 
                   <div className="flex justify-between items-center text-sm py-3 border-b border-[#D6D6D6] ">
                     <strong>Total</strong>
-                    <strong>{formatCurrency(orderData?.totals?.total_price, orderData?.totals)}</strong>
+                    <strong>
+                      {formatCurrency(
+                        parseFloat(orderData?.totals?.total_price / 100),
+                        orderData?.totals
+                      )}
+                    </strong>
                   </div>
 
                   <div className="flex justify-between items-center text-sm font-medium text-primary mt-3">
                     <span>Paid</span>
-                    <span>{formatCurrency(orderData?.totals?.total_price, orderData?.totals)}</span>
+                    <span>
+                      {formatCurrency(
+                        parseFloat(orderData?.totals?.total_price / 100),
+                        orderData?.totals
+                      )}
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="flex gap-6 items-center justify-center flex-wrap mt-6">
+            {/* <div className="flex gap-6 items-center justify-center flex-wrap mt-6">
               <p>Secure Pay using</p>
               <Image
                 width={174}
@@ -331,7 +373,7 @@ export default function ThanksScreen({ data }) {
                 src="/secure-payment.png"
                 alt="Payment image"
               />
-            </div>
+            </div> */}
           </div>
         </>
       ) : (
@@ -359,6 +401,8 @@ export default function ThanksScreen({ data }) {
           </Link>
         </div>
       )}
+
+      <Confetti ref={confettiRef} />
     </>
   );
 }

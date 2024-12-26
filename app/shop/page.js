@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fetchProducts } from "@/app/components/lib/fetchProducts";
 import ProductCard from "@/app/components/ui/productCard";
 
@@ -17,14 +17,43 @@ const Shop = () => {
   const [loadMorePreloader, setLoadMorePreloader] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [categoryData, setCategoryData] = useState([]);
+  const [filterLoading, setFilterLoading] = useState(true);
+  const hasInitiated = useRef(false);
   const fetchData = async (perPage, curPage, category) => {
     try {
+      if (category) setFilterLoading(true); // Start card-specific loading
       const productsRes = await fetchProducts(perPage, curPage, category);
       const productData = await productsRes.json();
       // console.log(productData, "product datatatatatat");
 
       if (productData?.length) {
-        setProducts((prevProducts) => [...prevProducts, ...productData]);
+        // setProducts((prevProducts) => [...prevProducts, ...productData]);
+      
+        // window.setTimeout(() => {
+        //   const totalProducts = productsRes.headers.get('X-WP-Total');
+        //   console.log('totalProducts', totalProducts);
+        //   console.log('products.length', products.length);
+        //   if(products.length >= totalProducts){
+        //     setHasMore(false);
+        //   }
+        // }, 1000);
+
+        setProducts((prevProducts) => {
+          const updatedProducts = [...prevProducts, ...productData];
+        
+          // Delay the logic after setting the state
+          window.setTimeout(() => {
+            const totalProducts = productsRes.headers.get('X-WP-Total');
+            console.log('totalProducts', totalProducts);
+            console.log('updatedProducts.length', updatedProducts.length);
+            if (updatedProducts.length >= totalProducts) {
+              setHasMore(false);
+            }
+          }, 1000);
+        
+          return updatedProducts;
+        });
+        
       } else {
         setHasMore(false); // No more products to load
       }
@@ -32,6 +61,7 @@ const Shop = () => {
       console.error("Error fetching products:", error);
     } finally {
       setLoading(false);
+      setFilterLoading(false);
       setLoadMorePreloader(false);
     }
   };
@@ -60,15 +90,35 @@ const Shop = () => {
     fetchCatData();
   }, []);
 
-  useEffect(() => {
-    fetchData(24, 1, selectedCategory);
-  }, [selectedCategory]);
+  // useEffect(() => {
+  //   if (!hasInitiated.current) {
+  //     hasInitiated.current = true;
+  //     fetchData(24, 1, selectedCategory);
+  //   }
+  // }, [selectedCategory]);
+
+  // const handleCategoryChange = (category) => {
+  //   setSelectedCategory(category);
+  //   setProducts([]);
+  //   // setCurrentPage(1);
+  // };
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
     setProducts([]);
-    setLoading(true);
+    setCurrentPage(1);
+    fetchData(24, 1, category);
+    window.scrollTo(0, 0);
   };
+
+  useEffect(() => {
+    if (!hasInitiated.current) {
+      hasInitiated.current = true;
+      fetchData(24, 1, selectedCategory);
+      window.scrollTo(0, 0);
+    }
+  }, []);
+
   const handleLoadMore = () => {
     setLoadMorePreloader(true);
     const nextPage = currentPage + 1;
@@ -83,8 +133,8 @@ const Shop = () => {
           <div className=" container  mx-auto px-5 ">
             <div className="grid grid-cols-12 gap-6">
               <div className="col-span-3 gap-10  hidden lg:flex-col  lg:flex ">
-                <Skeleton height={32} width={200} className="!rounded-md" />
-                <Skeleton height={24} width={300} className="!rounded-md" />
+                <Skeleton height={32} width={"80%"} className="!rounded-md" />
+                <Skeleton height={24} width={"100%"} className="!rounded-md" />
                 <div className=" flex flex-col gap-4  text-[#2C292980]">
                   <Skeleton
                     height={16}
@@ -141,7 +191,7 @@ const Shop = () => {
 
   return (
     <>
-      <section className="pt-12 pb-10 ">
+      <section className=" pt-8 pb-10 ">
         <div className=" container  mx-auto px-5 ">
           <div className="grid grid-cols-12 gap-6">
             {/* desktop */}
@@ -156,8 +206,10 @@ const Shop = () => {
                 {categoryData.map((category) => (
                   <li
                     key={category.id}
-                    className={`cursor-pointer ${
-                      selectedCategory === category.id ? " text-black" : ""
+                    className={`cursor-pointer  leading-8 ${
+                      selectedCategory === category.id
+                        ? " text-black  border-r-4 "
+                        : " "
                     }`}
                     onClick={() => handleCategoryChange(category.id)}
                   >
@@ -169,7 +221,13 @@ const Shop = () => {
 
             <div className="lg:col-span-9 col-span-12  flex flex-col  gap-6 md:gap-10">
               <div className=" lg:flex justify-between hidden  ">
-                <h3 className=" text-2xl font-semibold">Fish </h3>
+                <h3 className="text-2xl font-semibold">
+                  {selectedCategory
+                    ? categoryData.find((cat) => cat.id === selectedCategory)
+                        ?.name || "Category"
+                    : "Category"}
+                </h3>
+
                 <div>
                   <>
                     <div className="flex items-center gap-1  font-medium text-base">
@@ -245,12 +303,23 @@ const Shop = () => {
                     />
                   </div>
                 </div>
-
-                <h4 className=" text-xl font-semibold">Filter </h4>
+                {/* <h4 className="text-xl font-semibold">
+                  {selectedCategory
+                    ? categoryData.find((cat) => cat.id === selectedCategory)
+                        ?.name
+                    : "Category"}
+                </h4> */}
+                <h4 className="text-xl font-semibold">
+                  {selectedCategory
+                    ? categoryData.find(
+                        (cat) => cat.id === Number(selectedCategory)
+                      )?.name || "Category"
+                    : "Category"}
+                </h4>
               </div>
               {/* mobile */}
               <div className="grid lg:grid-cols-12 gap-4  grid-cols-6 col-start-1 col-span-6    ">
-                {products.length ? (
+                {/* {products.length ? (
                   products.map((product, index) => (
                     <ProductCard
                       gridClass="col-span-3 lg:col-span-4"
@@ -260,6 +329,35 @@ const Shop = () => {
                   ))
                 ) : (
                   <div className="grid items-center justify-center   col-span-12   ">
+                    <div>
+                      <Image
+                        src={`/assets/icons/no-item.svg`}
+                        width={193}
+                        height={193}
+                        alt="NoItem"
+                      />
+                    </div>
+                  </div>
+                )} */}
+                {filterLoading ? (
+                  Array.from({ length: 6 }).map((_, index) => (
+                    <div
+                      key={`shopPreloaderItem${index}`}
+                      className="col-span-3 lg:col-span-4"
+                    >
+                      <ProductCardPreloader />
+                    </div>
+                  ))
+                ) : products.length ? (
+                  products.map((product, index) => (
+                    <ProductCard
+                      gridClass="col-span-3 lg:col-span-4"
+                      key={`productCard${index}`}
+                      product={product}
+                    />
+                  ))
+                ) : (
+                  <div className="grid items-center justify-center col-span-12">
                     <div>
                       <Image
                         src={`/assets/icons/no-item.svg`}

@@ -13,6 +13,7 @@ import { fetchWooCommerceCart } from "../../../components/lib/cart/fetchAndSyncC
 import { addToCartAPI } from "../../../components/lib/cart/addToCart";
 import { removeItemFromCart } from "../../../components/lib/cart/removeItemFromCart";
 import { formatCurrency } from "@/app/components/lib/user/formatCurrency";
+import { toast, Bounce } from "react-toastify";
 
 export default function CartProductCard({ product }) {
   const [loading, setLoading] = useState(false);
@@ -32,9 +33,22 @@ export default function CartProductCard({ product }) {
       await removeItemFromCart(key);
       
       await fetchWooCommerceCart().then((data) => {
-          if (data) {
-              dispatch(loadCartFromWoo(data));
-          }
+        if (data) {
+          dispatch(loadCartFromWoo(data));
+        }
+      });
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      toast.success(`${product.name} removed from cart.`, {
+        position: "bottom-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
       });
     } catch (err) {
         setError("Failed to remove item.");

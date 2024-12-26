@@ -52,6 +52,7 @@ export default function UpsellProductCard({ product, gridClass }) {
       const res = await addToCartAPI(product.id, quantity);
       dispatch(addToCart(product));
       dispatch(loadCartFromWoo(res));
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
       setError("Failed to add product to cart.");
     } finally {

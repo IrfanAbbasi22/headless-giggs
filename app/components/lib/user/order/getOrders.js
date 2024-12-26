@@ -1,12 +1,12 @@
 export const getOrders = async (
   token,
-  id,
+  orderId,
   perPage = 9,
   curPage = 1,
   status = ""
 ) => {
   try {
-    let url = `${process.env.NEXT_PUBLIC_WOO_URL}/wc/v3/orders?customer=${id}&per_page=${perPage}&page=${curPage}`;
+    let url = `${process.env.NEXT_PUBLIC_WOO_URL}/wc/v3/orders?customer=${orderId}&per_page=${perPage}&page=${curPage}`;
     if (status) {
       url += `&status=${status}`;
     }

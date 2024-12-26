@@ -31,10 +31,17 @@ const CouponsModule = forwardRef((props, ref) => {
 
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
+
+        if (!isModalOpen) {
+            document.body.classList.add('overflow-hidden');
+        } else {
+            document.body.classList.remove('overflow-hidden');
+        }
     };
 
     const closeModal = () => {
         setIsModalOpen(false);
+        document.body.classList.remove('overflow-hidden');
     };
 
 
