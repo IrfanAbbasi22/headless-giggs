@@ -41,7 +41,7 @@ export async function POST(req) {
 
     // Revalidate the specific product page
     const revalidatePathUrl = `/product/${slug}`;
-    revalidatePath(revalidatePathUrl);
+    // revalidatePath(revalidatePathUrl);
 
     console.log('Revalidated path:', revalidatePathUrl);
     return new Response(JSON.stringify({ message: `Revalidated ${revalidatePathUrl}` }), { status: 200 });
