@@ -56,7 +56,6 @@ export default function ThanksScreen({ data }) {
   const confettiRef = useRef();
 
   const userToken = useSelector(userDataToken);
-  // console.log('userToken', userToken.length)
 
   const [loading, setLoading] = useState(true);
 
@@ -67,16 +66,14 @@ export default function ThanksScreen({ data }) {
 
   const [orderData, setOrderData] = useState({});
   const [orderSubTotal, setOrderSubTotal] = useState();
-  // console.log(id, orderKey, email, "const searchParams = useSearchParams();");
-
+  
   useEffect(() => {
-    // fetchOrderDetails(id, orderKey, email)
     fetchOrderDetails(id, userToken)
       .then((data) => {
         if (data) {
           setOrderData(data);
           confettiRef.current.triggerConfettiFromParent();
-          console.log("Order Details orderData:", data);
+          // console.log("Order Details orderData:", data);
         } else {
           console.log("Failed to fetch order details.");
         }
@@ -88,11 +85,6 @@ export default function ThanksScreen({ data }) {
         setLoading(false);
       });
   }, []);
-
-  // useEffect(() => {
-  //   // This effect runs every time orderData changes
-  //   console.log('Updated orderData:--------', orderData);
-  // }, [orderData]);
 
   if (loading) {
     return (
@@ -183,7 +175,7 @@ export default function ThanksScreen({ data }) {
                       // <p className="text-sm">Your order has {orderData?.status}</p>
                       <p className="text-sm">
                         Your order is {orderData?.status} and payment is done
-                        through
+                        through {orderData?.payment_gateway_title}
                       </p>
                     )}
                   </div>
@@ -218,15 +210,15 @@ export default function ThanksScreen({ data }) {
                       </strong>
                     </p>
                   )}
-                  {orderData?.payment_method && (
+                  {/* {orderData?.payment_gateway_title && (
                     <p className="">
                       Your payment is done through{" "}
                       <strong className="uppercase">
-                        {orderData?.payment_method}
+                        {orderData?.payment_gateway_title}
                       </strong>
                       .
                     </p>
-                  )}
+                  )} */}
                 </div>
 
                 <div className="py-4 text-sm">
@@ -342,7 +334,7 @@ export default function ThanksScreen({ data }) {
                     </span>
                   </div>
 
-                  <div className="flex justify-between items-center text-sm py-3 border-b border-[#D6D6D6] ">
+                  <div className="flex justify-between items-center text-sm pt-3 text-primary">
                     <strong>Total</strong>
                     <strong>
                       {formatCurrency(
@@ -352,15 +344,15 @@ export default function ThanksScreen({ data }) {
                     </strong>
                   </div>
 
-                  <div className="flex justify-between items-center text-sm font-medium text-primary mt-3">
-                    <span>Paid</span>
+                  {/* <div className="flex justify-between items-center text-sm font-medium text-primary mt-3">
+                    <span>Total</span>
                     <span>
                       {formatCurrency(
                         parseFloat(orderData?.totals?.total_price / 100),
                         orderData?.totals
                       )}
                     </span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

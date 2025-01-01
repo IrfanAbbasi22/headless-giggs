@@ -128,6 +128,10 @@ const PaymentComponent = () => {
 
             // Payment COD
             if(data?.payment_method === 'cod'){
+                // Reset Cart Token & Redux States
+                dispatch(resetCart());
+                Cookies.remove('woocommerce_cart_hash');
+                Cookies.remove('cart-token');
                 router.push(`/thanks?id=${data.order_id}&orderKey=${data.order_key}&email=${data.billing_address.email}`);
             }
 

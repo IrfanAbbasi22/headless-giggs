@@ -11,7 +11,6 @@ const list = ({ section, links, details, socialMedia, downloads }) => {
       {links &&
         links.map((link, index) => (
           <Link href={"/"} key={index}>
-         
             <p className="text-[#807373] text-[10px] md:text-sm font-normal cursor-pointer">
               {link}
             </p>
@@ -25,10 +24,16 @@ const list = ({ section, links, details, socialMedia, downloads }) => {
           >
             <span>
               <Link href={"/"}>
-                <Image width={12} height={16} src={detail.icon} alt="icon" className=" h-4  w-3 md:w-5 md:max-h-4" />
+                <Image
+                  width={12}
+                  height={16}
+                  src={detail.icon}
+                  alt="icon"
+                  className=" h-4  w-3 md:w-5 md:max-h-4"
+                />
               </Link>
             </span>
-            <Link href={"/"}>
+            <Link href={detail?.link ? detail?.link : "/"}>
               <span>{detail.text}</span>
             </Link>
           </p>
@@ -40,8 +45,13 @@ const list = ({ section, links, details, socialMedia, downloads }) => {
               key={index}
               className="text-[#807373] text-[10px] md:text-sm cursor-pointer"
             >
-              <Link href={"/"}>
-                <Image width={24} height={24} src={media.icon} alt="social media" />
+              <Link href={media.link}>
+                <Image
+                  width={24}
+                  height={24}
+                  src={media.icon}
+                  alt="social media"
+                />
               </Link>
             </p>
           ))}
@@ -54,8 +64,14 @@ const list = ({ section, links, details, socialMedia, downloads }) => {
               key={index}
               className="text-[#807373] text-[10px] md:text-sm cursor-pointer"
             >
-              <Link href={"/"}>
-                <Image width={134} height={39} src={download.img} alt="download"  className=" max-w-[134px] max-h-[39px]"/>
+              <Link href={download.Link}>
+                <Image
+                  width={134}
+                  height={39}
+                  src={download.img}
+                  alt="download"
+                  className=" max-w-[134px] max-h-[39px]"
+                />
               </Link>
             </p>
           ))}

@@ -1,6 +1,7 @@
 "use client"
 import { useDispatch } from "react-redux"
 import { showUserModal } from "../../store/slices/userSlice";
+import Cookies from "js-cookie";
 
 export default function NotLoggedIn() {
   const dispatch = useDispatch();
@@ -26,7 +27,9 @@ export default function NotLoggedIn() {
           <button
             className="group relative w-full flex justify-center py-3 px-4 text-sm font-medium rounded-md text-white bg-[#FF5D58] hover:bg-[#ff4742] focus:outline-none  transition-colors duration-200"
             onClick={() => {
-              dispatch(showUserModal(true))
+              if(!Cookies.get('user_token')){
+                dispatch(showUserModal(true))
+              }
             }}
           >
             <span className="absolute left-0 inset-y-0 flex items-center pl-3">

@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 // redux
 import { useDispatch, useSelector } from "react-redux";
 import {
   showUserAddAddressForm,
-  setUserAddresses,
   userDataToken,
 } from "../../../store/slices/userSlice";
 
@@ -25,35 +24,22 @@ const AddressCard = ({ item, setAddress, address, addressLength }) => {
 
   const handleEditAddress = async () => {
     dispatch(showUserAddAddressForm({ isVisible: true, address: cardData }));
-    // setAddress(address.map((addr) => (addr.id === item.id ? updatedData : addr)));
   };
-
-  // console.log('item', item)
 
   const handleDeleteAddress = async () => {
     setDeletePreloader(true);
 
     try {
       const deleteResponse = await deleteUserAddress(cardData?.id);
-      // dispatch(setUserAddresses(deleteResponse.addresses));
-
-      // Filter out the deleted address
-      // setAddress(address.filter((addr) => addr.id !== item.id));
-
+      
       if (deleteResponse?.addresses) {
-        // dispatch(setUserAddresses(updateDefaultAddress.addresses));
-        // setAddress(updateDefaultAddress.addresses);
-
         try {
-          // const response = await getUserAddress(userToken, userAddedAddresses?.length, 1);
-          const response = await getUserAddress(userToken, addressLength, 1);
+          const response = await getUserAddress(userToken, (addressLength > 8 ? addressLength : 8), 1);
           if (response?.addresses) {
             setAddress(response.addresses);
           }
-            
         } catch (error) {
             console.error("Failed to fetch updated addresses:", error);
-        } finally{
         }
       }
     } catch (error) {
@@ -107,23 +93,16 @@ const AddressCard = ({ item, setAddress, address, addressLength }) => {
       }
       // If shipData is successfully received, proceed to update the default address
       const updateDefaultAddress = await saveUserNewAddress(updatedItemData);
-
+      
       // Dispatch the addresses only if updateDefaultAddress contains addresses
       if (updateDefaultAddress?.addresses) {
-        // dispatch(setUserAddresses(updateDefaultAddress.addresses));
-        // setAddress(updateDefaultAddress.addresses);
-
         try {
-          // const response = await getUserAddress(userToken, userAddedAddresses?.length, 1);
-          const response = await getUserAddress(userToken, addressLength, 1);
+          const response = await getUserAddress(userToken, (addressLength > 8 ? addressLength : 8), 1);
           if (response?.addresses) {
-            // dispatch(setUserAddresses(response.addresses))
             setAddress(response.addresses);
           }
-            
         } catch (error) {
             console.error("Failed to fetch updated addresses:", error);
-        } finally{
         }
       }
 
@@ -133,21 +112,20 @@ const AddressCard = ({ item, setAddress, address, addressLength }) => {
     } catch (error) {
       // Handle errors here, like showing an error message to the user
       console.error("Error during the update process:", error);
-    } finally{
-        setPagePreloader(false);
+    } finally {
+      setPagePreloader(false);
     }
   };
 
-  const [isUpdated, setIsUpdated] = useState(false);
-
+  const isAddressUpdated = useRef(false);
   useEffect(() => {
-    if (!isUpdated) {
+    if (!isAddressUpdated.current) {
+      isAddressUpdated.current = true;
       if (cardData?.is_default === 1) {
         updateShippingAddressInCart(cardData);
-        setIsUpdated(true);
       }
     }
-  }, [cardData, !isUpdated]);
+  }, [cardData]);
 
   return (
     <>
@@ -159,7 +137,8 @@ const AddressCard = ({ item, setAddress, address, addressLength }) => {
             : "border-[#e6e6e6]"
         }`}
       >
-        <svg onClick={() => {
+        <svg
+          onClick={() => {
             updateShippingAddressInCart(cardData);
           }}
           className="mt-1 min-w-5 cursor-pointer"
@@ -185,10 +164,12 @@ const AddressCard = ({ item, setAddress, address, addressLength }) => {
         </svg>
 
         <div className="w-full">
-          <span onClick={() => {
+          <span
+            onClick={() => {
               updateShippingAddressInCart(cardData);
-            }} 
-            className="cursor-pointer font-medium leading-tight text-base text-black mb-2 inline-block">
+            }}
+            className="cursor-pointer font-medium leading-tight text-base text-black mb-2 inline-block"
+          >
             {cardData?.first_name} {cardData?.last_name}
           </span>
           <div className="text-sm text-opacity-50 text-black">
@@ -201,17 +182,18 @@ const AddressCard = ({ item, setAddress, address, addressLength }) => {
 
               {cardData?.phone && (
                 <p className="mb-2">
-                  Phone: <b>+{cardData?.country_ext} {cardData?.phone}</b>
+                  Phone:{" "}
+                  <b>
+                    +{cardData?.country_ext} {cardData?.phone}
+                  </b>
                 </p>
               )}
-              {cardData?.address_1 && <p className="">
-                {cardData?.address_1 }&nbsp;
-
-                {
-                  cardData?.address_2 &&
-                  cardData?.address_2
-                }
-              </p>}
+              {cardData?.address_1 && (
+                <p className="">
+                  {cardData?.address_1}&nbsp;
+                  {cardData?.address_2 && cardData?.address_2}
+                </p>
+              )}
               <p className="capitalize">
                 {cardData?.city && cardData?.city}
                 {cardData?.state && ` ${cardData.state.toUpperCase()} `}
@@ -279,7 +261,7 @@ const AddressCard = ({ item, setAddress, address, addressLength }) => {
               </button>
             </h3>
 
-            <div className="text-center">
+            <div className="text-center flex items-center justify-center gap-2 ">
               <button
                 type="button"
                 onClick={handleDeleteAddress}
@@ -298,38 +280,44 @@ const AddressCard = ({ item, setAddress, address, addressLength }) => {
                   </div>
                 )}
               </button>
+              <button
+                type="button"
+                onClick={() => setShowDeleteModal(false)}
+                className="bg-gray-100 hover:bg-gray-200 py-3 px-8 rounded-lg font-medium text-base text-black"
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>
       )}
 
-      {
-        pagePreloader && 
+      {pagePreloader && (
         <div className="fixed z-50 left-0 right-0 top-0 bottom-0 w-full bg-opacity-30 bg-black flex items-end lg:items-center">
-            <div
+          <div
             className="absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center"
             role="status"
-            >
+          >
             <svg
-                aria-hidden="true"
-                className="w-8 h-8 text-white animate-spin dark:text-gray-600 fill-primary"
-                viewBox="0 0 100 101"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+              className="w-8 h-8 text-white animate-spin dark:text-gray-600 fill-primary"
+              viewBox="0 0 100 101"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
             >
-                <path
+              <path
                 d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
                 fill="currentColor"
-                />
-                <path
+              />
+              <path
                 d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
                 fill="currentFill"
-                />
+              />
             </svg>
             <span className="sr-only">Loading...</span>
-            </div>
+          </div>
         </div>
-      }
+      )}
     </>
   );
 };

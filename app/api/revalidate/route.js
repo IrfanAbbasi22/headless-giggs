@@ -4,7 +4,7 @@ export async function POST(req) {
   try {
     const body = await req.json();
     const { id, secret } = body;
-    console.log('id from res', id);
+    // console.log('id from res', id);
 
     // Optional: Secure your API with a token
     // if (secret !== process.env.REVALIDATION_SECRET) {

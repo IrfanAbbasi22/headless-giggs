@@ -1,22 +1,40 @@
-export const fetchProducts = async (perPage = 99, curPage = 1, category) => {
-  // const url = `${process.env.NEXT_PUBLIC_WOO_URL}/wc/v3/products`;
+export const fetchProducts = async (options = {}) => {
+  const {
+    perPage = 99,
+    curPage = 1,
+    category,
+    search,
+    order,
+    orderby,
+    include,
+  } = options;
 
   try {
-    let url = `${process.env.NEXT_PUBLIC_WOO_URL}/wc/v3/products?per_page=${perPage}&page=${curPage}`;
+    const params = new URLSearchParams({
+      status: "publish",
+      per_page: perPage,
+      page: curPage,
+    });
+    // let url = `${process.env.NEXT_PUBLIC_WOO_URL}/wc/v3/products?status=publish&per_page=${perPage}&page=${curPage}`;
+    // if (category) {
+    //   url += `&category=${category}`;
+    // }
+    // if (search) {
+    //   url += `&search=${search}`;
+    // }
 
-    if (category) {
-      url += `&category=${category}`;
-    }
+    if (category) params.append("category", category);
+    if (search) params.append("search", search);
+    if (order) params.append("order", order);
+    if (orderby) params.append("orderby", orderby);
+    if (include) params.append("include", include);
+    let url = `${
+      process.env.NEXT_PUBLIC_WOO_URL
+    }/wc/v3/products?${params.toString()}`;
 
-    // const response = await fetch(
-    //   `${url}?per_page=${perPage}&page=${curPage}&category=${category}`,
-
+    // return;
     const productData = {
       method: "GET",
-      auth: {
-        username: process.env.NEXT_PUBLIC_CONSUMER_KEY,
-        password: process.env.NEXT_PUBLIC_CONSUMER_SECRET,
-      },
       headers: {
         "Content-Type": "application/json",
         Authorization:
@@ -33,10 +51,6 @@ export const fetchProducts = async (perPage = 99, curPage = 1, category) => {
       const responseError = await response.json();
       throw new Error(responseError.error);
     }
-    // const responseData = await response.json();
-    // return responseData;
-    // const data = await response.json();
-    // console.log('data', data);
 
     return response;
   } catch (error) {

@@ -31,6 +31,7 @@ const Header = () => {
   const [locationModal, setLocationModal] = useState(false);
   const [searchPopUp, setSearchPopUp] = useState(false);
   const [userToggle, setUserToggle] = useState(false);
+  const [pincodeData, setPincodeData] = useState(null);
 
   const dropdownItems = [
     { label: "All" },
@@ -65,6 +66,12 @@ const Header = () => {
   //   window.addEventListener("scroll", onScroll, { passive: true });
   //   return () => window.removeEventListener("scroll", onScroll);
   // }, []);
+  useEffect(() => {
+    const storedPincodeData = localStorage.getItem("pincodeData");
+    if (storedPincodeData) {
+      setPincodeData(JSON.parse(storedPincodeData));
+    }
+  }, []);
 
   return (
     <>
@@ -87,7 +94,9 @@ const Header = () => {
                       alt="location"
                     />
                   </span>
-                  <span className="text-sm  font-medium">Delhi</span>
+                  <span className="text-sm font-medium">
+                    {pincodeData ? pincodeData.city : "Delhi"}
+                  </span>
                   <span>
                     <Image
                       src={`/assets/icons/down-arrow.svg`}
@@ -97,7 +106,11 @@ const Header = () => {
                     />
                   </span>
                 </div>
-                <span className="text-xs pl-4">4/2851 1st...</span>
+                <span className="text-xs pl-4">
+                  {pincodeData
+                    ? `${pincodeData.pincode} is deliverable`
+                    : "4/2851 1st..."}
+                </span>
               </div>
               <div onClick={openSearchPopUp} className=" hidden lg:block">
                 <Image
@@ -112,7 +125,11 @@ const Header = () => {
             </div>
 
             {locationModal && (
-              <LocationModal closeLocationModal={closeLocationModal} />
+              <LocationModal
+                closeLocationModal={closeLocationModal}
+                pincodeData={pincodeData}
+                setPincodeData={setPincodeData}
+              />
             )}
             {searchPopUp && <SearchModal closeSearchPopUp={closeSearchPopUp} />}
 

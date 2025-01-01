@@ -75,13 +75,13 @@ export default function CartData() {
   };
 
   const handleSuccess = (data) => {
-    console.log("Success function called in parent!", data);
+    // console.log("Success function called in parent!", data);
     dispatch(setCurrentStep("payment"));
     setContinuePreloader(false);
   };
 
   const handleAddressFail = (data) => {
-    console.log("Failed function called in parent!", data);
+    // console.log("Failed function called in parent!", data);
     setContinuePreloader(false);
   };
   // Address Form Handling

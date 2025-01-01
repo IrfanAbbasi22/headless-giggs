@@ -21,7 +21,6 @@ const HomeCats = () => {
         allowedIds.includes(cat.id)
       );
 
-      // console.log(filteredCats);
       setCategoryData(filteredCats);
     } catch (err) {
       setError(`Error fetching data: ${err.message}`);

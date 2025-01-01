@@ -149,7 +149,7 @@ export default function ProductCard({ product, gridClass }) {
   const productImage =
     (product?.images ?? []).length > 0
       ? product.images[0].src
-      : "/checkout/product.webp";
+      : "/woocommerce-placeholder.webp";
 
   return (
     <div
@@ -165,9 +165,9 @@ export default function ProductCard({ product, gridClass }) {
           <Image
             src={productImage}
             alt={product.name}
-            width={161}
-            height={107}
-            className="w-full rounded-md aspect-[161/107] object-cover object-center hover:scale-125 transition-all"
+            width={246}
+            height={174}
+            className="w-full h-full rounded-md object-cover object-center hover:scale-125 transition-all"
           />
         </Link>
 
@@ -212,7 +212,7 @@ export default function ProductCard({ product, gridClass }) {
             {product.categories.map((cat, i) => (
               <Link
                 key={cat.id}
-                href={`/${cat.slug}`}
+                href={`/product-category/${cat.slug}`}
                 className="text-black text-opacity-50 hover:text-opacity-100 transition-all"
               >
                 {cat.name}
@@ -231,16 +231,16 @@ export default function ProductCard({ product, gridClass }) {
         </Link>
 
         {/* Descriptioon */}
-        {product.description && (
+        {product.short_description && (
           <p
-            className="text-sm text-black text-opacity-50 mb-2 truncate"
+            className="text-sm text-black text-opacity-50 mb-0 line-clamp-2"
             dangerouslySetInnerHTML={{
-              __html: product.description.replace(/<\/?(p|br)\/?>/g, ""),
+              __html: product.short_description.replace(/<\/?(p|br)\/?>/g, ""),
             }}
           ></p>
         )}
 
-        <div className="text-sm font-medium flex items-center mb-1">
+        <div className="text-sm font-medium flex items-center mt-2 mb-1">
           {product.type === "variable" ? (
             <div className="pr-1">
               {selectedVariation?.display_price && (

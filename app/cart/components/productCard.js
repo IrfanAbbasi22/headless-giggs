@@ -103,7 +103,7 @@ export default function ProductCard({ product }){
         // dispatch(updateQty({ id: product.id, qty: newQty }));
     };
     
-    const productImage = product.images.length > 0 ? product.images[0].src : '/checkout/product.webp';
+    const productImage = product.images.length > 0 ? product.images[0].src : '/woocommerce-placeholder.webp';
 
     
     return (

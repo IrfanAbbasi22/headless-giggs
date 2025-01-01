@@ -103,7 +103,7 @@ export default function CartProductCard({ product }) {
               className="aspect-square max-w-[150px] min-w-[150px] w-full"
               width={150}
               height={150}
-              src="/checkout/product.webp"
+              src="/woocommerce-placeholder.webp"
               alt={product.name}
             />
           </Link>

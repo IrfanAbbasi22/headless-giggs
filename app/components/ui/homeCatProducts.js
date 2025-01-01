@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 
-import { A11y, Navigation, Pagination } from "swiper/modules";
+import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -9,9 +9,9 @@ import "swiper/css/navigation";
 import { SwiperNavButtons } from "./swipperNavButton";
 import Heading from "./heading";
 
-import { fetchCatProducts } from "../lib/fetchCatProducts";
 import ProductCard from "./productCard";
 import ProductCardPreloader from "./productCardPreloader";
+import { fetchProducts } from "../lib/fetchProducts";
 
 export default function HomeCatProducts({ cat_id, headings }) {
   const [loading, setLoading] = useState(true);
@@ -34,8 +34,9 @@ export default function HomeCatProducts({ cat_id, headings }) {
       setLoading(true);
       setError(null);
       try {
-        const result = await fetchCatProducts(cat_id);
-        setCatData(result);
+        const result = await fetchProducts(24, 1, cat_id);
+        const resultData = await result.json();
+        setCatData(resultData);
       } catch (err) {
         setError(`Error fetching data: ${err.message}`);
       } finally {
@@ -72,15 +73,18 @@ export default function HomeCatProducts({ cat_id, headings }) {
                 modules={[Navigation]}
                 spaceBetween={12}
                 slidesPerView={2}
-                loop={true}
+                loop={ true }
+                onSlideChange={() => console.log("Slide changed")}
                 breakpoints={{
                   577: {
                     slidesPerView: 3,
                     spaceBetween: 16,
+                    loop: catData?.length > 4 ? true : false,
                   },
                   992: {
                     slidesPerView: 4,
                     spaceBetween: 24,
+                    loop: catData?.length > 4 ? true : false,
                   },
                 }}
               >

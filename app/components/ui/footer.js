@@ -48,24 +48,38 @@ const footer = () => {
           icon: `/assets/icons/location.svg`,
           text: "A 67 S/F, KH. 81 , NEB Sarai, South Delhi, Delhi, 110068",
         },
-        { icon: `/assets/icons/message-icon.svg`, text: "info@giggsmeat.com" },
-        { icon: `/assets/icons/contact-icon.svg`, text: "8800223722" },
+        {
+          icon: `/assets/icons/message-icon.svg`,
+          text: "contact@nexgi.com",
+          link: "mailto:contact@nexgi.com",
+        },
+
+        {
+          icon: `/assets/icons/contact-icon.svg`,
+          text: "78XXXXXXXX",
+          link: "tel:78XXXXXXXX",
+        },
       ],
     },
+
     {
       section: "Keep in Touch",
       socialMedia: [
         {
           icon: `/assets/icons/instagram-icon.svg`,
+          link: "https://www.instagram.com/nexgi/",
         },
         {
           icon: `/assets/icons/linkedin-icon.svg`,
+          link: "https://www.linkedin.com/company/nexgi/",
         },
         {
           icon: `/assets/icons/facebook-icon.svg`,
+          link: "https://www.facebook.com/nexgeninnovators",
         },
         {
           icon: `/assets/icons/x-icon.svg`,
+          link: "https://twitter.com/_nexgi",
         },
       ],
     },
@@ -74,9 +88,11 @@ const footer = () => {
       downloads: [
         {
           img: `/assets/images/googleplay.png`,
+          Link: "https://play.google.com/store/apps/details?id=com.in.nexgi.startar",
         },
         {
           img: `/assets/images/appstore.png`,
+          Link: "https://apps.apple.com/in/app/startar/id1601759164",
         },
       ],
     },
@@ -107,14 +123,26 @@ const footer = () => {
           <div className="flex flex-col gap-6 md:gap-4 md:order-1">
             <div>
               <Link href={"/"}>
-                <Image src={`/assets/images/footer-logo.png`} width={130} height={62} alt="logo" className="  h-[62px] md:max-h-[62px]" />
+                <Image
+                  src={`/assets/images/footer-logo.png`}
+                  width={130}
+                  height={62}
+                  alt="logo"
+                  className="  h-[62px] md:max-h-[62px]"
+                />
               </Link>
             </div>
             <ul className="flex flex-col  gap-1 lg:gap-4">
               {listItems.map((item, index) => (
                 <li key={index} className="flex items-center gap-2 lg:gap-4">
                   <span>
-                    <Image width={74} height={74} src={item.icon} alt={item.title} className="  w-[74px] h-[74px] md:max-w-[74px]  md:max-h-[74px]"  />
+                    <Image
+                      width={74}
+                      height={74}
+                      src={item.icon}
+                      alt={item.title}
+                      className="  w-[74px] h-[74px] md:max-w-[74px]  md:max-h-[74px]"
+                    />
                   </span>
                   <div>
                     <p>
@@ -135,15 +163,9 @@ const footer = () => {
           <div className="grid grid-cols-2 gap-6">
             {/* First Column */}
             <div className="flex flex-col gap-2">
-              <List
-                section={items[0].section} 
-                links={items[0].links}
-              />
+              <List section={items[0].section} links={items[0].links} />
 
-              <List
-                section={items[1].section} 
-                links={items[1].links}
-              />
+              <List section={items[1].section} links={items[1].links} />
             </div>
 
             {/* Second Column */}
@@ -167,9 +189,9 @@ const footer = () => {
           </div>
         </div>
       </footer>
-    <div className=" pb-12 md:pb-6 lg:pb-0 ">
-    <Popular  />
-    </div>
+      <div className=" pb-12 md:pb-6 lg:pb-0 ">
+        <Popular />
+      </div>
     </>
   );
 };

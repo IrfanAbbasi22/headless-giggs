@@ -8,8 +8,9 @@ import Image from "next/image";
 import ProductCardPreloader from "../components/ui/productCardPreloader";
 import Skeleton from "react-loading-skeleton";
 import { fetchCats } from "../components/lib/fetchCats";
+import { useRouter } from "next/navigation";
 
-const Shop = () => {
+const Shop = ({ slug }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -19,41 +20,40 @@ const Shop = () => {
   const [categoryData, setCategoryData] = useState([]);
   const [filterLoading, setFilterLoading] = useState(true);
   const hasInitiated = useRef(false);
-  const fetchData = async (perPage, curPage, category) => {
+  const router = useRouter();
+  const { query } = router;
+  const fetchData = async (option = {}) => {
     try {
-      if (category) setFilterLoading(true); // Start card-specific loading
-      const productsRes = await fetchProducts(perPage, curPage, category);
+      if (option.category || option.orderby || option.order)
+        setFilterLoading(true);
+
+      const productsRes = await fetchProducts(option);
+
+      // fetchProducts({
+      //   perPage: 10,
+      //   curPage: 2,
+      //   category: "123",
+      //   search: "bags",
+      //   order: "desc",
+      //   orderby: "price",
+      // });
       const productData = await productsRes.json();
-      // console.log(productData, "product datatatatatat");
 
       if (productData?.length) {
-        // setProducts((prevProducts) => [...prevProducts, ...productData]);
-      
-        // window.setTimeout(() => {
-        //   const totalProducts = productsRes.headers.get('X-WP-Total');
-        //   console.log('totalProducts', totalProducts);
-        //   console.log('products.length', products.length);
-        //   if(products.length >= totalProducts){
-        //     setHasMore(false);
-        //   }
-        // }, 1000);
-
         setProducts((prevProducts) => {
           const updatedProducts = [...prevProducts, ...productData];
-        
+
           // Delay the logic after setting the state
           window.setTimeout(() => {
-            const totalProducts = productsRes.headers.get('X-WP-Total');
-            console.log('totalProducts', totalProducts);
-            console.log('updatedProducts.length', updatedProducts.length);
+            const totalProducts = productsRes.headers.get("X-WP-Total");
+
             if (updatedProducts.length >= totalProducts) {
               setHasMore(false);
             }
           }, 1000);
-        
+
           return updatedProducts;
         });
-        
       } else {
         setHasMore(false); // No more products to load
       }
@@ -77,7 +77,6 @@ const Shop = () => {
         allowedIds.includes(cat.id)
       );
 
-      // console.log(filteredCats);
       setCategoryData(filteredCats);
     } catch (err) {
       setError(`Error fetching data: ${err.message}`);
@@ -89,41 +88,71 @@ const Shop = () => {
   useEffect(() => {
     fetchCatData();
   }, []);
-
-  // useEffect(() => {
-  //   if (!hasInitiated.current) {
-  //     hasInitiated.current = true;
-  //     fetchData(24, 1, selectedCategory);
-  //   }
-  // }, [selectedCategory]);
-
-  // const handleCategoryChange = (category) => {
-  //   setSelectedCategory(category);
-  //   setProducts([]);
-  //   // setCurrentPage(1);
-  // };
-
-  const handleCategoryChange = (category) => {
-    setSelectedCategory(category);
-    setProducts([]);
-    setCurrentPage(1);
-    fetchData(24, 1, category);
-    window.scrollTo(0, 0);
-  };
-
   useEffect(() => {
     if (!hasInitiated.current) {
       hasInitiated.current = true;
-      fetchData(24, 1, selectedCategory);
+      fetchData({
+        perPage: 24,
+        curPage: 1,
+      });
       window.scrollTo(0, 0);
     }
   }, []);
+  // const handleCategoryChange = (category) => {
+  //   setSelectedCategory(category);
+  //   setProducts([]);
+  //   setCurrentPage(1);
+  //   fetchData(24, 1, category);
+  //   window.scrollTo(0, 0);
+  // };
+
+  const handleCategoryChange = (categoryId) => {
+    setSelectedCategory(categoryId); // Update the selected category
+    setProducts([]); // Reset products
+    setCurrentPage(1); // Reset page to 1
+    fetchData({
+      perPage: 24,
+      curPage: 1,
+      category: categoryId,
+    }); // Fetch products for the selected category
+    window.scrollTo(0, 0); // Scroll to top
+
+    // Optionally, you can still update the URL if you want to reflect the category in the URL without causing a reload
+    const selectedCat = categoryData.find((cat) => cat.id === categoryId);
+    const categoryName = selectedCat?.name.replace(/\s+/g, "-").toLowerCase(); // Convert to URL-friendly format
+    const newUrl = categoryName
+      ? `/shop/product-category/${categoryName}`
+      : "/shop";
+    router.replace(newUrl, undefined, { shallow: true }); // Use shallow routing to avoid a full page reload
+  };
 
   const handleLoadMore = () => {
     setLoadMorePreloader(true);
     const nextPage = currentPage + 1;
     setCurrentPage(nextPage);
-    fetchData(24, nextPage);
+    fetchData({
+      perPage: 24,
+      curPage: nextPage,
+    });
+  };
+  const sortOptions = [
+    { label: "Default", orderby: "menu_order", order: "asc" },
+    { label: "Popularity", orderby: "popularity", order: "desc" },
+    { label: "Latest", orderby: "date", order: "desc" },
+    { label: "Price: High to Low", orderby: "price", order: "desc" },
+    { label: "Price: Low to High", orderby: "price", order: "asc" },
+  ];
+  const handleSortChange = (label) => {
+    const selectedOption = sortOptions.find((option) => option.label === label);
+    console.log("orberby", selectedOption);
+    setProducts([]); // Reset products for new sorting
+    setCurrentPage(1); // Reset page to 1
+    fetchData({
+      perPage: 24,
+      curPage: 1,
+      orderby: selectedOption.orderby,
+      order: selectedOption.order,
+    });
   };
 
   if (loading & (currentPage === 1)) {
@@ -230,17 +259,42 @@ const Shop = () => {
 
                 <div>
                   <>
-                    <div className="flex items-center gap-1  font-medium text-base">
+                    {/* <div className="flex items-center gap-1  font-medium text-base">
                       <span> Sort by:</span>
                       <div className="relative  rounded-[30px] ">
                         <select className="w-full  text-xs lg:text-base    pl-1 pr-4 text-[#2C292980]  outline-none appearance-none ">
-                          <option value="" disabled selected>
+                          <option value="" disabled>
                             Default Sorting
                           </option>
                           <option value="popularity"> Popularity</option>
                           <option value="latest">Latest</option>
                           <option value="lowtohigh"> Price: Low to High</option>
                           <option value="howtoligh"> Price: High to Low</option>
+                        </select>
+                        <Image
+                          width={16}
+                          height={16}
+                          src={`/assets/icons/down-arrow.svg`}
+                          alt="down arrow"
+                          className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none"
+                        />
+                      </div>
+                    </div> */}
+                    <div className="flex items-center gap-1 font-medium text-base">
+                      <span>Sort by:</span>
+                      <div className="relative rounded-[30px]">
+                        <select
+                          className="w-full text-xs lg:text-base pl-1 pr-4 text-[#2C292980] outline-none appearance-none"
+                          onChange={(e) => handleSortChange(e.target.value)}
+                        >
+                          {/* <option value="" disabled>
+                            Default Sorting
+                          </option> */}
+                          {sortOptions.map((option) => (
+                            <option key={option.label} value={option.label}>
+                              {option.label}
+                            </option>
+                          ))}
                         </select>
                         <Image
                           width={16}
@@ -257,17 +311,15 @@ const Shop = () => {
               {/* desktop */}
               {/* mobile */}
               <div className="grid grid-cols-1 gap-6 lg:hidden col-span-12 col-start-1">
-                <div className=" flex justify-between     ">
+                <div className=" flex justify-between ">
                   <div>
                     <div className="relative border rounded-[30px] bg-[#DADADA80]">
                       <select
                         onChange={(e) => handleCategoryChange(e.target.value)}
                         className="w-full py-[6px] pl-4 pr-8 bg-transparent text-xs outline-none appearance-none"
-                        value={selectedCategory}
+                        defaultValue={slug}
                       >
-                        <option value="" disabled selected>
-                          Category
-                        </option>
+                        <option disabled>Category</option>
                         {categoryData.map((category) => (
                           <option key={category.id} value={category.id}>
                             {category.name}
@@ -285,14 +337,15 @@ const Shop = () => {
                     </div>
                   </div>
                   <div className="relative  border rounded-[30px] bg-[#DADADA80]">
-                    <select className="w-full py-[6px]  pl-4 pr-8 bg-transparent text-xs outline-none appearance-none ">
-                      <option value="" disabled selected>
-                        Default Sorting
-                      </option>
-                      <option value="popularity"> Popularity</option>
-                      <option value="latest">Latest</option>
-                      <option value="lowtohigh"> Price: Low to High</option>
-                      <option value="howtoligh"> Price: High to Low</option>
+                    <select
+                      onChange={(e) => handleSortChange(e.target.value)}
+                      className="w-full py-[6px]  pl-4 pr-8 bg-transparent text-xs outline-none appearance-none "
+                    >
+                      {sortOptions.map((option) => (
+                        <option key={option.label} value={option.label}>
+                          {option.label}
+                        </option>
+                      ))}
                     </select>
                     <Image
                       width={16}
@@ -371,6 +424,7 @@ const Shop = () => {
               </div>
 
               {/* Load More CTA */}
+
               {hasMore && (
                 <div className="   place-items-center grid  mt-5  ">
                   <button

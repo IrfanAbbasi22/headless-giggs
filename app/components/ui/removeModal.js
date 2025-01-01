@@ -38,7 +38,7 @@ const removeModal = ({
           </button>
         </div>
 
-        <div className="text-center  space-y-4">
+        <div className="text-center  flex items-center justify-center gap-2">
           {/* Primary Button */}
           <button
             type="button"

@@ -62,38 +62,34 @@ const ClientSay = () => {
           className="mySwiper"
           navigation={false}
           loop={true}
-          spaceBetween={20} // Adjust spacing between slides
-          slidesPerView={2}
+          spaceBetween={10} // Adjust spacing between slides
+          slidesPerView={"auto"}
           centeredSlides={true}
           breakpoints={{
-            // Responsive breakpoints for different screen sizes
-            640: {
-              slidesPerView: 3, // Show 2 slides on medium devices
-            },
             768: {
-              slidesPerView: 4, // Show 3 slides on larger devices
+              spaceBetween:20,
             },
           }}
         >
           {clientsV.map((client, index) => (
-            <SwiperSlide key={index}>
+            <SwiperSlide key={index} className="aspect-[320/410] max-w-52 md:max-w-60 rounded-2xl overflow-hidden">
               {loading ? (
                 <Skeleton
-                  height={300}
-                  width="100%"
+                  height={410}
+                  width={320}
                   borderRadius="16px"
                   key={client?.thumb}
                   className="rounded-2xl"
                 />
               ) : (
                 
-                <div className="relative rounded-2xl overflow-hidden">
+                <div className="relative h-full">
                   <Image
                     src={client?.thumb}
-                    width={345}
-                    height={445}
+                    height={410}
+                    width={320}
                     alt={`Client video-${index + 1}`}
-                    className="w-full aspect-[322/414] h-full object-cover rounded-2xl cursor-pointer"
+                    className="w-full h-full object-cover cursor-pointer"
                     onClick={() => handleVideoPlay(index)}
                   />
                   <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 cursor-pointer">

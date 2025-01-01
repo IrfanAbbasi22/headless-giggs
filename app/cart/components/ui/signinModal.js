@@ -182,7 +182,6 @@ const SigninModal = () => {
         const loginHandler = await handleUserLogin(result.is_registered, result?.otp_token);
 
         if(loginHandler?.user_token){
-          console.log('asdasdadasdadasdasd', loginHandler?.message)
           toast.success(loginHandler?.message || 'Login successful!', {
             position: "bottom-center",
             autoClose: 2000,
@@ -194,13 +193,12 @@ const SigninModal = () => {
             theme: "light",
             transition: Bounce,
           });
-          // console.log('login message', loginHandler.message );
+          
           dispatch(updateUserFromServer(loginHandler));
           
           if (curPath === '/login') {
             router.push('/my-account');
           }
-
         }
         
         closeModal();

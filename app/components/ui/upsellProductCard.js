@@ -106,14 +106,10 @@ export default function UpsellProductCard({ product, gridClass }) {
     // dispatch(updateQty({ id: product.id, qty: newQty }));
   };
 
-  // const productImage =
-  //   product.images.length > 0
-  //     ? product.images[0].src
-  //     : "/checkout/product.webp";
   const productImage =
     (product?.images ?? []).length > 0
       ? product.images[0].src
-      : "/checkout/product.webp";
+      : "/woocommerce-placeholder.webp";
 
   return (
     <div
@@ -155,7 +151,7 @@ export default function UpsellProductCard({ product, gridClass }) {
             {product.categories.map((cat, i) => (
               <Link
                 key={cat.id}
-                href={`/${cat.slug}`}
+                href={`/product-category/${cat.slug}`}
                 className="text-black text-opacity-50 hover:text-opacity-100 transition-all"
               >
                 {cat.name}
@@ -174,16 +170,16 @@ export default function UpsellProductCard({ product, gridClass }) {
         </Link>
 
         {/* Descriptioon */}
-        {product.description && (
+        {product.short_description && (
           <p
-            className="text-sm text-black text-opacity-50 mb-2 truncate"
+            className="text-sm text-black text-opacity-50 mb-0 line-clamp-2"
             dangerouslySetInnerHTML={{
-              __html: product.description.replace(/<\/?(p|br)\/?>/g, ""),
+              __html: product.short_description.replace(/<\/?(p|br)\/?>/g, ""),
             }}
           ></p>
         )}
 
-        <div className="text-sm font-medium flex">
+        <div className="text-sm font-medium flex items-center mt-2 mb-1">
           <div className="pr-1">
             {product.prices.price && (
               <span className="discountedPrice font-semibold pr-1">

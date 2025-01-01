@@ -11,7 +11,10 @@ import {
   userDataToken,
 } from "../../../store/slices/userSlice";
 
-import { cartBillingAddress, cartCountries } from "@/app/cart/store/slices/cartSlice";
+import {
+  cartBillingAddress,
+  cartCountries,
+} from "@/app/cart/store/slices/cartSlice";
 
 // Get States
 import { getStates } from "../../../../components/lib/cart/getStates";
@@ -20,7 +23,7 @@ import DotPulsePreloader from "@/app/components/ui/preloader/dotPulsePreloader";
 import PhoneInput from "react-phone-input-2";
 import { getUserAddress } from "@/app/components/lib/user/getUserAddress";
 
-const SaveNewAddress = ({addressLength=0, setAddress, address }) => {
+const SaveNewAddress = ({ addressLength = 0, setAddress, address }) => {
   const isFormVisible = useSelector(showUserAddressForm);
   const editFormData = useSelector(editUserAddress);
   // const userAddedAddresses = useSelector(userAddresses);
@@ -33,7 +36,10 @@ const SaveNewAddress = ({addressLength=0, setAddress, address }) => {
     // if (userToken.length !== 0 && (!userAddedAddresses || userAddedAddresses.length === 0)) {
     //   showModal();
     // }
-    if (userToken.length !== 0 && (!addressLength || addressLength.length === 0)) {
+    if (
+      userToken.length !== 0 &&
+      (!addressLength || addressLength.length === 0)
+    ) {
       showModal();
     }
   }, []);
@@ -97,24 +103,23 @@ const SaveNewAddress = ({addressLength=0, setAddress, address }) => {
     const countryCode = data.dialCode;
     setFormData((prevData) => ({
       ...prevData,
-        country_ext: countryCode,
+      country_ext: countryCode,
     }));
   };
 
   useEffect(() => {
     window.setTimeout(() => {
-        const inputCountryExt = document.getElementById('shippingFormMobileExt');
-        if (inputCountryExt) {
-            setFormData((prevData) => ({
-                ...prevData,
-                country_ext: inputCountryExt.value.replace('+', ''),
-            }));
-        } else {
-            console.warn("Element with ID 'shippingFormMobileExt' not found.");
-        }
+      const inputCountryExt = document.getElementById("shippingFormMobileExt");
+      if (inputCountryExt) {
+        setFormData((prevData) => ({
+          ...prevData,
+          country_ext: inputCountryExt.value.replace("+", ""),
+        }));
+      } else {
+        console.warn("Element with ID 'shippingFormMobileExt' not found.");
+      }
     }, 100);
   }, [formData.country]);
-
 
   /**
    * Get Countries on Form Init
@@ -154,9 +159,9 @@ const SaveNewAddress = ({addressLength=0, setAddress, address }) => {
         phone: phone || "",
       }));
 
-      window.setTimeout(()=>{
-        loadStates(editFormData?.country || billingAddress?.country)
-      }, 100)
+      window.setTimeout(() => {
+        loadStates(editFormData?.country || billingAddress?.country);
+      }, 100);
     }
   }, [isFormVisible]);
 
@@ -291,20 +296,19 @@ const SaveNewAddress = ({addressLength=0, setAddress, address }) => {
       const newAddressResponse = await saveUserNewAddress(formData);
       if (newAddressResponse?.addresses) {
         // dispatch(setUserAddresses(newAddressResponse.addresses));
-        closeModal();
 
         try {
           // const response = await getUserAddress(userToken, userAddedAddresses?.length, 1);
-          const response = await getUserAddress(userToken, addressLength, 1);
+          const response = await getUserAddress(userToken, (addressLength > 8 ? addressLength : 8), 1);
     
           if (response?.addresses) {
             // dispatch(setUserAddresses(response.addresses))
             setAddress(response.addresses);
+            closeModal();
           }
-            
         } catch (error) {
-            console.error("Failed to fetch updated addresses:", error);
-        } finally{
+          console.error("Failed to fetch updated addresses:", error);
+        } finally {
         }
       } else {
         setFormError(newAddressResponse);
@@ -344,7 +348,6 @@ const SaveNewAddress = ({addressLength=0, setAddress, address }) => {
         </svg>
         <span>Add new address</span>
       </button>
-
       {/* Modal */}
       {isFormVisible && (
         <div className="fixed z-50 left-0 right-0 top-0 bottom-0 w-full bg-opacity-50 bg-black flex items-end lg:items-center ">
@@ -438,31 +441,32 @@ const SaveNewAddress = ({addressLength=0, setAddress, address }) => {
                   </label>
 
                   <div className="flex">
-                      <PhoneInput className={`max-w-max`}
-                        country={formData?.country.toLowerCase() ?? "in"}
-                        inputClass={`!py-[10px] px-4 !border !text-base !h-auto !border-r-0 !rounded-br-none !rounded-tr-none !max-w-[95px] !pr-0 !w-full ${
-                          errors.phone ? "!border-red-600" : "!border-[#d9d9d9]"
-                        } !rounded-md !outline-none !transition-all focus:!border-primary`}
-                        onChange={handlePhoneChange}
-                        value={formData?.country_ext}
-                        inputProps={{
-                          id: "shippingFormMobileExt",
-                          readOnly: true,
-                        }}
-                      />
+                    <PhoneInput
+                      className={`max-w-max`}
+                      country={formData?.country.toLowerCase() ?? "in"}
+                      inputClass={`!py-[10px] px-4 !border !text-base !h-auto !border-r-0 !rounded-br-none !rounded-tr-none !max-w-[95px] !pr-0 !w-full ${
+                        errors.phone ? "!border-red-600" : "!border-[#d9d9d9]"
+                      } !rounded-md !outline-none !transition-all focus:!border-primary`}
+                      onChange={handlePhoneChange}
+                      value={formData?.country_ext}
+                      inputProps={{
+                        id: "shippingFormMobileExt",
+                        readOnly: true,
+                      }}
+                    />
 
-                      <input
-                        className={`py-[10px] px-4 pl-1 border-l-0 border text-base h-auto w-full rounded-tl-none rounded-bl-none ${
-                            errors.phone ? "border-red-600" : "border-[#d9d9d9]"
-                          } rounded-md outline-none transition-all focus:border-primary`}
-                        type="tel"
-                        name="phone"
-                        id="shippingFormMobile"
-                        placeholder="Enter mobile number"
-                        value={formData.phone}
-                        onBlur={handleBlur}
-                        onChange={handleInputChange}
-                      />
+                    <input
+                      className={`py-[10px] px-4 pl-1 border-l-0 border text-base h-auto w-full rounded-tl-none rounded-bl-none ${
+                        errors.phone ? "border-red-600" : "border-[#d9d9d9]"
+                      } rounded-md outline-none transition-all focus:border-primary`}
+                      type="tel"
+                      name="phone"
+                      id="shippingFormMobile"
+                      placeholder="Enter mobile number"
+                      value={formData.phone}
+                      onBlur={handleBlur}
+                      onChange={handleInputChange}
+                    />
                   </div>
 
                   {errors.phone && (
