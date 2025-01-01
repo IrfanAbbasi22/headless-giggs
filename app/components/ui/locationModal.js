@@ -9,7 +9,7 @@ const locationImg =
 const locationImg2 =
   "https://www.giggs.in/wp-content/themes/giggsmeatbasket/assets/img/cities/delhi.png";
 
-const locationModal = ({ closeLocationModal, setPincodeData, pincodeData }) => {
+const LocationModal = ({ closeLocationModal, setPincodeData, pincodeData }) => {
   const [pincode, setPincode] = useState("");
 
   const [error, setError] = useState("");
@@ -157,4 +157,4 @@ const locationModal = ({ closeLocationModal, setPincodeData, pincodeData }) => {
   );
 };
 
-export default locationModal;
+export default LocationModal;

@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 // import Orders from "../orders/page";
 // import Addresses from "../addresses/addresses";
 
-const page = () => {
+const Page = () => {
   const params = useParams(); // Get route parameters
   const slug = params?.slug;
   console.log(slug);
@@ -21,4 +21,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

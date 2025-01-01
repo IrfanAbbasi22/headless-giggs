@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { RxCross2 } from "react-icons/rx";
-const userProfile = () => {
+const UserProfile = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const user = useSelector(userDetails);
@@ -203,4 +203,4 @@ const userProfile = () => {
   );
 };
 
-export default userProfile;
+export default UserProfile;
