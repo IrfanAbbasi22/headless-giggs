@@ -5,9 +5,9 @@ import React, { useState, useEffect } from "react";
 import { RxCross2 } from "react-icons/rx";
 
 const locationImg =
-  "https://www.giggs.in/wp-content/themes/giggsmeatbasket/nexgi-inc/assets/img/pincode-modal-img.svg";
+  "/pincode-modal-img.svg";
 const locationImg2 =
-  "https://www.giggs.in/wp-content/themes/giggsmeatbasket/assets/img/cities/delhi.png";
+  "/delhi.png";
 
 const LocationModal = ({ closeLocationModal, setPincodeData, pincodeData }) => {
   const [pincode, setPincode] = useState("");

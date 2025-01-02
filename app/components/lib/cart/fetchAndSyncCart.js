@@ -1,7 +1,26 @@
 import Cookies from 'js-cookie';
 
+function debounce(callback, delay) {
+  let timeoutId;
+
+  return function (...args) {
+    return new Promise((resolve, reject) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        try {
+          const result = callback(...args);
+          resolve(result); // Return the result of the async function
+        } catch (error) {
+          reject(error); // In case of any error, reject the promise
+        }
+      }, delay);
+    });
+  };
+}
+
 // Fetch the WooCommerce cart data
-export const fetchWooCommerceCart = async (cartToken) => {
+// export const fetchWooCommerceCart = async (cartToken) => {
+export const fetchWooCommerceCart = debounce(async (cartToken) => {
   // console.log('Cookies.wchash', Cookies.get('woocommerce_cart_hash'));
   // console.log('Cookies.token', Cookies.get('woocommerce_cart_hash'));
 
@@ -32,4 +51,5 @@ export const fetchWooCommerceCart = async (cartToken) => {
     console.error('Error fetching WooCommerce cart:', error);
     return null;
   }
-};
+// };
+}, 1000);

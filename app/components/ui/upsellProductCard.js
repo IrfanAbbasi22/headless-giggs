@@ -13,7 +13,7 @@ import {
   loadCartFromWoo,
 } from "../../cart/store/slices/cartSlice";
 import { openModal } from "../../cart/store/slices/productDetailModalSlice";
-import { fetchProductDetails } from "../lib/cart/fetchProductDetails";
+// import { fetchProductDetails } from "../lib/cart/fetchProductDetails";
 import { fetchWooCommerceCart } from "../lib/cart/fetchAndSyncCart";
 import { addToCartAPI } from "../lib/cart/addToCart";
 import { removeItemFromCart } from "../lib/cart/removeItemFromCart";
@@ -70,12 +70,12 @@ export default function UpsellProductCard({ product, gridClass }) {
     // return;
 
     // If Variable Product
-    if (product.type === "variable") {
-      const productDetails = await fetchProductDetails(product.id);
-      if (productDetails) {
-        dispatch(openModal(productDetails));
-      }
-    }
+    // if (product.type === "variable") {
+    //   const productDetails = await fetchProductDetails(product.id);
+    //   if (productDetails) {
+    //     dispatch(openModal(productDetails));
+    //   }
+    // }
 
     // If Qty is 0
     if (newQty === 0) {

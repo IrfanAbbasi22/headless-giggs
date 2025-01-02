@@ -60,16 +60,14 @@ const ContactUs = () => {
     }
   };
   return (
-    <section className="py-4 bg-lightGray lg:py-10">
-      <div className=" container  flex flex-col  items-center ">
-        <div className="">
-          <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-3xl font-bold leading-tight text-gray-900 sm:text-4xl lg:text-5xl">
-              Contact us
-            </h2>
-          </div>
+    <section className="py-[14px] bg-lightGray lg:py-10">
+      <div className=" container  flex flex-col   items-center ">
+        <div className=" flex flex-col gap-5 lg:gap-8 items-center">
+          <h2 className="text-lg font-bold leading-tight text-gray-900 sm:text-4xl lg:text-4xl">
+            Contact us
+          </h2>
 
-          <div className="max-w-5xl  mt-12 sm:mt-16">
+          <div className="max-w-5xl  ">
             <div className="grid grid-cols-1 gap-6 px-8 text-center md:px-0 md:grid-cols-3">
               <div className="overflow-hidden bg-white rounded-xl">
                 <div className="p-6 flex items-center flex-col gap-7">
@@ -89,7 +87,7 @@ const ContactUs = () => {
                   </svg>
                   <Link
                     href={"tel:78XXXXXXXX"}
-                    className=" text-lg font-medium leading-relaxed text-gray-900 cursor-pointer hover:text-primary"
+                    className=" text-xs lg:text-base font-medium leading-relaxed text-gray-900 cursor-pointer hover:text-primary"
                   >
                     78XXXXXXXX
                   </Link>
@@ -114,7 +112,7 @@ const ContactUs = () => {
                   </svg>
                   <Link
                     href={"mailto:contact@nexgi.com"}
-                    className=" text-lg font-medium leading-relaxed text-gray-900 cursor-pointer hover:text-primary"
+                    className="  text-xs lg:text-base font-medium leading-relaxed text-gray-900 cursor-pointer hover:text-primary"
                   >
                     contact@nexgi.com
                   </Link>
@@ -144,7 +142,7 @@ const ContactUs = () => {
                     />
                   </svg>
 
-                  <p className=" text-lg font-medium leading-relaxed text-gray-900 ">
+                  <p className=" text-xs lg:text-base font-medium leading-relaxed text-gray-900 ">
                     A 67 S/F, KH. 81 , NEB Sarai, South Delhi, Delhi, 110068
                   </p>
                 </div>
@@ -153,7 +151,7 @@ const ContactUs = () => {
 
             <div className="mt-6 overflow-hidden bg-white rounded-xl">
               <div className="px-6 py-12 sm:p-12">
-                <h3 className="text-3xl font-semibold text-center text-gray-900">
+                <h3 className="text-base lg:text-xl font-semibold text-center text-gray-900">
                   Send us a message
                 </h3>
 
@@ -162,7 +160,7 @@ const ContactUs = () => {
                     <div className="  flex flex-col gap-[10px]">
                       <label
                         htmlFor="contactName"
-                        className="text-base font-medium text-gray-900"
+                        className="text-xs lg:text-base font-medium text-gray-900"
                       >
                         Name <span className=" text-red-400">*</span>
                       </label>
@@ -174,10 +172,12 @@ const ContactUs = () => {
                           onChange={handleChange}
                           id="contactName"
                           placeholder="Enter your full name"
-                          className=" w-full px-4 py-4 text-black placeholder-gray-500  bg-white border focus:border-primary focus:outline-none  rounded-md  "
+                          className=" w-full px-4 py-[10px] text-black placeholder-gray-500 placeholder:text-xs lg:placeholder:text-sm   bg-white border focus:border-primary focus:outline-none  rounded-md  "
                         />
                         {errors.name && (
-                          <p className="text-sm text-red-600">{errors.name}</p>
+                          <p className="text-xs lg:text-sm text-red-600">
+                            {errors.name}
+                          </p>
                         )}
                       </div>
                     </div>
@@ -185,7 +185,7 @@ const ContactUs = () => {
                     <div className="  flex flex-col gap-[10px]">
                       <label
                         htmlFor="contactEmail"
-                        className="text-base font-medium text-gray-900"
+                        className="text-xs lg:text-base font-medium text-gray-900"
                       >
                         Email address <span className=" text-red-400">*</span>
                       </label>
@@ -197,10 +197,12 @@ const ContactUs = () => {
                           onChange={handleChange}
                           id="contactEmail"
                           placeholder="Enter your email"
-                          className="block w-full px-4 py-4 text-black placeholder-gray-500  bg-white border  rounded-md focus:border-primary focus:outline-none "
+                          className="block w-full  px-4 py-[10px] text-black placeholder-gray-500 placeholder:text-xs lg:placeholder:text-sm bg-white border  rounded-md focus:border-primary focus:outline-none "
                         />
                         {errors.email && (
-                          <p className="text-sm text-red-600">{errors.email}</p>
+                          <p className="text-xs lg:text-sm text-red-600">
+                            {errors.email}
+                          </p>
                         )}
                       </div>
                     </div>
@@ -208,7 +210,7 @@ const ContactUs = () => {
                     <div className="  flex flex-col gap-[10px]">
                       <label
                         htmlFor="contactPhone"
-                        className="text-base font-medium text-gray-900"
+                        className="text-xs lg:text-base font-medium text-gray-900"
                       >
                         Phone number <span className=" text-red-400">*</span>
                       </label>
@@ -220,37 +222,20 @@ const ContactUs = () => {
                           onChange={handleChange}
                           id="contactPhone"
                           placeholder="Enter your phone"
-                          className=" w-full px-4 py-4 text-black placeholder-gray-500  bg-white border  rounded-md focus:border-primary focus:outline-none"
+                          className=" w-full px-4 py-[10px] text-black placeholder-gray-500 placeholder:text-xs lg:placeholder:text-sm  bg-white border  rounded-md focus:border-primary focus:outline-none"
                         />
                         {errors.phone && (
-                          <p className="text-sm text-red-600">{errors.phone}</p>
+                          <p className="text-xs lg:text-sm text-red-600">
+                            {errors.phone}
+                          </p>
                         )}
                       </div>
                     </div>
 
-                    {/* <div>
-                      <label
-                        htmlFor=""
-                        className="text-base font-medium text-gray-900"
-                      >
-                        {" "}
-                        Company name{" "}
-                      </label>
-                      <div className="mt-2.5 relative">
-                        <input
-                          type="text"
-                          name=""
-                          id=""
-                          placeholder="Enter your full name"
-                          className="block w-full px-4 py-4 text-black placeholder-gray-500 transition-all duration-200 bg-white border border-gray-200 rounded-md focus:outline-none focus:border-blue-600 caret-blue-600"
-                        />
-                      </div>
-                    </div> */}
-
                     <div className="sm:col-span-2 flex-col flex gap-4">
                       <label
                         htmlFor="contactMessage"
-                        className="text-base font-medium text-gray-900"
+                        className="text-xs lg:text-base font-medium text-gray-900"
                       >
                         Message
                       </label>
@@ -261,7 +246,7 @@ const ContactUs = () => {
                           value={formData.message}
                           onChange={handleChange}
                           placeholder="Tell us how we can help you..."
-                          className=" w-full px-4 py-4 text-black placeholder-gray-500  bg-white border  rounded-md resize-y focus:border-primary focus:outline-none "
+                          className=" w-full px-4 py-4 text-black placeholder-gray-500 placeholder:text-xs lg:placeholder:text-sm  bg-white border  rounded-md resize-y focus:border-primary focus:outline-none "
                           rows="4"
                         ></textarea>
                       </div>
@@ -270,7 +255,7 @@ const ContactUs = () => {
                     <div className="sm:col-span-2">
                       <button
                         type="submit"
-                        className=" w-full px-4 py-4  text-base font-semibold text-white transition-all duration-200 bg-primary border border-transparent rounded-md focus:outline-none hover:bg-primary-hover "
+                        className=" w-full px-4 py-[12px]  text-base font-semibold text-white transition-all duration-200 bg-primary border border-transparent rounded-md focus:outline-none hover:bg-primary-hover "
                       >
                         Submit
                       </button>

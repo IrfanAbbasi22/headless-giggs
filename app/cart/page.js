@@ -332,7 +332,7 @@ export default function CartData() {
                   <div className="grand-total flex flex-col gap-4">
                     <small className="inline-block text-sm text-[grey]">
                       Average delivery time:
-                      <span className="text-black font-medium">2-5 days</span>
+                      <span className="text-black font-medium"> 2-5 days</span>
                     </small>
 
                     {

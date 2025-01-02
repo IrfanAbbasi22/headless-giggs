@@ -43,6 +43,12 @@ const userSlice = createSlice({
       state.user_token = data?.user_token;
     },
 
+    updateUserDetails(state, action) {
+      const data = action.payload
+
+      state.user_data = data.user_data;
+    },
+
     resetUser(state, action) {
       return { ...state,
         user_data: {},
@@ -76,5 +82,5 @@ export const isSignInVisible = (state) => state.user.isSignInVisible;
 export const showUserAddressForm = (state) => state.user.showUserAddressForm;
 export const editUserAddress = (state) => state.user.editUserAddress;
 
-export const { updateUserFromServer, resetUser, showUserModal, showUserAddAddressForm, setUserAddresses } = userSlice.actions;
+export const { updateUserFromServer, updateUserDetails, resetUser, showUserModal, showUserAddAddressForm, setUserAddresses } = userSlice.actions;
 export default userSlice.reducer;

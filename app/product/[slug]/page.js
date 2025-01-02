@@ -1,12 +1,10 @@
 import { fetchSingleProduct } from "@/app/components/lib/fetchSingleProduct";
-import HomeCatProducts from "@/app/components/ui/homeCatProducts";
 import Service from "@/app/sections/service";
 import Link from "next/link";
 
 import ClientSay from "@/app/components/ui/ClientSay";
 import PdpDesc from "@/app/sections/PdpDesc";
 import ProductDetailsHero from "@/app/components/ui/productDetailsHero";
-import SwiperProducts from "@/app/components/ui/swiperProducts";
 import SwiperRelatedProducts from "@/app/components/ui/swiperRelatedProducts";
 
 // export const revalidate = 10;
@@ -101,17 +99,6 @@ export default async function ProductDetailPage({ params }) {
   }
   const productDetailsdata = product[0];
 
-  const headings = [
-    {
-      title: "Update your Basket",
-    },
-  ];
-  const headings2 = [
-    {
-      title: "Similar Products",
-    },
-  ];
-
   // console.log('productDetailsdata', productDetailsdata)
 
   return (
@@ -119,30 +106,11 @@ export default async function ProductDetailPage({ params }) {
       {/* Hero Section */}
       <ProductDetailsHero  productDetailsdata={productDetailsdata}/>
 
-      {/* categories ProductCard "Update your basket" */}
-      <div className="md:hidden">
-        <HomeCatProducts cat_id="19" headings={headings} />
-      </div>
-
       {/* Why Giggs */}
       <Service bgColor={`#FFE7E6`} alignCenterHeading={true} />
 
       {/* our client say */}
       <ClientSay />
-
-      {/* categories ProductCard "Similar Products" */}
-      {/* <HomeCatProducts cat_id="19" headings={headings2} /> */}
-      {/* <SwiperProducts /> */}
-
-      {/* {cartRecomendedProducts.length > 0 && currentStep === "cart" && (
-        <> */}
-          {/* Recomended Products */}
-          {/* <SwiperProducts
-            heading={`Similar Products`}
-            products={cartRecomendedProducts}
-          />
-        </>
-      )} */}
 
       <SwiperRelatedProducts productID={productDetailsdata?.related_ids} heading={`Similar Products`} />
 

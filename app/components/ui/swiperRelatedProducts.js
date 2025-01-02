@@ -18,6 +18,8 @@ const SwiperRelatedProducts = ({heading, productID = [], }) => {
 
     const getRelatedProucts = async () => {
         const res = await fetchProducts({
+            perPage: 24,
+            curPage: 1,
             include: productID,
         }) 
 

@@ -7,6 +7,13 @@ export const getCountries = async () => {
     },
   };
 
+  // Check if data is already cached in sessionStorage
+  const cachedCountries = sessionStorage.getItem('countries');
+  if (cachedCountries) {
+    // If cached data exists, return it
+    return JSON.parse(cachedCountries);
+  }
+
   try {
     const response = await fetch(url, credentials);
     if (!response.ok) {
@@ -15,6 +22,10 @@ export const getCountries = async () => {
     }
 
     const countries = await response.json();
+
+    // Cache the data in sessionStorage for future use
+    sessionStorage.setItem('countries', JSON.stringify(countries));
+    
     return countries;
   } catch (error) {
     console.error(error);

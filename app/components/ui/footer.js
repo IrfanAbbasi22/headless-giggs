@@ -1,44 +1,105 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import List from "./list";
 import Image from "next/image";
 import Popular from "@/app/sections/popular";
 import Link from "next/link";
+import { fetchCats } from "../lib/fetchCats";
 
-const footer = () => {
+const Footer = () => {
+  const [categoryData, setCategoryData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const items = [
     {
       section: "Useful Links",
       links: [
-        "Blog",
-        "Careers",
-        "Sitemap",
-        "Corporate Information",
-        "Whitehat",
-        "Clear trip",
+        {
+          name: "Blog",
+          slug: "/blog",
+        },
+        {
+          name: "Careers",
+          slug: "/careers",
+        },
+        {
+          name: "Sitemap",
+          slug: "/sitemap",
+        },
+        {
+          name: "Corporate Information",
+          slug: "/corporate-information",
+        },
+        {
+          name: "Whitehat",
+          slug: "/whitehat",
+        },
+        {
+          name: "Clear trip",
+          slug: "/clear-trip",
+        },
       ],
     },
     {
       section: "Customer Policies",
       links: [
-        "Contact Us",
-        "FAQ",
-        "T&C",
-        "Terms Of Use",
-        "Track Orders",
-        "Shipping",
-        "Privacy policy",
+        {
+          name: "Contact Us",
+          slug: "/contact-us",
+        },
+        {
+          name: "FAQ",
+          slug: "/faq",
+        },
+        {
+          name: "T&C",
+          slug: "/terms-and-conditions",
+        },
+        {
+          name: "Terms Of Use",
+          slug: "/terms-of-use",
+        },
+        {
+          name: "Track Orders",
+          slug: "/track-orders",
+        },
+        {
+          name: "Shipping",
+          slug: "/shipping",
+        },
+        {
+          name: "Privacy policy",
+          slug: "/privacy-policy",
+        },
       ],
     },
     {
       section: "Categories",
       links: [
-        "Chicken",
-        "Mutton",
-        "Fish",
-        "Cold Cuts",
-        "Ready to Relish",
-        "Imported",
+        {
+          name: "Chicken",
+          slug: "/categories/chicken",
+        },
+        {
+          name: "Mutton",
+          slug: "/categories/mutton",
+        },
+        {
+          name: "Fish",
+          slug: "/categories/fish",
+        },
+        {
+          name: "Cold Cuts",
+          slug: "/categories/cold-cuts",
+        },
+        {
+          name: "Ready to Relish",
+          slug: "/categories/ready-to-relish",
+        },
+        {
+          name: "Imported",
+          slug: "/categories/imported",
+        },
       ],
     },
     {
@@ -115,6 +176,29 @@ const footer = () => {
     },
   ];
 
+  const fetchCatData = async () => {
+    setLoading(true);
+    try {
+      const resultCat = await fetchCats();
+
+      // Filter only the required IDs
+      const allowedIds = [19, 21, 17, 22, 18, 16];
+      const filteredCats = resultCat.filter((cat) =>
+        allowedIds.includes(cat.id)
+      );
+
+      setCategoryData(filteredCats);
+    } catch (err) {
+      setError(`Error fetching data: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCatData();
+  }, []);
+  console.log(categoryData);
   return (
     <>
       <footer className=" py-5  md:py-[57px]  bg-[#FFE7E6]">
@@ -145,11 +229,11 @@ const footer = () => {
                     />
                   </span>
                   <div>
-                    <p>
-                      <span className="font-medium  text-xs md:text-base cursor-pointer">
+                    <p className=" space-x-1">
+                      <span className="font-medium  text-xs md:text-base ">
                         {item.title}
                       </span>
-                      <span className="text-WarmGray text-[10px] font-normal md:text-sm  cursor-pointer">
+                      <span className="text-WarmGray text-[10px] font-normal md:text-sm  ">
                         {item.description}
                       </span>
                     </p>
@@ -169,8 +253,17 @@ const footer = () => {
             </div>
 
             {/* Second Column */}
-
-            <List section={items[2].section} links={items[2].links} />
+            <List
+              section={items[2].section}
+              links={
+                categoryData.length > 0
+                  ? categoryData.map((cat) => ({
+                      name: cat.name,
+                      slug: `/product-category/${cat.slug}`,
+                    }))
+                  : items[2].links
+              }
+            />
           </div>
 
           {/* Downloads and Keep in Touch Section */}
@@ -196,4 +289,4 @@ const footer = () => {
   );
 };
 
-export default footer;
+export default Footer;

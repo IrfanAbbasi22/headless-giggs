@@ -1,56 +1,26 @@
 import React, { useEffect, useRef, useState } from "react";
-// import Card from "./Card";
-import FoodCard from "./foodCard";
-import Image from "next/image";
-import { GoArrowRight } from "react-icons/go";
-import { RxCross2 } from "react-icons/rx";
+
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
 import ProductCard from "./productCard";
 
-// import { fetchProducts } from "@/app/components/lib/fetchProducts";
-import { fetchProducts } from "../lib/fetchProducts";
-import Skeleton from "react-loading-skeleton";
+import { GoArrowRight } from "react-icons/go";
+import { RxCross2 } from "react-icons/rx";
 
-const headings = [
-  {
-    title: "Deals of the day",
-    textOne: "Lorem ipsum dolor sit amet consectetur",
-    textTwo:
-      "  Lorem ipsum, dolor sit amet consectetur adipisicing eli Doloribus reiciendis nisi dolores, optio",
-  },
-];
+// import { fetchProducts } from "@/app/components/lib/fetchProducts";
+import { fetchProducts } from "@/app/components/lib/fetchProducts";
+import Skeleton from "react-loading-skeleton";
 
 const SearchModal = ({ closeSearchPopUp }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searching, setSearching] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [loadMorePreloader, setLoadMorePreloader] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [hasSearched, setHasSearched] = useState(false);
+  const [debouncedQuery, setDebouncedQuery] = useState("");
 
-  const hasInitiated = useRef(false);
-  // const fetchData = async (perPage, curPage, search) => {
-  //   try {
-  //     const productsRes = await fetchProducts(perPage, curPage, search);
-  //     const productData = await productsRes.json();
-  //     if (productData?.length) {
-  //       setProducts((prevProducts) => [...prevProducts, ...productData]);
-  //     } else {
-  //       setHasMore(false); // No more products to load
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching products:", error);
-  //   } finally {
-  //     setLoading(false);
-  //     setLoadMorePreloader(false);
-  //   }
-  // };
   const fetchData = async (option = {}) => {
     setLoading(true);
     try {
-      // console.log("Fetching with search:", search); // Debugging
       const productsRes = await fetchProducts(option);
       const productData = await productsRes.json();
       if (option.curPage === 1) {
@@ -58,20 +28,15 @@ const SearchModal = ({ closeSearchPopUp }) => {
       } else if (productData?.length) {
         setProducts((prevProducts) => [...prevProducts, ...productData]);
       } else {
-        setHasMore(false);
       }
     } catch (error) {
       console.error("Error fetching products:", error);
     } finally {
       setLoading(false);
-      setSearching(false);
     }
   };
 
-  // useEffect(() => {
-  //   fetchData(6, 1);
-  // }, []);
-
+  const hasInitiated = useRef(false);
   useEffect(() => {
     if (!hasInitiated.current) {
       hasInitiated.current = true;
@@ -84,23 +49,29 @@ const SearchModal = ({ closeSearchPopUp }) => {
 
   const searchProduct = (e) => {
     setSearchQuery(e.target.value);
-    fetchData({
-      perPage: 6,
-      curPage: 1,
-      search: e.target.value,
-    });
   };
 
-  const router = useRouter();
-  const shopPage = () => {
-    if (searchQuery) {
-      router.push(`/shop/product-category/${searchQuery}`);
-    } else {
-      router.push("/shop");
+  // Debounce the searchQuery update to debouncedQuery
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery); // Set debouncedQuery after delay
+    }, 500); // 500ms debounce time
+
+    return () => {
+      clearTimeout(timer); // Clear the timeout if searchQuery changes before the delay
+    };
+  }, [searchQuery]);
+  
+  // Trigger fetchData when debouncedQuery changes
+  useEffect(() => {
+    if (debouncedQuery) {
+      fetchData({
+        perPage: 6,
+        curPage: 1,
+        search: debouncedQuery, // Use debouncedQuery instead of searchQuery
+      });
     }
-
-    closeSearchPopUp();
-  };
+  }, [debouncedQuery]);
 
   return (
     <div className="fixed    font-maven inset-0 bg-black bg-opacity-60 overflow-x-hidden overflow-y-auto flex flex-col items-center justify-center z-[300]">
@@ -165,21 +136,19 @@ const SearchModal = ({ closeSearchPopUp }) => {
                 No products found
               </div>
             )}
-            {products.map((product, i) => (
-              <ProductCard key={i} product={product} />
-            ))}
+
+            {!loading && products.length > 0 && (
+              products.map((product, i) => (
+                <ProductCard key={i} product={product} />
+              ))
+            )}
           </div>
         </>
-        {(products.length >= 6 || (hasSearched && products.length > 0)) && (
-          <div
-            onClick={shopPage}
-            className="flex items-center gap-1 text-xs md:text-base text-[#FF5D58] cursor-pointer"
-          >
-            <button>View All</button>
-            <span>
-              <GoArrowRight />
-            </span>
-          </div>
+        {(products.length > 0) && (
+          <Link onClick={closeSearchPopUp} 
+            href={`/shop`} className={`flex items-center gap-1 text-xs md:text-base text-[#FF5D58] cursor-pointer`}>
+            View All <GoArrowRight />
+          </Link>
         )}
       </div>
     </div>

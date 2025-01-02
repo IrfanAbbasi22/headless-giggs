@@ -66,24 +66,30 @@ export default function ThanksScreen({ data }) {
 
   const [orderData, setOrderData] = useState({});
   const [orderSubTotal, setOrderSubTotal] = useState();
+
+  const hasInitiated = useRef(false);
   
   useEffect(() => {
-    fetchOrderDetails(id, userToken)
-      .then((data) => {
-        if (data) {
-          setOrderData(data);
-          confettiRef.current.triggerConfettiFromParent();
-          // console.log("Order Details orderData:", data);
-        } else {
-          console.log("Failed to fetch order details.");
-        }
-      })
-      .catch((error) => {
-        console.log("Error fetching order details:", error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    if (!hasInitiated.current) {
+      hasInitiated.current = true;
+      
+      fetchOrderDetails(id, userToken)
+        .then((data) => {
+          if (data) {
+            setOrderData(data);
+            confettiRef.current.triggerConfettiFromParent();
+            // console.log("Order Details orderData:", data);
+          } else {
+            console.log("Failed to fetch order details.");
+          }
+        })
+        .catch((error) => {
+          console.log("Error fetching order details:", error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   }, []);
 
   if (loading) {

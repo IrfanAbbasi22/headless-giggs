@@ -34,7 +34,11 @@ export default function HomeCatProducts({ cat_id, headings }) {
       setLoading(true);
       setError(null);
       try {
-        const result = await fetchProducts(24, 1, cat_id);
+        const result = await fetchProducts({
+          perPage: 24,
+          curPage: 1,
+          category: cat_id
+        });
         const resultData = await result.json();
         setCatData(resultData);
       } catch (err) {

@@ -10,17 +10,25 @@ const list = ({ section, links, details, socialMedia, downloads }) => {
 
       {links &&
         links.map((link, index) => (
-          <Link href={"/"} key={index}>
-            <p className="text-[#807373] text-[10px] md:text-sm font-normal cursor-pointer">
-              {link}
+          <Link href={link?.slug ? link?.slug : "/"} key={index}>
+            <p className="text-[#807373] text-[10px] md:text-sm font-normal cursor-pointer transition-all hover:text-primary-hover">
+              {link.name}
             </p>
           </Link>
         ))}
+      {/* {links &&
+        links.map((link, index) => (
+          <Link href={link.slug ? link.slug : "/"} key={index}>
+            <p className="text-[#807373] text-[10px] md:text-sm font-normal cursor-pointer transition-all hover:text-primary-hover">
+              {link.name}
+            </p>
+          </Link>
+        ))} */}
       {details &&
         details.map((detail, index) => (
           <p
             key={index}
-            className="text-[#807373] text-[10px] md:text-sm flex items-center gap-2 cursor-pointer"
+            className="text-[#807373] text-[10px] md:text-sm flex items-center gap-2  "
           >
             <span>
               <Link href={"/"}>
@@ -33,7 +41,12 @@ const list = ({ section, links, details, socialMedia, downloads }) => {
                 />
               </Link>
             </span>
-            <Link href={detail?.link ? detail?.link : "/"}>
+            <Link
+              href={detail?.link ? detail?.link : "/"}
+              className={` transition-all hover:text-primary-hover ${
+                index === 0 ? "pointer-events-none" : "cursor-pointer"
+              }`}
+            >
               <span>{detail.text}</span>
             </Link>
           </p>
@@ -70,7 +83,7 @@ const list = ({ section, links, details, socialMedia, downloads }) => {
                   height={39}
                   src={download.img}
                   alt="download"
-                  className=" max-w-[134px] max-h-[39px]"
+                  className=" max-w-[134px] max-h-[39px] w-full"
                 />
               </Link>
             </p>
