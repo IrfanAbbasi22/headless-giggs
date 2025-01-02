@@ -3,20 +3,19 @@ import Link from "next/link";
 const orderBanner = () => {
   return (
     <section
-      className="   mt-3  md:mt-0 py-10 md:py-[60px]  bg-cover bg-center"
-      // style={{ backgroundImage: `url(${BulkBanner})` }}
+      className="mt-3 md:mt-0 py-10 md:py-[60px] bg-cover bg-center"
       style={{
-        backgroundImage: `url(/assets/images/Bulk-Order-Banner.png)`,
+        backgroundImage: `url(/assets/images/bob.webp)`,
       }}
     >
-      <div className="container mx-auto px-5  ">
-        <div className=" grid  md:grid-cols-2 gap-2 ">
-          <div className=" flex gap-6  flex-col text-white">
-            <h2 className=" text-4xl lg:text-[64px] md:text-5xl font-semibold">
-              BULK <br /> ORDER
+      <div className="container mx-auto px-5">
+        <div className=" grid md:grid-cols-2 gap-2">
+          <div className="flex gap-6 flex-col text-white">
+            <h2 className="text-4xl lg:text-[64px] md:text-5xl font-semibold">
+              BULK <br/> ORDER
             </h2>
 
-            <p className="    font-normal ">
+            <p className="font-normal">
               Lorem ipsum dolor sit amet consectetur. Convallis nullam amet
               montes elit. Arcu diam placerat aliquam tempor lorem amet sed a
               sed. Sed diam enim sed nulla iaculis sit id blandit.
