@@ -14,8 +14,8 @@ const Banner = () => {
   const [loading, setLoading] = useState(true);
   const bannerRef = useRef(null);
   const images = [
-    { img: `/assets/images/banner-1.png`, slug: "/product-category/chicken" },
-    { img: `/assets/images/banner-2.png`, slug: "/product-category/mutton" },
+    { img: `/assets/images/banner-1.webp`, slug: "/product-category/chicken" },
+    { img: `/assets/images/banner-2.webp`, slug: "/product-category/mutton" },
   ];
 
   useEffect(() => {
