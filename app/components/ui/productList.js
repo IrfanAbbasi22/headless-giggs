@@ -12,7 +12,7 @@ import ProductCardPreloader from "@/app/components/ui/productCardPreloader";
 import ProductCard from "@/app/components/ui/productCard";
 
 
-const ProductList = ({ basePath, slug, allowedCategoryIds, perPage = 24 }) => {
+const ProductList = ({ basePath, searchQuery, slug, allowedCategoryIds, perPage = 24 }) => {
   const router = useRouter();
   const [products, setProducts] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
@@ -28,7 +28,11 @@ const ProductList = ({ basePath, slug, allowedCategoryIds, perPage = 24 }) => {
   const fetchProductsData = async (option = {}) => {
     try {
       if (option.category || option.orderby || option.order)
-        setFilterLoading(true);
+      setFilterLoading(true);
+
+      if(searchQuery){
+        option.search = searchQuery;
+      }
 
       const productsRes = await fetchProducts(option);
       const productData = await productsRes.json();
@@ -72,7 +76,7 @@ const ProductList = ({ basePath, slug, allowedCategoryIds, perPage = 24 }) => {
       );
 
       setCategoryData(filteredCats);
-      console.log("filteredCats", filteredCats);
+      // console.log("filteredCats", filteredCats);
     } catch (err) {
       setError(`Error fetching data: ${err.message}`);
     } finally {
@@ -125,13 +129,13 @@ const ProductList = ({ basePath, slug, allowedCategoryIds, perPage = 24 }) => {
     if (!hasInitiated.current && slug) {
       hasInitiated.current = true;
       fetchCatData();
-      console.log("inside initial effect", slug);
+      // console.log("inside initial effect", slug);
     }
 
     const curCat = categoryData.find((cat) => cat.slug === slug);
     if (curCat) {
       setSelectedCategory(curCat);
-      console.log("curCatcurCatcurCat", curCat);
+      // console.log("curCatcurCatcurCat", curCat);
       setProducts([]);
       setCurrentPage(1);
       fetchProductsData({
@@ -148,7 +152,7 @@ const ProductList = ({ basePath, slug, allowedCategoryIds, perPage = 24 }) => {
   useEffect(() => {
     if (!hasInitiated.current && !slug && !selectedCategory) {
         hasInitiated.current = true;
-        console.log("!slug && !selectedCategory", !slug && !selectedCategory);
+        // console.log("!slug && !selectedCategory", !slug && !selectedCategory);
         fetchCatData();
         fetchProductsData({ curPage: 1, perPage });
     }
@@ -250,11 +254,12 @@ const ProductList = ({ basePath, slug, allowedCategoryIds, perPage = 24 }) => {
             <div className="lg:col-span-9 col-span-12  flex flex-col  gap-6 md:gap-10">
               <div className=" lg:flex justify-between hidden  ">
                 <h3 className="text-2xl font-semibold">
-                  {selectedCategory
-                    ? categoryData.find(
-                        (cat) => cat.id === selectedCategory?.id
-                      )?.name || "Category"
-                    : "Category"}
+                  {basePath === "/shop" && searchQuery
+                    ? `Result: ${searchQuery}`
+                    : selectedCategory
+                    ? categoryData.find((cat) => cat.id === selectedCategory?.id)?.name || "Category"
+                    : "Category"
+                  }
                 </h3>
 
                 <div>

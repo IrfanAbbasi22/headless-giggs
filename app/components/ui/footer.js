@@ -198,7 +198,6 @@ const Footer = () => {
   useEffect(() => {
     fetchCatData();
   }, []);
-  console.log(categoryData);
   return (
     <>
       <footer className=" py-5  md:py-[57px]  bg-[#FFE7E6]">

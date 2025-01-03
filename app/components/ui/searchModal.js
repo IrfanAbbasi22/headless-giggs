@@ -14,6 +14,7 @@ import Skeleton from "react-loading-skeleton";
 
 const SearchModal = ({ closeSearchPopUp }) => {
   const [products, setProducts] = useState([]);
+  const [totalProducts, setTotalProducts] = useState(0);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
@@ -23,12 +24,23 @@ const SearchModal = ({ closeSearchPopUp }) => {
     try {
       const productsRes = await fetchProducts(option);
       const productData = await productsRes.json();
-      if (option.curPage === 1) {
-        setProducts(productData || []);
-      } else if (productData?.length) {
-        setProducts((prevProducts) => [...prevProducts, ...productData]);
-      } else {
+      // if (option.curPage === 1) {
+      //   setProducts(productData || []);
+      // } else if (productData?.length) {
+      //   setProducts((prevProducts) => [...prevProducts, ...productData]);
+      // } else {
+      // }
+      
+      if (productData?.length) {
+        setProducts(productData);
+      }else{
+        setProducts([]);
       }
+
+      // Delay the logic after setting the state
+      window.setTimeout(() => {
+        setTotalProducts(productsRes.headers.get("X-WP-Total"));
+      }, 1000);
     } catch (error) {
       console.error("Error fetching products:", error);
     } finally {
@@ -132,7 +144,7 @@ const SearchModal = ({ closeSearchPopUp }) => {
                 </div>
               ))}
             {!loading && products.length === 0 && (
-              <div className="text-center text-gray-500 w-full">
+              <div className="col-span-3 text-center text-gray-500 w-full">
                 No products found
               </div>
             )}
@@ -144,9 +156,9 @@ const SearchModal = ({ closeSearchPopUp }) => {
             )}
           </div>
         </>
-        {(products.length > 0) && (
+        {(totalProducts > 6) && (
           <Link onClick={closeSearchPopUp} 
-            href={`/shop`} className={`flex items-center gap-1 text-xs md:text-base text-[#FF5D58] cursor-pointer`}>
+            href={`/shop?s=${searchQuery}`} className={`flex items-center gap-1 text-xs md:text-base text-[#FF5D58] cursor-pointer`}>
             View All <GoArrowRight />
           </Link>
         )}
