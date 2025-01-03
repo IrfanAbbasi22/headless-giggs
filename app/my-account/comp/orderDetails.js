@@ -1,35 +1,28 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-import { useParams, useRouter } from "next/navigation";
+// import { useParams, useRouter } from "next/navigation";
 import { getOrderDetails } from "@/app/components/lib/user/order/getOrderDetails";
 import { useSelector } from "react-redux";
 import { userDataToken } from "@/app/cart/store/slices/userSlice";
 import Skeleton from "react-loading-skeleton";
 import { formatCurrency } from "@/app/components/lib/user/formatCurrency";
-import MyAccount from "../page";
 
 const OrderDetails = ({ orderId, slug, setSelectedOrder }) => {
-  console.log(slug, "sssssssssssll");
-  const router = useRouter();
-  console.log(router);
-  console.log("orderId", orderId);
-  // return null;
+  // const router = useRouter();
+  // const { id } = useParams();
   const userToken = useSelector(userDataToken);
-  const { id } = useParams();
 
-  // console.log("id", id);
   const [orderDetail, setOrderDetail] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const hasInitiated = useRef(false);
 
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      console.log("orderIdorderId", orderId);
-
       const data = await getOrderDetails(orderId, userToken);
       // console.log(data);
       setOrderDetail(data);
@@ -41,7 +34,10 @@ const OrderDetails = ({ orderId, slug, setSelectedOrder }) => {
   };
 
   useEffect(() => {
-    fetchOrders();
+    if (!hasInitiated.current) {
+      hasInitiated.current = true;
+      fetchOrders();
+    }
   }, [orderId]);
 
   const itemId = parseInt(orderId, 10);
@@ -66,7 +62,7 @@ const OrderDetails = ({ orderId, slug, setSelectedOrder }) => {
 
                 <div className="flex">
                   <Link
-                    href="/myorder"
+                    href="/contact-us"
                     className="flex items-center gap-1 cursor-pointer"
                   >
                     <span className="text-sm text-[#2C292980]">Help</span>
@@ -261,13 +257,6 @@ const OrderDetails = ({ orderId, slug, setSelectedOrder }) => {
                         alt="Delivery icon"
                       />
                     </p>
-
-                    {/* <p className="text-sm">
-                      {formatCurrency(
-                        parseFloat(orderDetail?.totals?.subtotal / 100) || 0,
-                        orderDetail?.totals
-                      )}
-                    </p> */}
                   </div>
                   {orderDetail?.totals?.total_discount > 0 && (
                     <div className={`flex justify-between `}>
@@ -281,31 +270,12 @@ const OrderDetails = ({ orderId, slug, setSelectedOrder }) => {
                       </p>
                     </div>
                   )}
-                  {/* <div className={`flex justify-between `}>
-                    <p className="text-base">Shipping charges</p>
-                    <p className="text-sm">
-                      {formatCurrency(
-                        parseFloat(orderDetail?.totals?.total_shipping / 100) ||
-                          0,
-                        orderDetail?.totals
-                      )}
-                    </p>
-                  </div>
-                  <div className="flex justify-between">
-                    <strong className="text-lg">Total</strong>
-                    <p className="text-sm font-medium">
-                      {formatCurrency(
-                        parseFloat(orderDetail?.totals?.total_price / 100) || 0,
-                        orderDetail?.totals
-                      )}
-                    </p>
-                  </div> */}
                 </div>
                 <hr />
                 <div className="flex flex-col gap-3 lg:gap-6  mt-6 lg:mt-8">
                   <div className="flex flex-col border gap-[10px] w-full bg-lightGray   rounded-[10px] p-3">
                     <div className="flex justify-between">
-                      <h6 className="text-base text-[#2C292980]">
+                      <h6 className="text-sm lg:text-base text-[#2C292980]">
                         Qty & Item Name
                       </h6>
                       <strong className="text-sm">Total</strong>
@@ -314,7 +284,7 @@ const OrderDetails = ({ orderId, slug, setSelectedOrder }) => {
                     {orderDetail?.items?.length > 0 ? (
                       orderDetail.items.map((item, index) => (
                         <div key={index} className="flex justify-between">
-                          <p className="text-base">
+                          <p className="text-sm lg:text-base">
                             {item.quantity} x {item.name}
                           </p>
                           <p className="text-sm">
@@ -330,42 +300,50 @@ const OrderDetails = ({ orderId, slug, setSelectedOrder }) => {
                     )}
                   </div>
                   <div className="flex flex-col border gap-[10px] w-full bg-lightGray rounded-[10px] p-3">
+                    
+                    {/* Sub Total */}
                     <div className={`flex justify-between `}>
-                      <p className="text-base">Subtotal</p>
+                      <p className="text-sm lg:text-base">Subtotal</p>
 
                       <p className="text-sm">
                         {formatCurrency(
-                          orderDetail?.totals?.subtotal || 0,
+                          parseFloat(orderDetail?.totals?.subtotal / 100),
                           orderDetail?.totals
                         )}
                       </p>
                     </div>
+
+                    {/* Discount */}
                     {orderDetail?.totals?.total_discount > 0 && (
                       <div className={`flex justify-between `}>
-                        <p className="text-base text-[#24C300]">Discount</p>
+                        <p className="text-sm lg:text-base text-[#24C300]">Discount</p>
                         <p className="text-sm text-[#008000]">
                           -{" "}
                           {formatCurrency(
-                            orderDetail?.totals?.total_discount,
+                            parseFloat(orderDetail?.totals?.total_discount / 100),
                             orderDetail?.totals
                           )}
                         </p>
                       </div>
                     )}
+
+                    {/* Shipping Charges */}
                     <div className={`flex justify-between `}>
-                      <p className="text-base">Shipping charges</p>
+                      <p className="text-sm lg:text-base">Shipping charges</p>
                       <p className="text-sm">
                         {formatCurrency(
-                          orderDetail?.totals?.total_shipping || 0,
+                          parseFloat(orderDetail?.totals?.total_shipping / 100),
                           orderDetail?.totals
                         )}
                       </p>
                     </div>
+
+                    {/* Total Price */}
                     <div className="flex justify-between">
-                      <strong className="text-lg">Total</strong>
+                      <strong className="text-base lg:text-lg">Total</strong>
                       <p className="text-sm font-medium">
                         {formatCurrency(
-                          orderDetail?.totals?.total_price || 0,
+                          parseFloat(orderDetail?.totals?.total_price / 100),
                           orderDetail?.totals
                         )}
                       </p>
@@ -396,7 +374,7 @@ const OrderDetails = ({ orderId, slug, setSelectedOrder }) => {
                   </div>
 
                   <div className="flex lg:justify-center">
-                    <button className="bg-primary w-full lg:max-w-[60%] hover:bg-primary-hover text-white py-3 px-32 rounded-[10px]">
+                    <button className="text-sm lg:text-base bg-primary w-full lg:max-w-[60%] hover:bg-primary-hover text-white py-3 px-32 rounded-[10px]">
                       Reorder
                     </button>
                   </div>

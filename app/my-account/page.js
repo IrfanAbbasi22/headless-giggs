@@ -96,103 +96,33 @@ const MyAccount = ({ slug }) => {
           <div className="  col-span-12 lg:col-span-3">
             <ul className="lg:sticky lg:top-24 grid  grid-cols-1 lg:gap-4   lg:py-5  font-medium">
               <>
-                {MENU_ITEMS.map((item) => (
-                  <React.Fragment key={item.id}>
-                    {/* lg screens */}
-                    <li
-                      onClick={() => router.push(`/my-account/${item.slug}`)} // Navigate using slug
-                      className={`hidden lg:grid grid-cols-2 lg:grid-cols-1 items-center cursor-pointer ${
-                        slug === item.slug ? "border-r-4 border-[#ff5d58]" : ""
-                      }`}
-                    >
-                      <div className="flex items-center gap-2 lg:gap-3">
-                        <span>{item.icon}</span>
-                        <span className="text-base lg:text-xl cursor-pointer !leading-[40px]">
-                          {item.label}
-                        </span>
-                      </div>
-                    </li>
-
-                    {/* sm screens */}
-
-                    <div className="lg:hidden">
-                      {/* {slug ? (
-                      <div>
-                        {slug === "orders" && <Orders />}
-                        {slug === "addresses" && <Addresses />}
-                      </div>
-                    ) : (
-                      <li
-                        onClick={() => router.push(`/my-account/${item.slug}`)}
-                        className={`grid grid-cols-2 lg:grid-cols-1 lg:hidden items-center ${
-                          slug === item.slug ? "" : ""
-                        }`}
-                      >
-                        <div className="flex items-center gap-2 lg:gap-3">
-                          <span>{item.icon}</span>
-                          <span className="text-base lg:text-xl cursor-pointer">
-                            {item.label}
-                          </span>
-                        </div>
-                      </li>
-                    )} */}
-                      {/* sm screens */}
-                      <div className="lg:hidden">
-                        {slug ? (
-                          <div>
-                            {/* {slug === "profile" && <UserProfile slug={slug} />}
-                            {slug === "orders" && <Orders slug={slug} />}
-                            {slug === "addresses" && <Addresses slug={slug} />} */}
-                          </div>
-                        ) : (
+                {
+                  !(slug && window.innerWidth < 992) && (
+                    <>
+                      {MENU_ITEMS.map((item) => (
+                        <React.Fragment key={item.id}>
                           <li
-                            onClick={() =>
-                              router.push(`/my-account/${item.slug}`)
-                            }
-                            className={`grid grid-cols-2 lg:grid-cols-1 lg:hidden items-center border-b py-2 ${
-                              slug === item.slug ? "" : ""
+                            onClick={() => router.push(`/my-account/${item.slug}`)} // Navigate using slug
+                            className={`lg:text-xl border-b lg:border-b-0 py-2 flex items-center gap-2 lg:gap-3 cursor-pointer ${
+                              slug === item.slug ? "lg:border-r-4 lg:border-primary" : ""
                             }`}
                           >
-                            <div className="flex items-center gap-2 lg:gap-3 ">
-                              <span>{item.icon}</span>
-                              <span className="text-base lg:text-xl cursor-pointer">
-                                {item.label}
-                              </span>
-                            </div>
+                              {item.icon}
+                              {item.label}
                           </li>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* <hr className="lg:hidden" /> */}
-                  </React.Fragment>
-                ))}
-
-                <li
-                  onClick={openLogoutModal}
-                  className=" hidden lg:flex  items-center gap-2 lg:gap-3 cursor-pointer"
-                >
-                  <span>
-                    <PiSignOut className="text-base lg:text-xl" />
-                  </span>
-                  <span className="text-base lg:text-xl">Sign out</span>
-                </li>
-                <hr className=" hidden lg:hidden" />
-                {slug !== "orders" &&
-                  slug !== "addresses" &&
-                  slug !== "profile" && (
-                    <>
+                        </React.Fragment>
+                      ))}
+                    
                       <li
                         onClick={openLogoutModal}
-                        className="flex lg:hidden items-center gap-2 lg:gap-3 cursor-pointer border-b py-2"
+                        className="flex items-center text-base lg:text-xl gap-2 lg:gap-3 cursor-pointer border-b lg:border-b-0 py-2"
                       >
-                        <span>
-                          <PiSignOut className="text-base lg:text-xl" />
-                        </span>
-                        <span className="text-base lg:text-xl">Sign out</span>
+                        <PiSignOut/>
+                        Sign out
                       </li>
                     </>
-                  )}
+                  )
+                }
               </>
             </ul>
           </div>
