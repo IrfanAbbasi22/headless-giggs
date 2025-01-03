@@ -9,10 +9,14 @@ import Image from "next/image";
 
 import { SwiperNavButtons } from "../components/ui/swipperNavButton";
 import Skeleton from "react-loading-skeleton";
+import Link from "next/link";
 const Banner = () => {
   const [loading, setLoading] = useState(true);
   const bannerRef = useRef(null);
-  const images = [{ img: `/assets/images/banner-1.png` }, { img: `/assets/images/banner-2.png` }];
+  const images = [
+    { img: `/assets/images/banner-1.png`, slug: "/product-category/chicken" },
+    { img: `/assets/images/banner-2.png`, slug: "/product-category/mutton" },
+  ];
 
   useEffect(() => {
     setTimeout(() => {
@@ -55,16 +59,20 @@ const Banner = () => {
                   <Skeleton
                     height={209}
                     width="100%"
-                    borderRadius="16px"
+                    borderRadius="2rem"
                     key={img.img}
                     className="rounded-2xl  lg:!h-[384px]"
                   />
                 ) : (
-                  <Image width={346} height={210}
-                    src={img.img}
-                    alt={`banner-${index + 1}`}
-                    className=" w-full  rounded-2xl cursor-pointer"
-                  />
+                  <Link href={img.slug}>
+                    <Image
+                      width={346}
+                      height={210}
+                      src={img.img}
+                      alt={`banner-${index + 1}`}
+                      className="w-full rounded-[2rem] cursor-pointer"
+                    />
+                  </Link>
                 )}
               </SwiperSlide>
             ))}
