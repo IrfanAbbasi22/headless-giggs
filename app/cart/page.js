@@ -26,7 +26,6 @@ import CouponsModule from "./components/couponsModule";
 import AppliedDiscountModal from "./components/ui/appliedDiscountModal";
 import GetAddress from "./components/ui/address/getAddress";
 import SwiperProducts from "../components/ui/swiperProducts";
-import Payment from "../test/payment";
 import SecurePayment from "./components/ui/securePayment";
 import { useShippingPrice } from "./components/shippingPrice";
 import { formatCurrency } from "../components/lib/user/formatCurrency";
