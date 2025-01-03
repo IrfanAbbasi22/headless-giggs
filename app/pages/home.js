@@ -31,8 +31,8 @@ const Home = () => {
       <Banner />
       <HomeCats />
 
-      <HomeCatProducts cat_id="19" headings={headings} />
-      <HomeCatProducts cat_id="16" headings={headings2} />
+      <HomeCatProducts cat_id="39" headings={headings} />
+      <HomeCatProducts cat_id="40" headings={headings2} />
 
       <Chief />
       <Service />
