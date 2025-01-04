@@ -60,16 +60,19 @@ const SigninModal = () => {
     country_ext: "91",
     mobile: "",
     ver_method: "sms",
+    country_code: countryExt?.country?.toLowerCase() ?? "in",
   });
 
   const handlePhoneChange = (value, data) => {
-    const countryCode = data.dialCode;
-    const phoneNumber = value.replace(`${countryCode}`, '');
+    // console.log('data', data);
+    const countryExt = data.dialCode;
+    const phoneNumber = value.replace(`${countryExt}`, '');
 
     setFormData((prevData) => ({
       ...prevData,
-      country_ext: countryCode,
+      country_ext: countryExt,
       mobile: phoneNumber,
+      country_code: data?.countryCode,
     }));
   };
 

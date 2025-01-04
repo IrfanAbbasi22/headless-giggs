@@ -1,5 +1,5 @@
 let url = process.env.NEXT_PUBLIC_WOO_URL;
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import { CiEdit } from "react-icons/ci";
 import DotPulsePreloader from "@/app/components/ui/preloader/dotPulsePreloader";
@@ -13,9 +13,10 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { RxCross2 } from "react-icons/rx";
 import { toast, Bounce } from "react-toastify";
+import PhoneInput from "react-phone-input-2";
 const UserProfile = () => {
   const router = useRouter();
-  
+
   const dispatch = useDispatch();
   const user = useSelector(userDetails);
   const userToken = useSelector(userDataToken);
@@ -26,7 +27,8 @@ const UserProfile = () => {
     last_name: user?.last_name || "",
     email: user?.email || "",
     nwe_phone: user?.nwe_phone || "",
-    nwe_user_gender: user?.nwe_user_gender || "",
+    gender: user?.nwe_user_gender || "",
+    // country_ext: "91",
   });
 
   const genderOptions = [
@@ -128,7 +130,7 @@ const UserProfile = () => {
         const err = await response.json();
         // throw new Error("Failed to update profile");
         setFormError(err.error);
-        console.log('this is error', err.error)
+        console.log("this is error", err.error);
       } else {
         const updatedUser = await response.json();
         dispatch(updateUserDetails(updatedUser));
@@ -147,14 +149,33 @@ const UserProfile = () => {
         setIsEditing(false);
       }
     } catch (error) {
-      console.log(error.message || "An error occurred while updating"); 
-    }finally{
+      console.log(error.message || "An error occurred while updating");
+    } finally {
       setSubmitPreloader(false);
     }
   };
+  const mobileInputRef = useRef(null);
+
+  const handleKeyDown = (event) => {
+    const isNumeric =
+      /^[0-9]$/.test(event.key) ||
+      event.key === "Backspace" ||
+      event.key === "ArrowLeft" ||
+      event.key === "ArrowRight" ||
+      event.key === "Enter";
+    if (!isNumeric) {
+      event.preventDefault();
+    }
+
+    if (event.key === "Enter") {
+      if (event.target.classList.contains("mobileInput")) {
+        handleReqOTP(event);
+      }
+    }
+  };
+
   return (
-    <form
-      onSubmit={handleSave}>
+    <form onSubmit={handleSave}>
       <div className=" lg:px-5 flex flex-col gap-10">
         <div className="  flex items-center justify-between">
           <div className="  flex gap-3 items-center ">
@@ -189,7 +210,7 @@ const UserProfile = () => {
             </label>
             <input
               className={`w-full py-[10px] px-4 border border-[#d9d9d9] rounded-md outline-none transition-all ${
-                isEditing ? "focus:border-primary" : ""
+                isEditing ? "focus:border-primary" : "cursor-not-allowed"
               } `}
               type="text"
               name="first_name"
@@ -202,11 +223,11 @@ const UserProfile = () => {
               disabled={submitPreloader}
             />
 
-              {errors.first_name && (
-                <small className="absolute left-0 -bottom-5 text-xs text-red-600">
-                  {errors.first_name}
-                </small>
-              )}
+            {errors.first_name && (
+              <small className="absolute left-0 -bottom-5 text-xs text-red-600">
+                {errors.first_name}
+              </small>
+            )}
           </div>
 
           <div className="form-group w-full md:w-[calc(50%-12px)] flex flex-col gap-2  relative">
@@ -215,7 +236,7 @@ const UserProfile = () => {
             </label>
             <input
               className={`w-full py-[10px] px-4 border border-[#d9d9d9] rounded-md outline-none transition-all ${
-                isEditing ? "focus:border-primary" : ""
+                isEditing ? "focus:border-primary" : "cursor-not-allowed"
               } `}
               type="text"
               name="last_name"
@@ -236,7 +257,7 @@ const UserProfile = () => {
 
             <input
               className={`w-full py-[10px] px-4 border border-[#d9d9d9] rounded-md outline-none transition-all ${
-                isEditing ? "focus:border-primary" : ""
+                isEditing ? "focus:border-primary" : "cursor-not-allowed"
               } `}
               type="email"
               name="email"
@@ -249,11 +270,11 @@ const UserProfile = () => {
               disabled={submitPreloader}
             />
 
-              {errors.email && (
-                <small className="absolute left-0 -bottom-5 text-xs text-red-600">
-                  {errors.email}
-                </small>
-              )}
+            {errors.email && (
+              <small className="absolute left-0 -bottom-5 text-xs text-red-600">
+                {errors.email}
+              </small>
+            )}
           </div>
 
           <div className="form-group w-full md:w-[calc(50%-12px)] flex flex-col gap-2  relative">
@@ -261,17 +282,23 @@ const UserProfile = () => {
               Mobile Number
             </label>
 
-            <div className="flex">
-              <input
-                className="w-full py-[10px] px-4 border border-[#d9d9d9] rounded-md outline-none transition-all "
-                type="tel"
+            <div className={`flex ${!isEditing ? "cursor-not-allowed pointer-events-none" : "" }`}>
+              <PhoneInput
                 name="nwe_phone"
-                id="userMobile"
+                country={formData?.country_ext?.toLowerCase() ?? "in"}
                 placeholder={`Enter mobile number`}
                 value={formData.nwe_phone}
                 onBlur={handleBlur}
+                id="userMobile"
                 readOnly
                 disabled={submitPreloader}
+                // className={`w-full py-[10px] px-4 border  border-[#d9d9d9] rounded-md outline-none transition-all`}
+                containerClass={``}
+                inputClass={`!w-full !h-auto py-[10px] !text-base leading-6 px-4 border border-[#d9d9d9] rounded-md outline-none transition-all ${!isEditing ? "cursor-not-allowed" : "" }`}
+                inputProps={{
+                  onKeyDown: handleKeyDown,
+                  ref: mobileInputRef,
+                }}
               />
             </div>
             {errors.nwe_phone && (
@@ -289,16 +316,21 @@ const UserProfile = () => {
                   <input
                     id={option.id}
                     type="radio"
-                    name="nwe_user_gender"
+                    name="gender"
                     value={option.value}
-                    className="focus:ring-primary accent-primary cursor-pointer disabled:accent-primary"
-                    checked={formData.nwe_user_gender === option.value}
+                    // value={formData.nwe_user_gender}
+                    className={`focus:ring-primary accent-primary ${
+                      !isEditing ? "cursor-not-allowed" : "cursor-pointer"
+                    } disabled:accent-primary`}
+                    checked={formData.gender == option.value}
                     onChange={handleChange}
                     disabled={!isEditing || submitPreloader}
                   />
                   <label
                     htmlFor={option.id}
-                    className="text-[#4d4d4d] text-sm cursor-pointer"
+                    className={`text-[#4d4d4d] text-sm ${
+                      !isEditing ? "cursor-not-allowed" : "cursor-pointer"
+                    }`}
                   >
                     {option.label}
                   </label>
@@ -333,7 +365,6 @@ const UserProfile = () => {
                   </div>
                 )}
               </button>
-
             </div>
           </>
         )}

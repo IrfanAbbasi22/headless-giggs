@@ -63,6 +63,27 @@ const MyAccount = ({ slug }) => {
     }
   }, [isLoggedIn, router]);
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth > 992);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isMobile && !slug) {
+      router.push("/my-account/profile");
+    }
+  }, [isMobile, slug, router]);
+
   const userLogout = () => {
     handleLogout();
     setLogoutModal(false);
@@ -96,33 +117,35 @@ const MyAccount = ({ slug }) => {
           <div className="  col-span-12 lg:col-span-3">
             <ul className="lg:sticky lg:top-24 grid  grid-cols-1 lg:gap-4   lg:py-5  font-medium">
               <>
-                {
-                  !(slug && window.innerWidth < 992) && (
-                    <>
-                      {MENU_ITEMS.map((item) => (
-                        <React.Fragment key={item.id}>
-                          <li
-                            onClick={() => router.push(`/my-account/${item.slug}`)} // Navigate using slug
-                            className={`lg:text-xl border-b lg:border-b-0 py-2 flex items-center gap-2 lg:gap-3 cursor-pointer ${
-                              slug === item.slug ? "lg:border-r-4 lg:border-primary" : ""
-                            }`}
-                          >
-                              {item.icon}
-                              {item.label}
-                          </li>
-                        </React.Fragment>
-                      ))}
-                    
-                      <li
-                        onClick={openLogoutModal}
-                        className="flex items-center text-base lg:text-xl gap-2 lg:gap-3 cursor-pointer border-b lg:border-b-0 py-2"
-                      >
-                        <PiSignOut/>
-                        Sign out
-                      </li>
-                    </>
-                  )
-                }
+                {!(slug && window.innerWidth < 992) && (
+                  <>
+                    {MENU_ITEMS.map((item) => (
+                      <React.Fragment key={item.id}>
+                        <li
+                          onClick={() =>
+                            router.push(`/my-account/${item.slug}`)
+                          } // Navigate using slug
+                          className={`lg:text-xl border-b lg:border-b-0 py-2 flex items-center gap-2 lg:gap-3 cursor-pointer ${
+                            slug === item.slug
+                              ? "lg:border-r-4 lg:border-primary"
+                              : ""
+                          }`}
+                        >
+                          {item.icon}
+                          {item.label}
+                        </li>
+                      </React.Fragment>
+                    ))}
+
+                    <li
+                      onClick={openLogoutModal}
+                      className="flex items-center text-base lg:text-xl gap-2 lg:gap-3 cursor-pointer border-b lg:border-b-0 py-2"
+                    >
+                      <PiSignOut />
+                      Sign out
+                    </li>
+                  </>
+                )}
               </>
             </ul>
           </div>

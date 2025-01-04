@@ -1,6 +1,6 @@
 export const reqOTP = async (data) => {
   // console.log("country", data.country_ext);
-  // console.log("mobile", data.mobile);
+  // console.log("mobile", data);
 
   try {
     const url = `${process.env.NEXT_PUBLIC_WOO_URL}/nwe/v1/user/req-otp`;
@@ -12,6 +12,7 @@ export const reqOTP = async (data) => {
       },
       body: JSON.stringify({
         country_ext: data.country_ext ?? "91",
+        country_code: data.country_code ?? "",
         mobile_no: data.mobile ?? "",
         ver_method: "sms",
       }),
