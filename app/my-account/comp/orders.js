@@ -306,35 +306,49 @@ const Orders = ({ slug }) => {
                           {formatCurrency(order.total, cartData?.totals)}
                         </p>
                         <div className="flex gap-1">
-                          {order.status === "completed" ||
-                          order.status === "delivered" ? (
-                            <button className="py-[9px] px-3 rounded-[10px] text-white bg-primary-hover hover:bg-primary-hover cursor-pointer">
-                              <div className="flex gap-[6px]">
-                                <span className="text-xs font-medium">
-                                  Reorder
-                                </span>
-                                <span>
-                                  <Image
-                                    src={`/assets/icons/reorder-icon.svg`}
-                                    height={16}
-                                    width={16}
-                                    alt="ReOrder"
-                                  />
-                                </span>
-                              </div>
+                          {
+                            <button
+                              className={`group flex gap-[6px] text-xs font-medium py-[9px] px-3 rounded-[10px]  
+                              ${
+                                order.status === "processing"
+                                  ? "bg-secondary hover:bg-primary-hover hover:text-white"
+                                  : "bg-primary hover:bg-primary-hover text-white"
+                              }`}
+                            >
+                              Reorder
+                          
+                              <svg
+                                className={`w-4 h-4 ${
+                                  order.status === "processing"
+                                    ? "text-black group-hover:text-white"
+                                    : "text-white"
+                                }`}
+                                width="16"
+                                height="16"
+                                viewBox="0 0 16 16"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M11.3178 13C12.9345 11.9251 14 10.087 14 8C14 4.68629 11.3137 2 8 2C7.54173 2 7.09547 2.05137 6.66667 2.14868M11.3178 13V10.6667M11.3178 13H13.6667M4.66667 3.01037C3.05869 4.08671 2 5.91972 2 8C2 11.3137 4.68629 14 8 14C8.45827 14 8.90453 13.9486 9.33333 13.8513M4.66667 3.01037V5.33333M4.66667 3.01037H2.33333"
+                                  stroke="currentColor"
+                                  strokeWidth="1.5"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
                             </button>
-                          ) : (
-                            <button className="py-[9px] px-3 rounded-[10px] text-white bg-primary hover:bg-primary-hover cursor-pointer">
-                              <div className="flex gap-[6px] items-center">
-                                <span className="text-xs font-medium">
-                                  Track
-                                </span>
-                                <span>
-                                  <MdDeliveryDining className=" " />
-                                </span>
-                              </div>
-                            </button>
-                          )}
+                          }
+
+                          {
+                            order.status === "processing" && (
+                              <button className="flex gap-[6px] text-xs font-medium py-[9px] px-3 rounded-[10px] text-white bg-primary hover:bg-primary-hover">
+                                Track
+
+                                <MdDeliveryDining className="w-4 h-4" />
+                              </button>
+                            )
+                          }
                         </div>
                       </div>
                     </div>
