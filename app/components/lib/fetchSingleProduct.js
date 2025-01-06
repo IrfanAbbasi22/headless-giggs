@@ -1,6 +1,6 @@
 export const fetchSingleProduct = async (slug) => {
-    console.log(slug);
-    const url = `${process.env.NEXT_PUBLIC_WOO_URL}/wc/v3/products?slug=${slug}`;
+    // console.log(slug);
+    const url = `${process.env.NEXT_PUBLIC_WOO_URL}/wc/v3/products?status=publish&slug=${slug}`;
     try {
         const response = await fetch(url, {
             method: 'GET',
