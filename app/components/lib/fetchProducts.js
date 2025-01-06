@@ -7,6 +7,7 @@ export const fetchProducts = async (options = {}) => {
     order,
     orderby,
     include,
+    exclude,
   } = options;
 
   try {
@@ -15,18 +16,12 @@ export const fetchProducts = async (options = {}) => {
       per_page: perPage,
       page: curPage,
     });
-    // let url = `${process.env.NEXT_PUBLIC_WOO_URL}/wc/v3/products?status=publish&per_page=${perPage}&page=${curPage}`;
-    // if (category) {
-    //   url += `&category=${category}`;
-    // }
-    // if (search) {
-    //   url += `&search=${search}`;
-    // }
 
     if (category) params.append("category", category);
     if (search) params.append("search", search);
     if (order) params.append("order", order);
     if (orderby) params.append("orderby", orderby);
+    if (exclude) params.append("exclude", exclude);
     if (include) params.append("include", include);
     let url = `${
       process.env.NEXT_PUBLIC_WOO_URL

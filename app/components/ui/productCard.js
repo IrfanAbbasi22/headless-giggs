@@ -270,7 +270,7 @@ export default function ProductCard({ product, gridClass }) {
                   {formatCurrency(product.price, cartDetailsData?.totals)}
                 </span>
               )}
-              {product.regular_price && (
+              {product.regular_price && product.regular_price !== product.price && (
                 <del className="originalPrice text-sm text-black opacity-50">
                   {formatCurrency(
                     product.regular_price,

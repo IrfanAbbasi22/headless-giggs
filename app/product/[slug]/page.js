@@ -112,7 +112,7 @@ export default async function ProductDetailPage({ params }) {
       {/* our client say */}
       <ClientSay />
 
-      <SwiperRelatedProducts productID={productDetailsdata?.related_ids} heading={`Similar Products`} />
+      <SwiperRelatedProducts excludeID={productDetailsdata?.id} productIDs={productDetailsdata?.related_ids} heading={`Similar Products`} />
 
       {/* pdp description page */}
       {productDetailsdata?.description && (

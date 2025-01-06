@@ -12,15 +12,16 @@ import ProductCardPreloader from "./productCardPreloader";
 import ProductCard from "./productCard";
 import { fetchProducts } from "../lib/fetchProducts";
 
-const SwiperRelatedProducts = ({heading, productID = [], }) => {
+const SwiperRelatedProducts = ({heading, excludeID, productIDs = [], }) => {
     const [loading, setLoading] = useState(true);
     const [productData, setProductData] = useState([]);
 
     const getRelatedProucts = async () => {
         const res = await fetchProducts({
+            exclude: [excludeID],
             perPage: 24,
             curPage: 1,
-            include: productID,
+            include: productIDs,
         }) 
 
         const resultData = await res.json();
@@ -31,12 +32,12 @@ const SwiperRelatedProducts = ({heading, productID = [], }) => {
     useEffect(() => {
         if (!isFetched.current) {
             isFetched.current = true;
-            if(productID?.length > 0){
+            // if(productIDs?.length > 0){
                 getRelatedProucts();
-            }
+            // }
         }
 
-    }, [productID])
+    }, [productIDs])
 
     const swiperRef = useRef(null);
     const getInitialSlidesCount = () => {

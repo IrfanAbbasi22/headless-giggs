@@ -9,7 +9,7 @@ import {
 import { deleteUserAddress } from "@/app/components/lib/user/deleteUserAddress";
 import DotPulsePreloader from "@/app/components/ui/preloader/dotPulsePreloader";
 import { useUpdateShippingAddress } from "@/app/components/lib/cart/updateShippingAddress";
-import { saveUserNewAddress } from "@/app/components/lib/user/saveUserNewAddress";
+import { markAsDefaultAddress } from "@/app/components/lib/user/saveUserNewAddress";
 import { getUserAddress } from "@/app/components/lib/user/getUserAddress";
 
 const AddressCard = ({ item, setAddress, address, addressLength }) => {
@@ -92,7 +92,7 @@ const AddressCard = ({ item, setAddress, address, addressLength }) => {
         throw new Error("Failed to update address with WooCommerce!");
       }
       // If shipData is successfully received, proceed to update the default address
-      const updateDefaultAddress = await saveUserNewAddress(updatedItemData);
+      const updateDefaultAddress = await markAsDefaultAddress(updatedItemData?.id);
       
       // Dispatch the addresses only if updateDefaultAddress contains addresses
       if (updateDefaultAddress?.addresses) {

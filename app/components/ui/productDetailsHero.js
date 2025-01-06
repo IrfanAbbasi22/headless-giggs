@@ -16,19 +16,24 @@ export default function ProductDetailsHero({productDetailsdata}){
   const dispatch = useDispatch();
   const cartDetailsData = useSelector(cartDetails);
 
-
   // Variation Management
-  const processedVariationData = productDetailsdata?.nwe_available_variations?.map((item) => ({
-    "attribute_pa_pieces-type": item.attributes["attribute_pa_pieces-type"],  // Use hyphenated key
-    "attribute_pa_weight": item.attributes["attribute_pa_weight"],
-    display_price: item.display_price,
-    display_regular_price: item.display_regular_price,
-    max_qty: item.max_qty || "",
-    min_qty: item.min_qty || 1,
-    variation_id: item.variation_id,
-    is_in_stock: item.is_in_stock,
-  }));
-
+  const processedVariationData = productDetailsdata?.nwe_available_variations?.map((item) => {
+    const attributes = Object.keys(item.attributes).reduce((acc, key) => {
+      acc[key] = item.attributes[key];
+      return acc;
+    }, {});
+  
+    return {
+      ...attributes,
+      display_price: item.display_price,
+      display_regular_price: item.display_regular_price,
+      max_qty: item.max_qty || "",
+      min_qty: item.min_qty || 1,
+      variation_id: item.variation_id,
+      is_in_stock: item.is_in_stock,
+    };
+  });
+  
   const [selectedVariation, setSelectedVariation] = useState(null);
   const [variationSelections, setVariationSelections] = useState({});
   const [variationExistError, setVariationExistError] = useState("");
@@ -36,6 +41,7 @@ export default function ProductDetailsHero({productDetailsdata}){
   // Reset Variations
   const resetSelections = () => {
     setVariationSelections({});
+    setSelectedVariation(null);
     setVariationExistError("");
   };
 
@@ -61,11 +67,23 @@ export default function ProductDetailsHero({productDetailsdata}){
     const updatedSelections = { ...variationSelections, [attributeKey]: curOption };
     setVariationSelections(updatedSelections);
     
+    // Check if all attributes have been selected
+    const requiredAttributes = productDetailsdata?.attributes.map(attr => `attribute_${attr.slug.toLowerCase()}`);
+    const allAttributesSelected = requiredAttributes.every(attr => updatedSelections[attr]);
+
+    // console.log('requiredAttributes', requiredAttributes);
+    // console.log('allAttributesSelected', allAttributesSelected);
+    // console.log('updatedSelections', updatedSelections);
+    if (!allAttributesSelected) {
+      setVariationExistError("");
+      return;
+    }
+
     // Filter variations based on updatedSelections, checking each attribute
     const result = processedVariationData.filter((variation) => {
       return Object.keys(updatedSelections).every((key) => {
-        // console.log('Checking', key, variation[key], updatedSelections[key]);
-        return variation[key] === updatedSelections[key];
+        // console.log('Checking', key, variation[key]?.toLowerCase(), updatedSelections[key]);
+        return variation[key]?.toLowerCase() === updatedSelections[key];
       });
     });
 
@@ -254,7 +272,7 @@ export default function ProductDetailsHero({productDetailsdata}){
             <div className="col-span-12 md:col-span-6">
               {
                 productDetailsdata?.images?.length > 0  ? (
-                    <SwiperSlider images={productDetailsdata.images} />
+                    <SwiperSlider images={productDetailsdata.images} variationImage={selectedVariation?.image?.full_src} />
                 ) : (
                     <Image className={`aspect-[608/480] object-cover object-center rounded-2xl w-full`}
                         src={`/woocommerce-placeholder.webp`} 
@@ -520,7 +538,7 @@ export default function ProductDetailsHero({productDetailsdata}){
                                 {formatCurrency(productDetailsdata.price, cartDetailsData?.totals)}
                             </span>
                             )}
-                            {productDetailsdata.regular_price && (
+                            {productDetailsdata.regular_price && productDetailsdata.regular_price !== productDetailsdata.price  && (
                             <del className="text-black opacity-50">
                                 {formatCurrency(
                                 productDetailsdata.regular_price,
@@ -557,7 +575,7 @@ export default function ProductDetailsHero({productDetailsdata}){
                   <span>Delivery in 90 mins</span>
                 </p>
 
-                {/* selecting attr like weight  */}
+                {/* selecting attr like weight, size  */}
                 {productDetailsdata?.attributes && productDetailsdata?.attributes.length > 0 && typeof processedVariationData === "object" && Object.keys(processedVariationData).length > 0 && (
                   <>
                     {productDetailsdata.attributes.map((variation) => (
@@ -575,9 +593,9 @@ export default function ProductDetailsHero({productDetailsdata}){
                                 id={`variation-${variation.id}-${variationOpt.toLowerCase().replace(/\s+/g, '-')}`}
                                 name={`variationName-${variation.name}${variation.id}`}
                                 value={variationOpt}
-                                onChange={() => {checkVariationExist(variation.slug, variationOpt)}}
+                                onChange={() => {checkVariationExist(variation.slug?.toLowerCase(), variationOpt)}}
                                 className="peer hidden"
-                                checked={variationSelections[`attribute_${variation.slug}`] === variationOpt.toLowerCase().replace(/\s+/g, '-')}
+                                checked={variationSelections[`attribute_${variation.slug?.toLowerCase()}`] === variationOpt.toLowerCase().replace(/\s+/g, '-')}
                               />
 
                               <span className="inline-block peer-checked:bg-primary peer-checked:text-white px-2 py-[6px] rounded-md border">

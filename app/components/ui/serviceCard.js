@@ -46,11 +46,11 @@ const ServiceCard = ({ serviceData }) => {
                   />
                 </div>
                 <div className=" flex flex-col gap-1 md:gap-3  items-center text-center     ">
-                  <Link href={"/"}>
+                  {/* <Link href={"/"}> */}
                     <h4 className=" font-semibold text-xs md:text-xl cursor-pointer">
                       {service.title}
                     </h4>
-                  </Link>
+                  {/* </Link> */}
                   <p className=" text-[8px] font-normal   md:text-xs">
                     {service.text}
                   </p>
