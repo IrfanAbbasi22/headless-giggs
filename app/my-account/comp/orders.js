@@ -228,9 +228,6 @@ const Orders = ({ slug }) => {
               {orders.map((order, index) => (
                 <div
                   key={`orderID${order?.id}${index}`}
-                  // href={`/my-account/orders/${order?.id}`}
-                  onClick={() => handleOrderClick(order.id)}
-                  // passHref
                   className="w-full lg:w-[calc(33%-5px)]"
                 >
                   <div
@@ -241,7 +238,8 @@ const Orders = ({ slug }) => {
                     <div className="flex flex-col gap-3 h-full">
                       <div className="flex flex-col gap-[6px]">
                         <div className="flex justify-between">
-                          <h6 className="font-medium text-base cursor-pointer">
+                          <h6 className="font-medium text-base cursor-pointer"
+                            onClick={() => handleOrderClick(order.id)}>
                             Order #{order.id}
                           </h6>
                           <span
@@ -342,7 +340,9 @@ const Orders = ({ slug }) => {
 
                           {
                             order.status === "processing" && (
-                              <button className="flex gap-[6px] text-xs font-medium py-[9px] px-3 rounded-[10px] text-white bg-primary hover:bg-primary-hover">
+                              <button
+                                onClick={() => handleOrderClick(order.id)} 
+                                className="flex gap-[6px] text-xs font-medium py-[9px] px-3 rounded-[10px] text-white bg-primary hover:bg-primary-hover">
                                 Track
 
                                 <MdDeliveryDining className="w-4 h-4" />
