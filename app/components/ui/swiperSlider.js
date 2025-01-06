@@ -16,8 +16,8 @@ export default function SwiperSlider({ images, variationImage=null }) {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
   const modifiedImages = variationImage
-    ? [{ src: variationImage }, ...images.filter((img) => img.src !== variationImage)]
-    : images;
+    ? [ { src: variationImage }, ...images.filter((_, index) => index !== 0) ]
+    : images; 
 
   return (
     <div className="relative">
