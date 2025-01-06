@@ -129,7 +129,6 @@ const AddressCard = ({ item, setAddress, address, addressLength }) => {
 
   return (
     <>
-      {/* TODO: disable card click using props for my account except for the checkout */}
       <div
         className={`min-h-44 flex gap-2 border rounded-md p-4 md:p-5 ${
           cardData?.is_default !== 0 && isCardActive
@@ -139,6 +138,7 @@ const AddressCard = ({ item, setAddress, address, addressLength }) => {
       >
         <svg
           onClick={() => {
+            cardData?.is_default !== 1 && 
             updateShippingAddressInCart(cardData);
           }}
           className="mt-1 min-w-5 cursor-pointer"
@@ -166,6 +166,7 @@ const AddressCard = ({ item, setAddress, address, addressLength }) => {
         <div className="w-full">
           <span
             onClick={() => {
+              cardData?.is_default !== 1 && 
               updateShippingAddressInCart(cardData);
             }}
             className="cursor-pointer font-medium leading-tight text-base text-black mb-2 inline-block"
