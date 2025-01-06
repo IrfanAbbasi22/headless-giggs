@@ -28,7 +28,6 @@
 
 export const checkPincodeAv = async (pincode) => {
   const url = `${process.env.NEXT_PUBLIC_WOO_URL}/nwe/v1/delivery/check_pincode`;
-  console.log(url, "pincodessssssssssssss", pincode);
   const data = {
     method: "POST",
     headers: {

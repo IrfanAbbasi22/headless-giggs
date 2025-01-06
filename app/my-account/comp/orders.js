@@ -89,7 +89,6 @@ const Orders = ({ slug }) => {
     setShowFilter(true);
   };
   const handleOrderClick = (orderId) => {
-    console.log(orderId, "ssssssssss");
     setSelectedOrder(orderId); // Set the selected order
   };
 

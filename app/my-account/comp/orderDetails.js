@@ -171,7 +171,7 @@ const OrderDetails = ({ orderId, slug, setSelectedOrder }) => {
 
               <div className="flex">
                 <Link
-                  href="/myorder"
+                  href="/contact-us"
                   className="flex items-center gap-1 cursor-pointer"
                 >
                   <span className="text-sm text-[#2C292980]">Help</span>

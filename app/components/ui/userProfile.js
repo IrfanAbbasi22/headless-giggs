@@ -26,9 +26,10 @@ const UserProfile = () => {
     first_name: user?.first_name || "",
     last_name: user?.last_name || "",
     email: user?.email || "",
-    nwe_phone: user?.nwe_phone || "",
+    // nwe_phone: user?.nwe_phone || "",
+    // nwe_country_ext: user?.nwe_country_ext || "",
+    // nwe_country_code: user?.nwe_country_code || "",
     gender: user?.nwe_user_gender || "",
-    // country_ext: "91",
   });
 
   const genderOptions = [
@@ -47,9 +48,9 @@ const UserProfile = () => {
     if (!formData.first_name.trim()) {
       newErrors.first_name = "First Name is required";
     }
-    if (!formData.nwe_phone.trim()) {
-      newErrors.nwe_phone = "Mobile Number is required";
-    }
+    // if (!formData.nwe_phone.trim()) {
+    //   newErrors.nwe_phone = "Mobile Number is required";
+    // }
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -124,8 +125,7 @@ const UserProfile = () => {
         },
         body: JSON.stringify(formData),
       });
-      // console.log(formData, "ssssssssss");
-
+      
       if (!response.ok) {
         const err = await response.json();
         // throw new Error("Failed to update profile");
@@ -175,201 +175,209 @@ const UserProfile = () => {
   };
 
   return (
-    <form onSubmit={handleSave}>
-      <div className=" lg:px-5 flex flex-col gap-10">
-        <div className="  flex items-center justify-between">
-          <div className="  flex gap-3 items-center ">
-            {" "}
-            <Image
-              src={`/assets/icons/back-arrow.svg`}
-              width={24}
-              height={25}
-              alt="BackArrow"
-              className=" lg:hidden cursor-pointer"
-              onClick={() => router.push("/my-account")}
-            />
-            <h3 className="text-xl font-medium "> My profile</h3>
-          </div>
+    <>
+      <form onSubmit={handleSave}>
+        <div className=" lg:px-5 flex flex-col gap-10">
+          <div className="  flex items-center justify-between">
+            <div className="  flex gap-3 items-center ">
+              {" "}
+              <Image
+                src={`/assets/icons/back-arrow.svg`}
+                width={24}
+                height={25}
+                alt="BackArrow"
+                className=" lg:hidden cursor-pointer"
+                onClick={() => router.push("/my-account")}
+              />
+              <h3 className="text-xl font-medium "> My profile</h3>
+            </div>
 
-          {isEditing ? (
-            <RxCross2
-              className="  text-xl  cursor-pointer "
-              onClick={() => setIsEditing(false)}
-            />
-          ) : (
-            <CiEdit
-              className=" text-xl cursor-pointer"
-              onClick={() => setIsEditing(true)}
-            />
-          )}
-        </div>
-        <div className="flex flex-wrap  gap-x-5 gap-y-10">
-          <div className="form-group w-full md:w-[calc(50%-12px)] flex flex-col gap-2  relative">
-            <label htmlFor="userFirstName" className="text-[#4d4d4d] text-sm">
-              First Name
-            </label>
-            <input
-              className={`w-full py-[10px] px-4 border border-[#d9d9d9] rounded-md outline-none transition-all ${
-                isEditing ? "focus:border-primary" : "cursor-not-allowed"
-              } `}
-              type="text"
-              name="first_name"
-              id="userFirstName"
-              placeholder={user?.first_name || "Enter first name"}
-              value={formData.first_name}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              readOnly={!isEditing}
-              disabled={submitPreloader}
-            />
-
-            {errors.first_name && (
-              <small className="absolute left-0 -bottom-5 text-xs text-red-600">
-                {errors.first_name}
-              </small>
+            {isEditing ? (
+              <RxCross2
+                className="  text-xl  cursor-pointer "
+                onClick={
+                  () => {
+                    setErrors({});
+                    setFormError("");
+                    setIsEditing(false);
+                  }
+                }
+              />
+            ) : (
+              <CiEdit
+                className=" text-xl cursor-pointer"
+                onClick={() => setIsEditing(true)}
+              />
             )}
           </div>
-
-          <div className="form-group w-full md:w-[calc(50%-12px)] flex flex-col gap-2  relative">
-            <label htmlFor="userLastName" className="text-[#4d4d4d] text-sm">
-              Last Name
-            </label>
-            <input
-              className={`w-full py-[10px] px-4 border border-[#d9d9d9] rounded-md outline-none transition-all ${
-                isEditing ? "focus:border-primary" : "cursor-not-allowed"
-              } `}
-              type="text"
-              name="last_name"
-              id="userLastName"
-              placeholder={`Enter last name`}
-              value={formData.last_name}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              readOnly={!isEditing}
-              disabled={submitPreloader}
-            />
-          </div>
-
-          <div className="form-group w-full md:w-[calc(50%-12px)] flex flex-col gap-2  relative">
-            <label htmlFor="userEmail" className="text-[#4d4d4d] text-sm">
-              Email Address
-            </label>
-
-            <input
-              className={`w-full py-[10px] px-4 border border-[#d9d9d9] rounded-md outline-none transition-all ${
-                isEditing ? "focus:border-primary" : "cursor-not-allowed"
-              } `}
-              type="email"
-              name="email"
-              id="userEmail"
-              placeholder={`Enter email`}
-              value={formData.email}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              readOnly={!isEditing}
-              disabled={submitPreloader}
-            />
-
-            {errors.email && (
-              <small className="absolute left-0 -bottom-5 text-xs text-red-600">
-                {errors.email}
-              </small>
-            )}
-          </div>
-
-          <div className="form-group w-full md:w-[calc(50%-12px)] flex flex-col gap-2  relative">
-            <label htmlFor="userMobile" className="text-[#4d4d4d] text-sm">
-              Mobile Number
-            </label>
-
-            <div className={`flex ${!isEditing ? "cursor-not-allowed pointer-events-none" : "" }`}>
-              <PhoneInput
-                name="nwe_phone"
-                country={formData?.country_ext?.toLowerCase() ?? "in"}
-                placeholder={`Enter mobile number`}
-                value={formData.nwe_phone}
+          <div className="flex flex-wrap  gap-x-5 gap-y-10">
+            <div className="form-group w-full md:w-[calc(50%-12px)] flex flex-col gap-2  relative">
+              <label htmlFor="userFirstName" className="text-[#4d4d4d] text-sm">
+                First Name <span className="text-red-600">*</span>
+              </label>
+              <input
+                className={`w-full py-[10px] px-4 border border-[#d9d9d9] rounded-md outline-none transition-all ${
+                  isEditing ? "focus:border-primary" : "cursor-not-allowed"
+                } `}
+                type="text"
+                name="first_name"
+                id="userFirstName"
+                placeholder={user?.first_name || "Enter first name"}
+                value={formData.first_name}
+                onChange={handleChange}
                 onBlur={handleBlur}
-                id="userMobile"
-                readOnly
+                readOnly={!isEditing}
                 disabled={submitPreloader}
-                // className={`w-full py-[10px] px-4 border  border-[#d9d9d9] rounded-md outline-none transition-all`}
-                containerClass={``}
-                inputClass={`!w-full !h-auto py-[10px] !text-base leading-6 px-4 border border-[#d9d9d9] rounded-md outline-none transition-all ${!isEditing ? "cursor-not-allowed" : "" }`}
-                inputProps={{
-                  onKeyDown: handleKeyDown,
-                  ref: mobileInputRef,
-                }}
+              />
+
+              {errors.first_name && (
+                <small className="absolute left-0 -bottom-5 text-xs text-red-600">
+                  {errors.first_name}
+                </small>
+              )}
+            </div>
+
+            <div className="form-group w-full md:w-[calc(50%-12px)] flex flex-col gap-2  relative">
+              <label htmlFor="userLastName" className="text-[#4d4d4d] text-sm">
+                Last Name
+              </label>
+              <input
+                className={`w-full py-[10px] px-4 border border-[#d9d9d9] rounded-md outline-none transition-all ${
+                  isEditing ? "focus:border-primary" : "cursor-not-allowed"
+                } `}
+                type="text"
+                name="last_name"
+                id="userLastName"
+                placeholder={`Enter last name`}
+                value={formData.last_name}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                readOnly={!isEditing}
+                disabled={submitPreloader}
               />
             </div>
-            {errors.nwe_phone && (
-              <small className="absolute left-0 -bottom-5 text-xs text-red-600">
-                {errors.nwe_phone}
-              </small>
-            )}
-          </div>
 
-          <div className="form-group w-full md:w-[calc(50%-12px)] flex flex-col gap-2  relative">
-            <p className="text-[#4d4d4d] text-sm"> Gender</p>
-            <div className="flex gap-2">
-              {genderOptions.map((option) => (
-                <React.Fragment key={option.id}>
-                  <input
-                    id={option.id}
-                    type="radio"
-                    name="gender"
-                    value={option.value}
-                    // value={formData.nwe_user_gender}
-                    className={`focus:ring-primary accent-primary ${
-                      !isEditing ? "cursor-not-allowed" : "cursor-pointer"
-                    } disabled:accent-primary`}
-                    checked={formData.gender == option.value}
-                    onChange={handleChange}
-                    disabled={!isEditing || submitPreloader}
-                  />
-                  <label
-                    htmlFor={option.id}
-                    className={`text-[#4d4d4d] text-sm ${
-                      !isEditing ? "cursor-not-allowed" : "cursor-pointer"
-                    }`}
-                  >
-                    {option.label}
-                  </label>
-                </React.Fragment>
-              ))}
+            <div className="form-group w-full md:w-[calc(50%-12px)] flex flex-col gap-2  relative">
+              <label htmlFor="userEmail" className="text-[#4d4d4d] text-sm">
+                Email Address <span className="text-red-600">*</span>
+              </label>
+
+              <input
+                className={`w-full py-[10px] px-4 border border-[#d9d9d9] rounded-md outline-none transition-all ${
+                  isEditing ? "focus:border-primary" : "cursor-not-allowed"
+                } `}
+                type="email"
+                name="email"
+                id="userEmail"
+                placeholder={`Enter email`}
+                value={formData.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                readOnly={!isEditing}
+                disabled={submitPreloader}
+              />
+
+              {errors.email && (
+                <small className="absolute left-0 -bottom-5 text-xs text-red-600">
+                  {errors.email}
+                </small>
+              )}
+            </div>
+
+            <div className="form-group w-full md:w-[calc(50%-12px)] flex flex-col gap-2  relative">
+              <label htmlFor="userMobile" className="text-[#4d4d4d] text-sm">
+                Mobile Number <span className="text-red-600">*</span>
+              </label>
+
+              <div className={`flex`}>
+                <PhoneInput
+                  name="nwe_phone"
+                  country={user?.country_ext?.toLowerCase() ?? "in"}
+                  placeholder={`Enter mobile number`}
+                  value={`${user?.nwe_country_ext} ${user?.nwe_phone}` }
+                  onBlur={handleBlur}
+                  id="userMobile"
+                  readOnly={true} // Make the input read-only
+                  disabled={true} 
+                  containerClass={``}
+                  buttonClass={`!cursor-not-allowed !pointer-events-none`} 
+                  inputClass={`!w-full !h-auto py-[10px] !text-base leading-6 px-4 border border-[#d9d9d9] rounded-md outline-none transition-all !cursor-not-allowed`}
+                  inputProps={{
+                    // onKeyDown: handleKeyDown,
+                    ref: mobileInputRef,
+                  }}
+                />
+              </div>
+              {/* {errors.nwe_phone && (
+                <small className="absolute left-0 -bottom-5 text-xs text-red-600">
+                  {errors.nwe_phone}
+                </small>
+              )} */}
+            </div>
+
+            <div className="form-group w-full md:w-[calc(50%-12px)] flex flex-col gap-2  relative">
+              <p className="text-[#4d4d4d] text-sm"> Gender</p>
+              <div className="flex gap-2">
+                {genderOptions.map((option) => (
+                  <React.Fragment key={option.id}>
+                    <input
+                      id={option.id}
+                      type="radio"
+                      name="gender"
+                      value={option.value}
+                      // value={formData.nwe_user_gender}
+                      className={`focus:ring-primary accent-primary ${
+                        !isEditing ? "cursor-not-allowed" : "cursor-pointer"
+                      } disabled:accent-primary`}
+                      checked={formData.gender == option.value}
+                      onChange={handleChange}
+                      disabled={!isEditing || submitPreloader}
+                    />
+                    <label
+                      htmlFor={option.id}
+                      className={`text-[#4d4d4d] text-sm ${
+                        !isEditing ? "cursor-not-allowed" : "cursor-pointer"
+                      }`}
+                    >
+                      {option.label}
+                    </label>
+                  </React.Fragment>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-        {isEditing && (
-          <>
-            <div className="">
-              {formError && (
-                <div className="form-group w-full text-sm text-red-600 pt-10 pb-5">
-                  {formError}
-                </div>
-              )}
-
-              <button
-                className={`relative bg-primary hover:bg-primary-hover py-3 px-8 rounded-lg font-medium text-base
-                    disabled:opacity-50 transition-bg ${
-                      submitPreloader
-                        ? "text-primary hover:text-primary-hover"
-                        : "text-white"
-                    }`}
-                disabled={submitPreloader}
-                type="submit"
-              >
-                Save Changes
-                {submitPreloader && (
-                  <div className="text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                    <DotPulsePreloader color={"#ffffff"} />
+          {isEditing && (
+            <>
+              <div className="">
+                {formError && (
+                  <div className="form-group w-full text-sm text-red-600 pb-5">
+                    {formError}
                   </div>
                 )}
-              </button>
-            </div>
-          </>
-        )}
-      </div>
-    </form>
+
+                <button
+                  className={`relative bg-primary hover:bg-primary-hover py-3 px-8 rounded-lg font-medium text-base
+                      disabled:opacity-50 transition-bg ${
+                        submitPreloader
+                          ? "text-primary hover:text-primary-hover"
+                          : "text-white"
+                      }`}
+                  disabled={submitPreloader}
+                  type="submit"
+                >
+                  Save Changes
+                  {submitPreloader && (
+                    <div className="text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                      <DotPulsePreloader color={"#ffffff"} />
+                    </div>
+                  )}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </form>
+    </>
   );
 };
 

@@ -20,7 +20,6 @@ const LocationModal = ({ closeLocationModal, setPincodeData, pincodeData }) => {
     if (storedData) {
       const parsedData = JSON.parse(storedData);
       setPincode(parsedData.pincode);
-      console.log(parsedData.pincode, "ssssssssss");
     }
   }, []);
 
