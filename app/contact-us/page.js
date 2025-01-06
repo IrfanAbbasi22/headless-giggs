@@ -60,16 +60,23 @@ const ContactUs = () => {
     }
   };
   return (
-    <section className="py-[14px] bg-lightGray lg:py-10">
+    <section className="py-[14px]  bg-lighGray lg:py-10">
       <div className=" container  flex flex-col   items-center ">
         <div className=" flex flex-col gap-5 lg:gap-8 items-center">
-          <h2 className="text-lg font-bold leading-tight text-gray-900 sm:text-4xl lg:text-4xl">
-            Contact us
-          </h2>
+          <div className=" flex flex-col items-center  gap-2 lg:gap-4 text-center max-w-2xl ">
+            <h2 className="text-lg font-bold leading-tight text-gray-900 sm:text-4xl lg:text-4xl">
+              Contact us
+            </h2>
+            <p className="  text-xs lg:text-base">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum
+              cum reiciendis excepturi, nemo possimus sunt explicabo suscipit
+              est tenetur eius?
+            </p>
+          </div>
 
           <div className="max-w-5xl  ">
             <div className="grid grid-cols-1 gap-6 px-8 text-center md:px-0 md:grid-cols-3">
-              <div className="overflow-hidden bg-white rounded-xl">
+              <div className="overflow-hidden  bg-secondary  rounded-xl">
                 <div className="p-6 flex items-center flex-col gap-7">
                   <svg
                     className="flex-shrink-0 w-10 h-10   text-gray-400 "
@@ -94,7 +101,7 @@ const ContactUs = () => {
                 </div>
               </div>
 
-              <div className="overflow-hidden bg-white rounded-xl">
+              <div className="overflow-hidden bg-secondary  rounded-xl">
                 <div className="p-6 flex flex-col items-center gap-7">
                   <svg
                     className="flex-shrink-0 w-10 h-10  text-gray-400 "
@@ -119,7 +126,7 @@ const ContactUs = () => {
                 </div>
               </div>
 
-              <div className="overflow-hidden bg-white rounded-xl">
+              <div className="overflow-hidden bg-secondary  rounded-xl">
                 <div className="p-6 flex items-center flex-col gap-7">
                   <svg
                     className="flex-shrink-0 w-10 h-10  text-gray-400 "
@@ -149,7 +156,7 @@ const ContactUs = () => {
               </div>
             </div>
 
-            <div className="mt-6 overflow-hidden bg-white rounded-xl">
+            <div className="mt-6 overflow-hidden bg-secondary rounded-xl">
               <div className="px-6 py-12 sm:p-12">
                 <h3 className="text-base lg:text-xl font-semibold text-center text-gray-900">
                   Send us a message

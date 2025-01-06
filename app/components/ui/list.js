@@ -58,7 +58,7 @@ const list = ({ section, links, details, socialMedia, downloads }) => {
               key={index}
               className="text-[#807373] text-[10px] md:text-sm cursor-pointer"
             >
-              <Link href={media.link}>
+              <Link href={media.link} target="_blank">
                 <Image
                   width={24}
                   height={24}
@@ -77,7 +77,7 @@ const list = ({ section, links, details, socialMedia, downloads }) => {
               key={index}
               className="text-[#807373] text-[10px] md:text-sm cursor-pointer"
             >
-              <Link href={download.Link}>
+              <Link href={download.Link} target="_blank">
                 <Image
                   width={134}
                   height={39}

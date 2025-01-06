@@ -60,7 +60,7 @@ const SigninModal = () => {
     country_ext: "91",
     mobile: "",
     ver_method: "sms",
-    country_code: countryExt?.country?.toLowerCase() ?? "in",
+    country_code: countryExt?.country?.toUpperCase() ?? "IN",
   });
 
   const handlePhoneChange = (value, data) => {
@@ -72,7 +72,7 @@ const SigninModal = () => {
       ...prevData,
       country_ext: countryExt,
       mobile: phoneNumber,
-      country_code: data?.countryCode,
+      country_code: data?.countryCode?.toUpperCase(),
     }));
   };
 

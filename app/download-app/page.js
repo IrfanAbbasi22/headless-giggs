@@ -30,7 +30,7 @@ const page = () => {
 
                 <div className="flex items-center gap-2 mt-2 lg:mt-4 ">
                   {downloads.map((item, index) => (
-                    <Link key={index} href={item.Link}>
+                    <Link key={index} href={item.Link} target="_blank">
                       <Image
                         width={137}
                         height={37}

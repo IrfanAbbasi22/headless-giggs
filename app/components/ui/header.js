@@ -26,23 +26,11 @@ const Header = () => {
   const totalItems = useSelector(selectedTotalItems);
   const userLoggedInStatus = useSelector(isUserLoggedIn);
 
-  const [toggle, setToggle] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [locationModal, setLocationModal] = useState(false);
   const [searchPopUp, setSearchPopUp] = useState(false);
   const [userToggle, setUserToggle] = useState(false);
   const [pincodeData, setPincodeData] = useState(null);
 
-  const dropdownItems = [
-    { label: "All" },
-    { label: "Fish" },
-    { label: "Mutton" },
-    { label: "Ready to Relish" },
-    { label: "Cold Cuts" },
-    { label: "Imported" },
-  ];
-
-  const [offset, setOffset] = useState(0);
 
   const openLocationModal = () => {
     setLocationModal(true);
@@ -58,14 +46,6 @@ const Header = () => {
     setSearchPopUp(false);
   };
 
-  // useEffect(() => {
-  //   const onScroll = () => setOffset(window.scrollY);
-
-  //   // console.log(offset);
-  //   window.removeEventListener("scroll", onScroll);
-  //   window.addEventListener("scroll", onScroll, { passive: true });
-  //   return () => window.removeEventListener("scroll", onScroll);
-  // }, []);
   useEffect(() => {
     const storedPincodeData = localStorage.getItem("pincodeData");
     if (storedPincodeData) {
@@ -73,11 +53,23 @@ const Header = () => {
     }
   }, []);
 
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
     <>
-      <header className=" fixed z-30 bg-white  top-0  w-full">
+      <header className={`fixed z-30 bg-white top-0 w-full ${scrolled ? "shadow-[0_0_.5rem_0_rgba(0,0,0,0.2)]" : ''}`}>
         <TopBanner />
-        {/* {offset < 50 && <TopBanner />} */}
         <main className="container mx-auto px-5  py-4 ">
           <div className="flex items-center justify-between">
             <div className=" w-1/3  hidden lg:flex items-center gap-12">
@@ -220,39 +212,13 @@ const Header = () => {
                 />
               )}
 
-              {/* {userToggle && (
-                <>
-                  <div className=" absolute z-50   top-12 right-7  rounded-lg border   bg-white">
-                    <ul className=" flex flex-col gap-2   py-2 px-4 text-sm font-medium">
-                      <li>
-                        <Link
-                          href={"/my-account"}
-                          onClick={() => setUserToggle(false)}
-                          className=" cursor-pointer"
-                        >
-                          My Account
-                        </Link>
-                      </li>
-                      <li>
-                        <button
-                          onClick={() => {
-                            setUserToggle(false);
-                            logoutUser();
-                          }}
-                          className=" cursor-pointer bg-primary text-white px-3 py-1 rounded-lg"
-                        >
-                          Log out
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
-                </>
-              )} */}
-
               <div className="hidden lg:block ">
-                <button className="bg-[#FF5D58] text-white font-medium  text-base  py-[14px] px-[18px]  rounded-2xl">
+                <Link
+                  href={"/download-app"}
+                  className="bg-[#FF5D58] text-white font-medium  text-base  py-[14px] px-[18px]  rounded-2xl"
+                >
                   Download the App
-                </button>
+                </Link>
               </div>
             </div>
           </div>
