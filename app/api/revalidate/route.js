@@ -34,16 +34,21 @@ export async function POST(req) {
     const data = await response.json();
 
     // Extract the slug from the response
-    const slug = data.slug;
+    let slug = data.slug;
+
     if (!slug) {
       return new Response(JSON.stringify({ message: 'Slug not found in product data' }), { status: 400 });
+    }
+
+    if (slug.includes('__trashed')) {
+      slug = slug.replace('__trashed', '');
     }
 
     // Revalidate the specific product page
     const revalidatePathUrl = `/product/${slug}`;
     revalidatePath(revalidatePathUrl);
 
-    console.log('Revalidated path:', revalidatePathUrl);
+    console.log('Revalidated path:', slug);
     return new Response(JSON.stringify({ message: `Revalidated ${revalidatePathUrl}` }), { status: 200 });
 
   } catch (error) {
