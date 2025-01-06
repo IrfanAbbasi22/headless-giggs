@@ -16,7 +16,7 @@ export async function POST(req) {
     }
 
     // Fetch product details from WooCommerce API
-    const url = `${process.env.NEXT_PUBLIC_WOO_URL}/wc/v3/products/${id}`;
+    const url = `${process.env.NEXT_PUBLIC_WOO_URL}/wc/v3/products/${id}?status=publish`;
     const response = await fetch(url, {
       method: "GET",
       headers: {
