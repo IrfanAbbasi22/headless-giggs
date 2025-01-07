@@ -41,6 +41,7 @@ export async function POST(req) {
     }
 
     if (slug.includes('__trashed')) {
+      console.log('curr slug', slug);
       slug = slug.replace('__trashed', '');
     }
 
