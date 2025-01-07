@@ -4,7 +4,6 @@ export async function POST(req) {
   try {
     const body = await req.json();
     const { id, secret } = body;
-    // console.log('id from res', id);
 
     // Optional: Secure your API with a token
     // if (secret !== process.env.REVALIDATION_SECRET) {
@@ -16,7 +15,7 @@ export async function POST(req) {
     }
 
     // Fetch product details from WooCommerce API
-    const url = `${process.env.NEXT_PUBLIC_WOO_URL}/wc/v3/products/${id}?status=publish`;
+    const url = `${process.env.NEXT_PUBLIC_WOO_URL}/wc/v3/products/${id}`;
     const response = await fetch(url, {
       method: "GET",
       headers: {
@@ -31,27 +30,32 @@ export async function POST(req) {
       throw new Error(`Failed to fetch product data: ${response.statusText}`);
     }
 
-    const data = await response.json();
+    const product = await response.json();
 
-    // Extract the slug from the response
-    let slug = data.slug;
+    // Check the product status
+    let { slug, status } = product;
 
     if (!slug) {
       return new Response(JSON.stringify({ message: 'Slug not found in product data' }), { status: 400 });
     }
 
-    if (slug.includes('__trashed')) {
-      console.log('curr slug', slug);
-      slug = slug.replace('__trashed', '');
+    // Remove "__trashed" from the slug
+    if (slug.includes("__trashed")) {
+      slug = slug.replace("__trashed", "");
     }
 
-    // Revalidate the specific product page
     const revalidatePathUrl = `/product/${slug}`;
-    revalidatePath(revalidatePathUrl);
 
-    console.log('Revalidated path:', slug);
-    return new Response(JSON.stringify({ message: `Revalidated ${revalidatePathUrl}` }), { status: 200 });
+    if (status === "publish") {
+      // Revalidate the page if the product is published
+      revalidatePath(revalidatePathUrl);
+      return new Response(JSON.stringify({ message: `Revalidated ${revalidatePathUrl}` }), { status: 200 });
+    } else {
+      // Remove the page from cache for draft/trash
+      revalidatePath(revalidatePathUrl);
 
+      return new Response(JSON.stringify({ message: `Removed or invalidated ${revalidatePathUrl}` }), { status: 200 });
+    }
   } catch (error) {
     console.error('Error during revalidation:', error);
     return new Response(JSON.stringify({ message: 'Error revalidating', error: error.message }), { status: 500 });

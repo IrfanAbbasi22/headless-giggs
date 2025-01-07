@@ -12,8 +12,10 @@ export const fetchSingleProduct = async (slug) => {
         
         const data = await response.json();
         
-        if(data.length){
+        if (data.length && data.status === "publish") {
             return data;
+        } else {
+            return null;
         }
 
     } catch (error) {

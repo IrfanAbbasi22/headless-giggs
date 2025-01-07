@@ -70,12 +70,13 @@ const ProductList = ({ basePath, searchQuery, slug, allowedCategoryIds, perPage 
       const resultCat = await fetchCats();
 
       // Filter only the required IDs
-      const allowedIds = allowedCategoryIds;
-      const filteredCats = resultCat.filter((cat) =>
-        allowedIds.includes(cat.id)
-      );
+      // const allowedIds = allowedCategoryIds;
+      // const filteredCats = resultCat.filter((cat) =>
+      //   allowedIds.includes(cat.id)
+      // );
 
-      setCategoryData(filteredCats);
+      setCategoryData(resultCat);
+      // setCategoryData(filteredCats);
       // console.log("filteredCats", filteredCats);
     } catch (err) {
       setError(`Error fetching data: ${err.message}`);
@@ -235,7 +236,12 @@ const ProductList = ({ basePath, searchQuery, slug, allowedCategoryIds, perPage 
               </div>
 
               <ul className="flex flex-col gap-4 text-[#2C292980]">
-                {categoryData.map((category) => (
+                {
+                  
+                }
+                {categoryData
+                  .filter((category) => allowedCategoryIds.includes(category.id))
+                  .map((category) => (
                   <li
                     key={category.id}
                     className={`cursor-pointer leading-8 ${
