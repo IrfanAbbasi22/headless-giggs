@@ -55,8 +55,8 @@ export default async function ProductDetailPage({ params }) {
   // Fetching the product data based on the slug
   const product = await fetchSingleProduct(slug);  
 
-  console.log('product', product[0].status);
-  if (product === null || product === undefined || product[0].status === "trash" || product[0].status === "draft") {
+  // console.log('product', product[0].status);
+  if (product === null || product === undefined) {
     return <>
       <main className="min-h-[70dvh] bg-gradient-to-b from-background to-secondary/20 flex flex-col items-center justify-center p-4 sm:p-6 md:p-8">
         <div className="w-full max-w-[380px] md:max-w-md space-y-6 text-center">
@@ -98,6 +98,7 @@ export default async function ProductDetailPage({ params }) {
       </main>
     </>;
   }
+  console.log('product', product[0]);
   const productDetailsdata = product[0];
 
   // console.log('productDetailsdata', productDetailsdata)
