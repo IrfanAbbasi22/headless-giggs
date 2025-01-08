@@ -46,6 +46,8 @@ export async function POST(req) {
 
     const revalidatePathUrl = `/product/${slug}`;
 
+    console.log('this is the status', status);
+
     if (status === "publish") {
       // Revalidate the page if the product is published
       revalidatePath(revalidatePathUrl);
