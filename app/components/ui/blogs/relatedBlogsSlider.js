@@ -43,7 +43,7 @@ export default function RelatedBlogsSlider({excludeID, categories }) {
   return (
     <>
         <Swiper
-            slidesPerView={1}
+            slidesPerView={3}
             spaceBetween={24}
             autoplay={{
                 delay: 1500,
