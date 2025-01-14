@@ -41,6 +41,7 @@ const SideCheckoutModal = ({ setSideCheckoutPopUp }) => {
   const cartData = useSelector(cartDetails);
   const currentStep = useSelector(currentSelectedStep);
   const userLoggedInStatus = useSelector(isUserLoggedIn);
+  const totalItems = useSelector(selectedTotalItems);
   const { updateShippingRates } = useShippingPrice();
   const [isVisible, setIsVisible] = useState(false);
   const dispatch = useDispatch();
@@ -133,7 +134,7 @@ const SideCheckoutModal = ({ setSideCheckoutPopUp }) => {
       <div className="container mx-auto text-center">Loading Cart Data...</div>
     );
   }
-  const totalItems = useSelector(selectedTotalItems);
+  
   return (
     <>
       <div className="fixed inset-0 z-50 bg-black bg-opacity-50">

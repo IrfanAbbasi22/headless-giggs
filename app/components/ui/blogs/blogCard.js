@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 const BlogCard = ({ blog }) => {
     return (
@@ -10,7 +11,7 @@ const BlogCard = ({ blog }) => {
                     href={`/blog/${blog?.slug}`}
                     className="rounded-t-lg aspect-[300/200] inline-block w-full overflow-hidden group"
                 >
-                    <img
+                    <Image
                         width={300}
                         height={200}
                         className="w-full h-full object-cover group-hover:scale-125 transition-all"

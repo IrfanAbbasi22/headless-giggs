@@ -1,12 +1,12 @@
 "use client";
-import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import Skeleton from "react-loading-skeleton";
 import DotPulsePreloader from "../components/ui/preloader/dotPulsePreloader";
 import { fetchBlogs } from "../components/lib/fetchPostDetails";
 import BlogCard from "../components/ui/blogs/blogCard";
 
-const page = () => {
+
+const Page = () => {
 
     const [blogs, setBlogs] = useState([]);
     const [preloader, setPreloader] = useState(true);
@@ -142,4 +142,4 @@ const page = () => {
     );
 };
 
-export default page;
+export default Page;

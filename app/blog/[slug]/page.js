@@ -96,7 +96,7 @@ export default async function PostPage({ params }) {
                 </h1>
 
                 {postDetail?.featuredImageUrl && (
-                  <img
+                  <Image
                     width={300}
                     height={200}
                     className={`w-full h-auto`}

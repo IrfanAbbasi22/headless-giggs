@@ -67,7 +67,7 @@ const PostSideBar = () => {
                         Thank you for subscribing! 🎉
                         </p>
                         <p className="text-green-600 text-sm mt-1">
-                        You'll receive our next newsletter soon.
+                        You&apos;ll receive our next newsletter soon.
                         </p>
                     </div>
                     ) : (
