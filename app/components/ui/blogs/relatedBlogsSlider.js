@@ -29,7 +29,15 @@ export default function RelatedBlogsSlider({excludeID, categories }) {
         });
 
         const resultData = await res.json();
-        setBlogs(resultData);
+        const postsWithImages = resultData.map((post) => {
+            const featuredImageUrl = post._embedded?.['wp:featuredmedia']?.[0]?.source_url || null;
+            return {
+              ...post,
+              featuredImageUrl,
+            };
+        });
+
+        setBlogs(postsWithImages);
         setPreloader(false);
     }
 
@@ -43,7 +51,7 @@ export default function RelatedBlogsSlider({excludeID, categories }) {
   return (
     <>
         <Swiper
-            slidesPerView={3}
+            slidesPerView={1}
             spaceBetween={24}
             autoplay={{
                 delay: 1500,
