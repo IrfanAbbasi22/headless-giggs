@@ -10,7 +10,7 @@ export default async function PostPage({ params }) {
     const { slug } = await params;
     const postDetail = await fetchPostDetails(slug);
 
-    console.log("fuck", postDetail);
+    console.log("postDetail", postDetail);
 
     if (postDetail === null || postDetail === undefined) {
         return (

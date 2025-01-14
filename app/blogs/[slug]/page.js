@@ -2,7 +2,6 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 
 export default async function PostPage({ params }) {
-    console.log('fuck', params)
     // Fetching data directly in the component
     const res = await fetch(`${process.env.WP_API_URL}/posts?slug=${params.slug}`);
     const data = await res.json();
