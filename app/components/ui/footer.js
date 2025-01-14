@@ -15,8 +15,8 @@ const Footer = () => {
       section: "Useful Links",
       links: [
         {
-          name: "Blog",
-          slug: "/blog",
+          name: "Blogs",
+          slug: "/blogs",
         },
         {
           name: "Careers",
