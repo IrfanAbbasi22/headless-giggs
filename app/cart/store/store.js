@@ -3,6 +3,7 @@ import productDetailModalReducer from './slices/productDetailModalSlice';
 import cartReducer from './slices/cartSlice';
 import userReducer from './slices/userSlice';
 import cartStepsReducer from './slices/cartStepsSlice';
+import sideCartReducer from './slices/sideCartSlice';
 import {
   persistStore,
   persistReducer,
@@ -58,6 +59,7 @@ export const store = configureStore({
     productDetailModal: productDetailModalReducer,
     cart: cartPersistedReducer,
     cartSteps: cartStepsReducer,
+    sideCart: sideCartReducer,
     user: userPersistedReducer,
   },
   middleware: (getDefaultMiddleware) =>

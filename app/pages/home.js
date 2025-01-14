@@ -26,6 +26,7 @@ const Home = () => {
         "  Lorem ipsum, dolor sit amet consectetur adipisicing eli Doloribus reiciendis nisi dolores, optio",
     },
   ];
+
   return (
     <>
       <Banner />

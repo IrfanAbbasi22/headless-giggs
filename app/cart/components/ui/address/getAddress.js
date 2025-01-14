@@ -14,10 +14,15 @@ import AddressCard from "./addressCard";
 import SaveNewAddress from "./saveNewAddress";
 import Skeleton from "react-loading-skeleton";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 const GetAddress = () => {
+  const pathname = usePathname();
   const router = useRouter();
+
+  // const { slug } = router.query
+  console.log(pathname.startsWith("/cart"), "pathname.startsWith")
+
   const dispatch = useDispatch();
   // const userAddedAddresses = useSelector(userAddresses);
   const userToken = useSelector(userDataToken);
@@ -112,11 +117,13 @@ const GetAddress = () => {
   if (!showAddAddress) {
     return (
       <>
-        <div className="grid lg:grid-cols-2 gap-4 lg:gap-6">
-          <Skeleton className="!min-h-44" />
-          <Skeleton className="!min-h-44" />
-          <Skeleton className="!min-h-44" />
-          <Skeleton className="!min-h-44" />
+        <div className="@container">
+          <div className="grid  @[500px]:grid-cols-2 gap-4 @[500px]:gap-6">
+            <Skeleton className="!min-h-44" />
+            <Skeleton className="!min-h-44" />
+            <Skeleton className="!min-h-44" />
+            <Skeleton className="!min-h-44" />
+          </div>
         </div>
       </>
     );
@@ -124,38 +131,43 @@ const GetAddress = () => {
 
   return (
     <>
-      <h3 className="font-medium text-xl flex gap-3 items-center ">
-        {" "}
-        <Image
-          src={`/assets/icons/back-arrow.svg`}
-          width={24}
-          height={25}
-          alt="BackArrow"
-          className=" lg:hidden cursor-pointer"
-          onClick={() => router.push("/my-account")}
-        />
-        My Address
-      </h3>
+      {
+        pathname.startsWith("/my-account/addresses") &&
+        <h3 className="font-medium text-xl flex gap-3 items-center ">
+          {" "}
+          <Image
+            src={`/assets/icons/back-arrow.svg`}
+            width={24}
+            height={25}
+            alt="BackArrow"
+            className=" lg:hidden cursor-pointer"
+            onClick={() => router.push("/my-account")}
+          />
+          My Address
+        </h3>
+      }
 
-      <div className="grid lg:grid-cols-2 gap-4 lg:gap-6 mt-3">
-        {address.length > 0 &&
-          address.map((item, index) => (
-            <AddressCard
-              key={`addressList${index}`}
-              item={item}
+      <div className="@container">
+        <div className="grid @[500px]:grid-cols-2 gap-4 @[500px]:gap-6 mt-3">
+          {address.length > 0 &&
+            address.map((item, index) => (
+              <AddressCard
+                key={`addressList${index}`}
+                item={item}
+                setAddress={setAddress}
+                address={address}
+                addressLength={address?.length}
+              />
+            ))}
+
+          {showAddAddress && (
+            <SaveNewAddress
+              addressLength={address?.length}
               setAddress={setAddress}
               address={address}
-              addressLength={address?.length}
             />
-          ))}
-
-        {showAddAddress && (
-          <SaveNewAddress
-            addressLength={address?.length}
-            setAddress={setAddress}
-            address={address}
-          />
-        )}
+          )}
+        </div>
       </div>
       {/* Load More CTA */}
       {address.length > 0 && hasMore && (

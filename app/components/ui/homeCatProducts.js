@@ -13,7 +13,7 @@ import ProductCard from "./productCard";
 import ProductCardPreloader from "./productCardPreloader";
 import { fetchProducts } from "../lib/fetchProducts";
 
-export default function HomeCatProducts({ cat_id, headings }) {
+export default function HomeCatProducts({ cat_id, headings, setSidePupUp }) {
   const [loading, setLoading] = useState(true);
   const [catData, setCatData] = useState([]);
   const [error, setError] = useState(null);
@@ -37,7 +37,7 @@ export default function HomeCatProducts({ cat_id, headings }) {
         const result = await fetchProducts({
           perPage: 24,
           curPage: 1,
-          category: cat_id
+          category: cat_id,
         });
         const resultData = await result.json();
         setCatData(resultData);
@@ -77,7 +77,7 @@ export default function HomeCatProducts({ cat_id, headings }) {
                 modules={[Navigation]}
                 spaceBetween={12}
                 slidesPerView={2}
-                loop={ true }
+                loop={true}
                 onSlideChange={() => console.log("Slide changed")}
                 breakpoints={{
                   577: {
@@ -94,7 +94,7 @@ export default function HomeCatProducts({ cat_id, headings }) {
               >
                 {catData.map((item, i) => (
                   <SwiperSlide key={i}>
-                    <ProductCard product={item} />
+                    <ProductCard product={item} setSidePupUp={setSidePupUp} />
                   </SwiperSlide>
                 ))}
               </Swiper>

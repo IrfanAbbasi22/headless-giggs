@@ -10,6 +10,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { cartDetails, resetCart, cartChangesPreloader } from '../store/slices/cartSlice';
 import { userDataToken, userDetails } from '../store/slices/userSlice';
 import Skeleton from 'react-loading-skeleton';
+import { formatCurrency } from '@/app/components/lib/user/formatCurrency';
 
 
 const PaymentComponent = () => {
@@ -158,18 +159,20 @@ const PaymentComponent = () => {
 
     if(paymentMethodData.length <= 0){
         return (
-            <div className="flex gap-6">
-                <div className="flex flex-col max-w-[290px] w-full border-r border-[#e6e6e6]">
-                    <Skeleton width={`80%`} height={24}/>
-                    <Skeleton width={`80%`} height={24}/>
-                    <Skeleton width={`80%`} height={24}/>
-                    <Skeleton width={`80%`} height={24}/>
-                    <Skeleton width={`80%`} height={24}/>
-                </div>
+            <div className="@container">
+                <div className="flex-col @[520px]:flex-row flex gap-6">
+                    <div className="flex flex-col @[520px]:max-w-[290px] w-full border-r border-[#e6e6e6]">
+                        <Skeleton width={`80%`} height={24}/>
+                        <Skeleton width={`80%`} height={24}/>
+                        <Skeleton width={`80%`} height={24}/>
+                        <Skeleton width={`80%`} height={24}/>
+                        <Skeleton width={`80%`} height={24}/>
+                    </div>
 
-                {/* Payment Description */}
-                <div className="flex flex-col max-w-[470px] w-full">
-                    <Skeleton width={`100%`} height={200}/>
+                    {/* Payment Description */}
+                    <div className="flex flex-col max-w-[470px] w-full">
+                        <Skeleton width={`100%`} height={200}/>
+                    </div>
                 </div>
             </div>
         )
@@ -177,67 +180,69 @@ const PaymentComponent = () => {
 
     return (
         <>
-            <div className="flex gap-6">
-                <div className="flex flex-col max-w-[290px] w-full border-r border-[#e6e6e6]">
-                    {paymentMethodData &&
-                        paymentMethodData
-                            .filter((method) => method.enabled)
-                            .map((method) => (
-                                <button key={`paymentKey-${method.id}`} className={`text-left w-full py-3 pr-3 font-medium border-r-4 
-                                    ${method.id === activePaymentMethod ? 'border-primary text-primary bg-primary-gradient' : 'border-transparent'}`}
-                                    onClick={() => updatePaymentMethod(method.id)} >
-                                    {method.method_title}
-                                </button>
-                            ))
-                    }
-                </div>
+            <div className="@container">
+                <div className="flex-col @[520px]:flex-row flex gap-6">
+                    <div className="flex flex-col @[520px]:max-w-[290px] w-full border-r border-[#e6e6e6]">
+                        {paymentMethodData &&
+                            paymentMethodData
+                                .filter((method) => method.enabled)
+                                .map((method) => (
+                                    <button key={`paymentKey-${method.id}`} className={`text-left w-full py-3 pr-3 font-medium border-r-4 
+                                        ${method.id === activePaymentMethod ? 'border-primary text-primary bg-primary-gradient' : 'border-transparent'}`}
+                                        onClick={() => updatePaymentMethod(method.id)} >
+                                        {method.method_title}
+                                    </button>
+                                ))
+                        }
+                    </div>
 
-                {/* Payment Description */}
-                <div className="flex flex-col max-w-[470px] w-full">
-                    {paymentMethodData &&
-                        paymentMethodData
-                            .filter((method) => method.enabled)
-                            .map((method) => (
-                                method.id === activePaymentMethod && (
-                                    <div key={`selectedPaymentKey-${method.id}`} className="paymentMethodDetails p-5 border border-[#e6e6e6] rounded-lg">
-                                        <div className="paymentMethodDetailsContent flex flex-col pb-10">
-                                            <h4 className="text-lg text-black font-medium mb-1">{method.method_title}</h4>
+                    {/* Payment Description */}
+                    <div className="flex flex-col max-w-[470px] w-full">
+                        {paymentMethodData &&
+                            paymentMethodData
+                                .filter((method) => method.enabled)
+                                .map((method) => (
+                                    method.id === activePaymentMethod && (
+                                        <div key={`selectedPaymentKey-${method.id}`} className="paymentMethodDetails p-5 border border-[#e6e6e6] rounded-lg">
+                                            <div className="paymentMethodDetailsContent flex flex-col pb-10">
+                                                <h4 className="text-lg text-black font-medium mb-1">{method.method_title}</h4>
+                                                {
+                                                    method.method_description && 
+                                                    <p className="text-sm text-[grey]">
+                                                        {method.method_description}
+                                                    </p>
+                                                }
+                                            </div>
+
+                                            <button className="relative w-full transition-all bg-primary hover:bg-primary-hover text-white text-base py-3 px-5 rounded-md disabled:opacity-50"
+                                                disabled={ctaPreloader || cartPreloader}
+                                                onClick={() => { placeOrder(method.id)
+                                                    }}>
+
+                                                    {
+                                                        !ctaPreloader && !cartPreloader ? (
+                                                            method?.id === "cod" ? "Place order" : `Pay ${formatCurrency(cartData?.totals?.total_price, cartData?.totals) }`
+                                                        ) : (
+                                                            <div className="text-center flex items-center justify-center">
+                                                                <span className="loader inline-block w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                                                            </div>
+                                                        )
+                                                    }
+                                            </button>
+
+                                            <Confetti ref={confettiRef} onSuccess={confettiSuccess}/>
+
                                             {
-                                                method.method_description && 
-                                                <p className="text-sm text-[grey]">
-                                                    {method.method_description}
-                                                </p>
+                                                placeORderError &&
+                                                <span className="text-sm text-red-600 inline-block mt-2">
+                                                    { placeORderError }
+                                                </span> 
                                             }
                                         </div>
-
-                                        <button className="relative w-full transition-all bg-primary hover:bg-primary-hover text-white text-base py-3 px-5 rounded-md disabled:opacity-50"
-                                            disabled={ctaPreloader || cartPreloader}
-                                            onClick={() => { placeOrder(method.id)
-                                                }}>
-
-                                                {
-                                                    !ctaPreloader && !cartPreloader ? (
-                                                        'Place order'
-                                                    ) : (
-                                                        <div className="text-center flex items-center justify-center">
-                                                            <span className="loader inline-block w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                                                        </div>
-                                                    )
-                                                }
-                                        </button>
-
-                                        <Confetti ref={confettiRef} onSuccess={confettiSuccess}/>
-
-                                        {
-                                            placeORderError &&
-                                            <span className="text-sm text-red-600 inline-block mt-2">
-                                                { placeORderError }
-                                            </span> 
-                                        }
-                                    </div>
-                                )
-                            ))
-                    }
+                                    )
+                                ))
+                        }
+                    </div>
                 </div>
             </div>
         </>

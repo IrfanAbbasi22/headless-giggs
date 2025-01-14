@@ -547,6 +547,7 @@ export default function CartData() {
         <>
           {/* Recomended Products */}
           <SwiperProducts
+            compClasses={`SwiperProductsFromCartPage py-4 md:py-[60px]`}
             heading={`Recomended Products`}
             products={cartRecomendedProducts}
           />

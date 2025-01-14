@@ -12,7 +12,7 @@ import ProductCardPreloader from "./productCardPreloader";
 // import ProductCard from "./productCard";
 import UpsellProductCard from "./upsellProductCard";
 
-const SwiperProducts = ({heading, products = {}, }) => {
+const SwiperProducts = ({heading, products = {}, sliderPerRow, hideArrows=false, compClasses=""}) => {
     const [loading, setLoading] = useState(true);
 
     const swiperRef = useRef(null);
@@ -27,9 +27,9 @@ const SwiperProducts = ({heading, products = {}, }) => {
 
   return (
     <>
-        <div className="py-4 md:py-[60px]">
+        <div className={`${compClasses}`}>
             <main className="container mx-auto  px-5  relative  ">
-                <SectionHeading heading={heading} actionComponent={<SwiperNavButtons swiperRef={swiperRef} />}/>
+                <SectionHeading heading={heading} actionComponent={ !hideArrows ? <SwiperNavButtons swiperRef={swiperRef}/> : ""}/>
 
                 <div className="mt-4">
                     {loading && !products.length ? (
@@ -37,7 +37,7 @@ const SwiperProducts = ({heading, products = {}, }) => {
                             {/* Swiper */}
                             <div className="flex gap-3 sm:gap-4 lg:gap-6">
                                 {Array.from(
-                                    { length: preloaderCount },
+                                    { length: sliderPerRow ? sliderPerRow : preloaderCount },
                                     (_, index) => index + 1
                                 ).map((number) => (
                                     <ProductCardPreloader key={`Preloader-${number}`} />
@@ -54,11 +54,11 @@ const SwiperProducts = ({heading, products = {}, }) => {
                         loop={true}
                         breakpoints={{
                         577: {
-                            slidesPerView: 3,
+                            slidesPerView: sliderPerRow ? sliderPerRow : 3,
                             spaceBetween: 16,
                         },
                         992: {
-                            slidesPerView: 4,
+                            slidesPerView: sliderPerRow ? sliderPerRow : 4,
                             spaceBetween: 24,
                         },
                         }}

@@ -20,18 +20,20 @@ import {
   showUserModal,
   isUserLoggedIn,
 } from "../../cart/store/slices/userSlice";
+import SideCheckoutModal from "../../cart/components/ui/sideCheckoutModal";
+import { isSideCartVisible, showSideCart } from "@/app/cart/store/slices/sideCartSlice";
 
 const Header = () => {
   const dispatch = useDispatch();
   const totalItems = useSelector(selectedTotalItems);
   const userLoggedInStatus = useSelector(isUserLoggedIn);
+  const sideCrtData = useSelector(isSideCartVisible);
 
   const [locationModal, setLocationModal] = useState(false);
   const [searchPopUp, setSearchPopUp] = useState(false);
   const [userToggle, setUserToggle] = useState(false);
   const [pincodeData, setPincodeData] = useState(null);
-
-
+  const [sidecCheckoutPopUp, setSideCheckoutPopUp] = useState(false);
   const openLocationModal = () => {
     setLocationModal(true);
   };
@@ -59,16 +61,20 @@ const Header = () => {
       setScrolled(window.scrollY > 50);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
   return (
     <>
-      <header className={`fixed z-30 bg-white top-0 w-full ${scrolled ? "shadow-[0_0_.5rem_0_rgba(0,0,0,0.2)]" : ''}`}>
+      <header
+        className={`fixed z-30 bg-white top-0 w-full ${
+          scrolled ? "shadow-[0_0_.5rem_0_rgba(0,0,0,0.2)]" : ""
+        }`}
+      >
         <TopBanner />
         <main className="container mx-auto px-5  py-4 ">
           <div className="flex items-center justify-between">
@@ -164,6 +170,27 @@ const Header = () => {
                   />
                 </Link>
               </span>
+              {/* <Link
+                href={`/cart`}
+                className="relative"
+                onClick={() => {
+                  dispatch(setCurrentStep("cart"));
+                }}
+              >
+                {totalItems > 0 && (
+                  <span className="absolute -top-[4px] left-[12px] bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+                <Image
+                  src={`/assets/icons/Cart.svg`}
+                  alt="icon"
+                  width={20}
+                  height={20}
+                  className=" cursor-pointer max-w-6 lg:w-6 lg:h-6"
+                  title="See Your Cart"
+                />
+              </Link> */}
               <Link
                 href={`/cart`}
                 className="relative"
@@ -185,6 +212,30 @@ const Header = () => {
                   title="See Your Cart"
                 />
               </Link>
+              {/* <button
+                className="relative"
+                onClick={() => dispatch(showSideCart(true))
+                }
+              >
+                {totalItems > 0 && (
+                  <span className="absolute -top-[4px] left-[12px] bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+                <Image
+                  src={`/assets/icons/Cart.svg`}
+                  alt="icon"
+                  width={20}
+                  height={20}
+                  className=" cursor-pointer max-w-6 lg:w-6 lg:h-6"
+                  title="See Your Cart"
+                />
+              </button> */}
+              {sideCrtData && (
+                <SideCheckoutModal
+                  setSideCheckoutPopUp={setSideCheckoutPopUp}
+                />
+              )}
 
               {userLoggedInStatus ? (
                 <Link href={"/my-account"}>

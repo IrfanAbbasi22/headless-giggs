@@ -98,7 +98,6 @@ export default async function ProductDetailPage({ params }) {
       </main>
     </>;
   }
-  console.log('product', product[0]);
   const productDetailsdata = product[0];
 
   // console.log('productDetailsdata', productDetailsdata)

@@ -13,6 +13,7 @@
     "canvas-confetti": "^1.9.3",
     "framer-motion": "^11.15.0",
     "js-cookie": "^3.0.5",
+    "lucide-react": "^0.446.0",
     "next": "15.0.3",
     "nprogress": "^0.2.0",
     "razorpay": "^2.9.5",
@@ -25,10 +26,12 @@
     "react-toastify": "^11.0.2",
     "redux-persist": "^6.0.0",
     "redux-persist-transform-filter": "^0.0.22",
+    "sass": "^1.83.4",
     "swiper": "^11.1.15",
     "tailwind-scrollbar-hide": "^1.1.7"
   },
   "devDependencies": {
+    "@tailwindcss/container-queries": "^0.1.1",
     "eslint": "^8",
     "eslint-config-next": "15.0.3",
     "postcss": "^8",

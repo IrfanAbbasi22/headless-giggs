@@ -2,10 +2,10 @@ import Image from "next/image";
 
 const SecurePayment = () => {
   return (
-    <>
-      <div className="w-full mt-10 border-t border-t-[#E6E6E6] lg:fixed lg:left-0 lg:bottom-0 py-4  bg-white  z-10">
+    <div className="@container">
+      <div className="w-full mt-10 border-t border-t-[#E6E6E6] @lg:fixed @lg:left-0 @lg:bottom-0 py-4  bg-white  z-10">
         <div className="container mx-auto">
-          <div className="flex flex-col md:flex-row justify-center md:justify-between items-center gap-3">
+          <div className="flex flex-col @lg:flex-row justify-center md:justify-between items-center gap-3">
             <Image
               className="w-full max-w-80 lg:max-w-96 "
               src={"/secure-payment.svg"}
@@ -14,7 +14,7 @@ const SecurePayment = () => {
               alt="secure payment"
             />
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 ">
               <svg
                 width="17"
                 height="16"
@@ -35,8 +35,8 @@ const SecurePayment = () => {
         </div>
       </div>
 
-      <div className="lg:pt-28"></div>
-    </>
+      <div className="@lg:pt-28"></div>
+    </div>
   );
 };
 

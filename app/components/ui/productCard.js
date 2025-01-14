@@ -17,12 +17,14 @@ import { fetchWooCommerceCart } from "../lib/cart/fetchAndSyncCart";
 import { addToCartAPI } from "../lib/cart/addToCart";
 import { removeItemFromCart } from "../lib/cart/removeItemFromCart";
 import { formatCurrency } from "../lib/user/formatCurrency";
-import { toast, Bounce } from 'react-toastify';
+import { toast, Bounce } from "react-toastify";
+import { showSideCart } from "@/app/cart/store/slices/sideCartSlice";
 
 export default function ProductCard({ product, gridClass }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [sidePopUp, setSidePopUp] = useState(false);
 
   // Variation Management
   const [selectedVariation, setSelectedVariation] = useState(null);
@@ -82,7 +84,21 @@ export default function ProductCard({ product, gridClass }) {
       const res = await addToCartAPI(productID, quantity);
       dispatch(addToCart(product));
       dispatch(loadCartFromWoo(res));
-      toast.success(`${product.name} added to cart.`, {
+      console.log("toast");
+      toast.success(
+        // `${product.name} added to cart.`
+        
+        <div className="flex gap-2 items-center">
+          <span>{`${product.name} added to cart.`}</span>
+          <button className="bg-[#FF5D58] text-white font-medium  text-base  py-2 px-3  rounded-lg whitespace-nowrap"
+            onClick={() => {
+              dispatch(showSideCart(true));
+              console.log("CTA Button Clicked!");
+            }}
+          >
+            Checkout
+          </button>
+        </div>, {
         position: "bottom-center",
         autoClose: 2000,
         hideProgressBar: true,
@@ -270,14 +286,15 @@ export default function ProductCard({ product, gridClass }) {
                   {formatCurrency(product.price, cartDetailsData?.totals)}
                 </span>
               )}
-              {product.regular_price && product.regular_price !== product.price && (
-                <del className="originalPrice text-sm text-black opacity-50">
-                  {formatCurrency(
-                    product.regular_price,
-                    cartDetailsData?.totals
-                  )}
-                </del>
-              )}
+              {product.regular_price &&
+                product.regular_price !== product.price && (
+                  <del className="originalPrice text-sm text-black opacity-50">
+                    {formatCurrency(
+                      product.regular_price,
+                      cartDetailsData?.totals
+                    )}
+                  </del>
+                )}
             </div>
           )}
 
