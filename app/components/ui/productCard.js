@@ -324,13 +324,13 @@ export default function ProductCard({ product, gridClass }) {
         </div>
 
         <div className=" flex justify-between items-center   ">
-          <button onClick={
+          {/* <button onClick={
             () => {
               dispatch(showSideCart(true));
             }
           }>
               launch Side Cart
-          </button>
+          </button> */}
           <p className=" font-medium text-[8px] sm:text-[8px]  md:text-xs gap-1 flex items-center text-[#FF5D58]">
             <span>
               <Image
