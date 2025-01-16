@@ -4,6 +4,7 @@ import cartReducer from './slices/cartSlice';
 import userReducer from './slices/userSlice';
 import cartStepsReducer from './slices/cartStepsSlice';
 import sideCartReducer from './slices/sideCartSlice';
+import nonPersistReducer from './slices/nonPersistSlice';
 import {
   persistStore,
   persistReducer,
@@ -60,6 +61,7 @@ export const store = configureStore({
     cart: cartPersistedReducer,
     cartSteps: cartStepsReducer,
     sideCart: sideCartReducer,
+    nonPersist: nonPersistReducer,
     user: userPersistedReducer,
   },
   middleware: (getDefaultMiddleware) =>

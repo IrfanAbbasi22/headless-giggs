@@ -7,7 +7,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
-// import './styles.css';
+import './relatedSlider.scss';
 import Skeleton from "react-loading-skeleton";
 
 // import required modules
@@ -50,17 +50,17 @@ export default function RelatedBlogsSlider({excludeID, categories }) {
     }, [])
   return (
     <>
-        <Swiper
+        <Swiper 
             slidesPerView={1}
             spaceBetween={24}
             autoplay={{
                 delay: 1500,
                 disableOnInteraction: false,
             }}
-            // pagination={{
-            // clickable: true,
-            // }}
-            // modules={[Pagination]}
+            pagination={{
+            clickable: true,
+            }}
+            modules={[Pagination]}
             breakpoints={{
                 768: {
                   slidesPerView: 2,
@@ -69,7 +69,7 @@ export default function RelatedBlogsSlider({excludeID, categories }) {
                   slidesPerView: 3,
                 },
             }}
-            className="mySwiper"
+            className="mySwiper !pb-10"
         >
             {
                 (blogs?.length > 0 && !preloader) &&
@@ -83,20 +83,21 @@ export default function RelatedBlogsSlider({excludeID, categories }) {
             {preloader &&
             Array.from({ length: 3 }, (_, index) => index + 1).map(
                 (number) => (
-                    <div
-                        key={`blogCardPreloaderKey-${number}`}
-                        className="bg-white border border-gray-200 rounded-lg shadow flex flex-col"
-                    >
-                        <Skeleton className="rounded-t-lg aspect-[300/200] w-full !inline-block" />
-                        <div className="p-5 py-4">
-                        <Skeleton height={18} className="mb-2" />
-                        <p className="mb-3">
-                            <Skeleton height={12} className="" />
-                            <Skeleton height={12} className="" />
-                        </p>
-                        <Skeleton height={12} width={`50%`} className="" />
+                    <SwiperSlide key={`blogCardPreloaderKey-${number}`}>
+                        <div
+                            className="bg-white border border-gray-200 rounded-lg shadow flex flex-col"
+                        >
+                            <Skeleton className="rounded-t-lg aspect-[300/200] w-full !inline-block" />
+                            <div className="p-5 py-4">
+                            <Skeleton height={18} className="mb-2" />
+                            <p className="mb-3">
+                                <Skeleton height={12} className="" />
+                                <Skeleton height={12} className="" />
+                            </p>
+                            <Skeleton height={12} width={`50%`} className="" />
+                            </div>
                         </div>
-                    </div>
+                    </SwiperSlide>
                 )
             )}
         </Swiper>

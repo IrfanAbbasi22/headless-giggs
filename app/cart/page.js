@@ -29,6 +29,8 @@ import SwiperProducts from "../components/ui/swiperProducts";
 import SecurePayment from "./components/ui/securePayment";
 import { useShippingPrice } from "./components/shippingPrice";
 import { formatCurrency } from "../components/lib/user/formatCurrency";
+import CouponsModal from "./components/couponsModal";
+import SaveNewAddressForm from "./components/ui/address/saveNewAddressForm";
 
 export default function CartData() {
   // Data
@@ -182,6 +184,7 @@ export default function CartData() {
                 ) : (
                   <>
                     <GetAddress />
+                    <SaveNewAddressForm/>
                   </>
                 )}
               </div>
@@ -556,6 +559,8 @@ export default function CartData() {
       <div className={`${cartRecomendedProducts.length === 0 ? "mt-10" : ""}`}>
         {cartItems?.length > 0 && <SecurePayment />}
       </div>
+
+      <CouponsModal/>
     </div>
   );
 }

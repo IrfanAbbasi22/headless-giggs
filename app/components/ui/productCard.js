@@ -19,6 +19,7 @@ import { removeItemFromCart } from "../lib/cart/removeItemFromCart";
 import { formatCurrency } from "../lib/user/formatCurrency";
 import { toast, Bounce } from "react-toastify";
 import { showSideCart } from "@/app/cart/store/slices/sideCartSlice";
+import { setCurrentStep } from "@/app/cart/store/slices/cartStepsSlice";
 
 export default function ProductCard({ product, gridClass }) {
   const [loading, setLoading] = useState(false);
@@ -92,6 +93,7 @@ export default function ProductCard({ product, gridClass }) {
           <span>{`${product.name} added to cart.`}</span>
           <button className="bg-[#FF5D58] text-white font-medium  text-base  py-2 px-3  rounded-lg whitespace-nowrap"
             onClick={() => {
+              dispatch(setCurrentStep("cart"));
               dispatch(showSideCart(true));
               console.log("CTA Button Clicked!");
             }}
@@ -322,6 +324,13 @@ export default function ProductCard({ product, gridClass }) {
         </div>
 
         <div className=" flex justify-between items-center   ">
+          <button onClick={
+            () => {
+              dispatch(showSideCart(true));
+            }
+          }>
+              launch Side Cart
+          </button>
           <p className=" font-medium text-[8px] sm:text-[8px]  md:text-xs gap-1 flex items-center text-[#FF5D58]">
             <span>
               <Image

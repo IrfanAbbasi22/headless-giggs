@@ -1,0 +1,11 @@
+/* Customize Swiper Pagination */
+.swiper-pagination-bullet {
+    border: 1px solid #ff5d58;
+    background-color: transparent;
+    opacity: 1; /* Ensures the color is fully visible */
+  }
+  
+.swiper-pagination-bullet-active {
+    background-color: #ff5d58;
+}
+  

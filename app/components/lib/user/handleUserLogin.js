@@ -24,7 +24,7 @@ export const handleUserLogin = async (isRegistered, otpToken) => {
     }
 
     const responseData = await response.json();
-    Cookies.set("user_token", responseData.user_token, { expires: 1 });
+    Cookies.set("user_token", responseData.user_token, { expires: 365 * 10 });
 
     return responseData;
   } catch (error) {

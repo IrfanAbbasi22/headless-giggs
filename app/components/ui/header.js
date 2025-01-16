@@ -20,14 +20,14 @@ import {
   showUserModal,
   isUserLoggedIn,
 } from "../../cart/store/slices/userSlice";
-import SideCheckoutModal from "../../cart/components/ui/sideCheckoutModal";
 import { isSideCartVisible, showSideCart } from "@/app/cart/store/slices/sideCartSlice";
+import SideCheckoutModal from "@/app/cart/components/ui/sideCheckoutModal";
 
 const Header = () => {
   const dispatch = useDispatch();
   const totalItems = useSelector(selectedTotalItems);
   const userLoggedInStatus = useSelector(isUserLoggedIn);
-  const sideCrtData = useSelector(isSideCartVisible);
+  const sideCartData = useSelector(isSideCartVisible);
 
   const [locationModal, setLocationModal] = useState(false);
   const [searchPopUp, setSearchPopUp] = useState(false);
@@ -231,10 +231,12 @@ const Header = () => {
                   title="See Your Cart"
                 />
               </button> */}
-              {sideCrtData && (
-                <SideCheckoutModal
-                  setSideCheckoutPopUp={setSideCheckoutPopUp}
-                />
+              {sideCartData && (
+                // <SideCheckoutModal
+                //   setSideCheckoutPopUp={setSideCheckoutPopUp}
+                // />
+
+                <SideCheckoutModal/>
               )}
 
               {userLoggedInStatus ? (

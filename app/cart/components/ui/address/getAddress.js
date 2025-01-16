@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 // redux
 import { useDispatch, useSelector } from "react-redux";
 import {
+  showUserAddAddressForm,
   // setUserAddresses,
   // userAddresses,
   userDataToken,
@@ -11,23 +12,28 @@ import {
 import DotPulsePreloader from "@/app/cart/components/ui/dotPulsePreloader";
 import { getUserAddress } from "@/app/components/lib/user/getUserAddress";
 import AddressCard from "./addressCard";
-import SaveNewAddress from "./saveNewAddress";
+// import SaveNewAddress from "./saveNewAddress";
 import Skeleton from "react-loading-skeleton";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
+import SaveNewAddressCard from "./saveNewAddressCard";
+import { addressCardData, setaddressCardData } from "@/app/cart/store/slices/nonPersistSlice";
 
 const GetAddress = () => {
   const pathname = usePathname();
   const router = useRouter();
 
   // const { slug } = router.query
-  console.log(pathname.startsWith("/cart"), "pathname.startsWith")
+  // console.log(pathname.startsWith("/cart"), "pathname.startsWith")
 
   const dispatch = useDispatch();
   // const userAddedAddresses = useSelector(userAddresses);
   const userToken = useSelector(userDataToken);
   // const [address, setAddress] = useState(userAddedAddresses  || []);
-  const [address, setAddress] = useState([]);
+  // const [address, setAddress] = useState([]);
+  
+
+  const address = useSelector(addressCardData);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(
@@ -47,10 +53,13 @@ const GetAddress = () => {
       const response = await getUserAddress(userToken, perPage, curPage);
 
       if (response?.addresses) {
-        setAddress((prevAddresses) => [
-          ...prevAddresses,
-          ...response.addresses,
-        ]);
+        // setAddress((prevAddresses) => [
+        //   ...prevAddresses,
+        //   ...response.addresses,
+        // ]);
+
+        dispatch(setaddressCardData({ type: "loadMore", payload: response.addresses }));
+        
         setNextPageURL(response?.next_page_url);
         console.log("response", response);
         if (!response?.next_page_url && response?.next_page_url === null) {
@@ -66,6 +75,11 @@ const GetAddress = () => {
         // }else{
         //     setHasMore(true);
         // }
+
+        console.log('is condition true?', response?.addresses?.length, response?.current_page == 1)
+        if(response?.current_page == 1 && response?.addresses?.length == 0){
+          dispatch(showUserAddAddressForm({ isVisible: true, address: {} }))
+        }
       } else {
         setHasMore(false);
       }
@@ -108,8 +122,10 @@ const GetAddress = () => {
     if (!hasInitiated.current) {
       hasInitiated.current = true;
 
-      if (userToken) {
+      if (userToken && !(address?.length > 0)) {
         fetchAddress(8, 1);
+      }else{
+        setShowAddAddress(true);
       }
     }
   }, [userToken]);
@@ -154,18 +170,21 @@ const GetAddress = () => {
               <AddressCard
                 key={`addressList${index}`}
                 item={item}
-                setAddress={setAddress}
+                // setAddress={setAddress}
                 address={address}
                 addressLength={address?.length}
               />
             ))}
 
           {showAddAddress && (
-            <SaveNewAddress
-              addressLength={address?.length}
-              setAddress={setAddress}
-              address={address}
-            />
+            // <SaveNewAddress
+            //   addressLength={address?.length}
+            //   setAddress={setAddress}
+            //   address={address}
+            // />
+
+            // Card
+            <SaveNewAddressCard />
           )}
         </div>
       </div>

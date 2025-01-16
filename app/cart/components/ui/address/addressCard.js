@@ -11,6 +11,7 @@ import DotPulsePreloader from "@/app/components/ui/preloader/dotPulsePreloader";
 import { useUpdateShippingAddress } from "@/app/components/lib/cart/updateShippingAddress";
 import { markAsDefaultAddress } from "@/app/components/lib/user/saveUserNewAddress";
 import { getUserAddress } from "@/app/components/lib/user/getUserAddress";
+import { setaddressCardData } from "@/app/cart/store/slices/nonPersistSlice";
 
 const AddressCard = ({ item, setAddress, address, addressLength }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -36,7 +37,8 @@ const AddressCard = ({ item, setAddress, address, addressLength }) => {
         try {
           const response = await getUserAddress(userToken, (addressLength > 8 ? addressLength : 8), 1);
           if (response?.addresses) {
-            setAddress(response.addresses);
+            // setAddress(response.addresses);
+            dispatch(setaddressCardData({ type: "update", payload: response.addresses }));
           }
         } catch (error) {
             console.error("Failed to fetch updated addresses:", error);
@@ -91,20 +93,27 @@ const AddressCard = ({ item, setAddress, address, addressLength }) => {
         }
         throw new Error("Failed to update address with WooCommerce!");
       }
-      // If shipData is successfully received, proceed to update the default address
-      const updateDefaultAddress = await markAsDefaultAddress(updatedItemData?.id);
-      
-      // Dispatch the addresses only if updateDefaultAddress contains addresses
-      if (updateDefaultAddress?.addresses) {
-        try {
-          const response = await getUserAddress(userToken, (addressLength > 8 ? addressLength : 8), 1);
-          if (response?.addresses) {
-            setAddress(response.addresses);
+
+
+      if(itemData.is_default !== 1){
+        // If shipData is successfully received, proceed to update the default address
+        const updateDefaultAddress = await markAsDefaultAddress(updatedItemData?.id);
+
+        // Dispatch the addresses only if updateDefaultAddress contains addresses
+        if (updateDefaultAddress?.addresses) {
+          try {
+            const response = await getUserAddress(userToken, (addressLength > 8 ? addressLength : 8), 1);
+            if (response?.addresses) {
+              // setAddress(response.addresses);
+              dispatch(setaddressCardData({ type: "update", payload: response.addresses }));
+              
+            }
+          } catch (error) {
+              console.error("Failed to fetch updated addresses:", error);
           }
-        } catch (error) {
-            console.error("Failed to fetch updated addresses:", error);
         }
       }
+      
 
       // Check if card is active
       const isActive = isCardActive(updatedItemData, shipData.billing_address);
@@ -125,7 +134,7 @@ const AddressCard = ({ item, setAddress, address, addressLength }) => {
         updateShippingAddressInCart(cardData);
       }
     }
-  }, [cardData]);
+  }, []);
 
   return (
     <>

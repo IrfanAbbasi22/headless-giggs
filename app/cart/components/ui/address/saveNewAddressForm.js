@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 // redux
 import { useSelector, useDispatch } from "react-redux";
@@ -6,8 +6,6 @@ import {
   showUserAddAddressForm,
   showUserAddressForm,
   editUserAddress,
-  // setUserAddresses,
-  userAddresses,
   userDataToken,
 } from "../../../store/slices/userSlice";
 
@@ -22,34 +20,38 @@ import { saveUserNewAddress } from "@/app/components/lib/user/saveUserNewAddress
 import DotPulsePreloader from "@/app/components/ui/preloader/dotPulsePreloader";
 import PhoneInput from "react-phone-input-2";
 import { getUserAddress } from "@/app/components/lib/user/getUserAddress";
+import { addressCardData, setaddressCardData } from "@/app/cart/store/slices/nonPersistSlice";
 
-const SaveNewAddress = ({ addressLength = 0, setAddress, address }) => {
+const SaveNewAddressForm = ({ 
+  address, 
+  elemClass="", 
+  childElemClass="" }) => {
+
   const isFormVisible = useSelector(showUserAddressForm);
+
   const editFormData = useSelector(editUserAddress);
-  // const userAddedAddresses = useSelector(userAddresses);
   const billingAddress = useSelector(cartBillingAddress);
+  const addressLength = useSelector(addressCardData)?.length;
+
   const dispatch = useDispatch();
 
   const userToken = useSelector(userDataToken);
 
-  useEffect(() => {
-    // if (userToken.length !== 0 && (!userAddedAddresses || userAddedAddresses.length === 0)) {
-    //   showModal();
-    // }
-    if (
-      userToken.length !== 0 &&
-      (!addressLength || addressLength.length === 0)
-    ) {
-      showModal();
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (
+  //     userToken.length !== 0 &&
+  //     (!addressLength || addressLength.length === 0)
+  //   ) {
+  //     showModal();
+  //   }
+  // }, []);
+
+  // const showModal = () => {
+  //   dispatch(showUserAddAddressForm({ isVisible: true, address: {} }));
+  // };
 
   const closeModal = () => {
     dispatch(showUserAddAddressForm({ isVisible: false, address: {} }));
-  };
-
-  const showModal = () => {
-    dispatch(showUserAddAddressForm({ isVisible: true, address: {} }));
   };
 
   const [errors, setErrors] = useState({});
@@ -303,7 +305,8 @@ const SaveNewAddress = ({ addressLength = 0, setAddress, address }) => {
     
           if (response?.addresses) {
             // dispatch(setUserAddresses(response.addresses))
-            setAddress(response.addresses);
+            // setAddress(response.addresses);
+            dispatch(setaddressCardData({ type: "update", payload: response.addresses }));
             closeModal();
           }
         } catch (error) {
@@ -324,43 +327,21 @@ const SaveNewAddress = ({ addressLength = 0, setAddress, address }) => {
 
   return (
     <>
-      <button
-        onClick={showModal}
-        className={`min-h-44 flex items-center justify-center border border-[#e6e6e6] rounded-md p-4 md:p-5
-                group hover:border-primary hover:text-primary font-medium transition-all
-                `}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          className="mr-2"
-        >
-          <g
-            fill="primary"
-            fillRule="nonzero"
-            className="group-hover:fill-primary transition-all"
-          >
-            <path d="M8 0a1 1 0 01.993.883L9 1v14a1 1 0 01-1.993.117L7 15V1a1 1 0 011-1z"></path>
-            <path d="M15 7a1 1 0 01.117 1.993L15 9H1a1 1 0 01-.117-1.993L1 7h14z"></path>
-          </g>
-        </svg>
-        <span>Add new address</span>
-      </button>
-      {/* Modal */}
       {isFormVisible && (
-        <div className="fixed z-50 left-0 right-0 top-0 bottom-0 w-full bg-opacity-50 bg-black flex items-end lg:items-center ">
+        <div className={`@container fixed z-50 left-0 right-0 top-0 bottom-0 w-full bg-opacity-50 bg-black flex items-end lg:items-center  ${elemClass ? elemClass : ""}`}>
           <div
-            className="addressFormModal w-full bg-white px-4 py-6 rounded-tl-2xl rounded-tr-2xl lg:rounded-xl lg:max-w-3xl mx-auto 
-                        lg:max-h-[calc(100%-60px)] lg:overflow-y-scroll scrollbar-hide"
+            className={`addressFormModal w-full bg-white px-4 py-6 rounded-tl-2xl rounded-tr-2xl @[48rem]:rounded-xl @[48rem]:max-w-3xl mx-auto 
+                        @[48rem]:max-h-[calc(100%-60px)] @[48rem]:overflow-y-scroll scrollbar-hide ${childElemClass ? childElemClass : ""}`}
           >
             <h3 className="text-xl pb-5 pr-8 mb-4 font-medium border-b border-b-[#DADADA80] relative">
               {editFormData?.id ? "Update address" : "Add new address"}
 
               <button
                 className="close absolute right-0 top-1"
-                onClick={closeModal}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  closeModal();
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -381,11 +362,11 @@ const SaveNewAddress = ({ addressLength = 0, setAddress, address }) => {
             </h3>
 
             <form
-              className="max-h-80 lg:max-h-[100%] overflow-y-scroll scrollbar-hide"
+              className="max-h-[500px] @[48rem]:max-h-[100%] overflow-y-scroll scrollbar-hide"
               onSubmit={handleSubmit}
             >
-              <div className="flex flex-wrap gap-x-6">
-                <div className="form-group w-full md:w-[calc(50%-12px)] flex flex-col gap-2 pb-8 relative">
+              <div className="flex flex-wrap gap-x-4 justify-between @lg:gap-x-6">
+                <div className="form-group w-full @md:w-[calc(50%-12px)] flex flex-col gap-2 pb-8 relative">
                   <label
                     htmlFor="shippingFormFirstName"
                     className="text-[#4d4d4d] text-sm"
@@ -413,7 +394,7 @@ const SaveNewAddress = ({ addressLength = 0, setAddress, address }) => {
                   )}
                 </div>
 
-                <div className="form-group w-full md:w-[calc(50%-12px)] flex flex-col gap-2 pb-8 relative">
+                <div className="form-group w-full @md:w-[calc(50%-12px)] flex flex-col gap-2 pb-8 relative">
                   <label
                     htmlFor="shippingFormLastName"
                     className="text-[#4d4d4d] text-sm"
@@ -764,4 +745,4 @@ const SaveNewAddress = ({ addressLength = 0, setAddress, address }) => {
   );
 };
 
-export default SaveNewAddress;
+export default SaveNewAddressForm;

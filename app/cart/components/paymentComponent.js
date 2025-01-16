@@ -11,6 +11,7 @@ import { cartDetails, resetCart, cartChangesPreloader } from '../store/slices/ca
 import { userDataToken, userDetails } from '../store/slices/userSlice';
 import Skeleton from 'react-loading-skeleton';
 import { formatCurrency } from '@/app/components/lib/user/formatCurrency';
+import { showSideCart } from '../store/slices/sideCartSlice';
 
 
 const PaymentComponent = () => {
@@ -131,6 +132,7 @@ const PaymentComponent = () => {
             if(data?.payment_method === 'cod'){
                 // Reset Cart Token & Redux States
                 dispatch(resetCart());
+                dispatch(showSideCart(false));
                 Cookies.remove('woocommerce_cart_hash');
                 Cookies.remove('cart-token');
                 router.push(`/thanks?id=${data.order_id}&orderKey=${data.order_key}&email=${data.billing_address.email}`);

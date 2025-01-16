@@ -10,7 +10,7 @@ export default async function PostPage({ params }) {
     const { slug } = await params;
     const postDetail = await fetchPostDetails(slug);
 
-    console.log("postDetail", postDetail);
+    // console.log("postDetail", postDetail);
 
     if (postDetail === null || postDetail === undefined) {
         return (
@@ -80,9 +80,6 @@ export default async function PostPage({ params }) {
             categoryIds.push(cat.id);
         }
     });
-
-    console.log('categoryIds', categoryIds);
-
 
   return (
     <>
@@ -154,7 +151,7 @@ export default async function PostPage({ params }) {
             categoryIds.length > 0 &&
             <div className="relatedBlogs pt-20">
                 <div className="main__heading pb-10">
-                    <h2 class="text-lg font-semibold md:text-2xl">Shop by Categories</h2>
+                    <h2 className="text-lg font-semibold md:text-2xl">Related Blogs</h2>
                 </div>
                 <RelatedBlogsSlider excludeID={postDetail?.id} categoryIds={categoryIds}/>
             </div>
@@ -162,30 +159,5 @@ export default async function PostPage({ params }) {
         </div>
       </main>
     </>
-    // <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-    // <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-    //     <div className="container max-w-2xl m-auto px-4">
-    //         <div className="space-y-6">
-    //             {post.title.rendered && (
-    //                 <h1 className="text-2xl font-bold">
-    //                     {post.title.rendered}
-    //                 </h1>
-    //             )}
-
-    //             {featuredImage && (
-    //                 <Image
-    //                     className="w-full"
-    //                     src={featuredImage}
-    //                     width={256}
-    //                     height={171}
-    //                     alt="Post image"
-    //                 />
-    //             )}
-
-    //             <p dangerouslySetInnerHTML={{ __html: post.content.rendered }} />
-    //         </div>
-    //     </div>
-    // </main>
-    // </div>
   );
 }

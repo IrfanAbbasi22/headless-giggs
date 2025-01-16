@@ -34,7 +34,10 @@ import { useShippingPrice } from "../../components/shippingPrice";
 import { formatCurrency } from "../../../components/lib/user/formatCurrency";
 import { useRouter } from "next/navigation";
 import { showSideCart } from "../../store/slices/sideCartSlice";
-const SideCheckoutModal = ({ setSideCheckoutPopUp }) => {
+import CouponsModal from "../couponsModal";
+import SaveNewAddressForm from "./address/saveNewAddressForm";
+// import SaveNewAddress from "./address/saveNewAddress";
+const SideCheckoutModal = () => {
   const router = useRouter();
   const cartRecomendedProducts = useSelector(recomendedProducts);
   const cartItems = useSelector(selectedCartItems);
@@ -72,7 +75,21 @@ const SideCheckoutModal = ({ setSideCheckoutPopUp }) => {
 
   // Address Form Handling
   const shippingFormRef = useRef();
+  const handleFormSubmit = () => {
+    setContinuePreloader(true);
+    shippingFormRef.current.submitForm();
+  };
 
+  const handleSuccess = (data) => {
+    // console.log("Success function called in parent!", data);
+    dispatch(setCurrentStep("payment"));
+    setContinuePreloader(false);
+  };
+
+  const handleAddressFail = (data) => {
+    // console.log("Failed function called in parent!", data);
+    setContinuePreloader(false);
+  };
   // Address Form Handling
 
   const handleShippingRate = async (e) => {
@@ -82,43 +99,17 @@ const SideCheckoutModal = ({ setSideCheckoutPopUp }) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Close modal if clicked outside
-  // const handleOutsideClick = (e) => {
-  //   if (modalRef.current && !modalRef.current.contains(e.target)) {
-  //     setSideCheckoutPopUp(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   document.addEventListener("mousedown", handleOutsideClick);
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleOutsideClick);
-  //   };
-  // }, []);
   useEffect(() => {
     setIsVisible(true); // Show modal when component mounts
-    const handleOutsideClick = (e) => {
-      if (modalRef.current && !modalRef.current.contains(e.target)) {
-        closeModal();
-      }
-    };
-
-    document.addEventListener("mousedown", handleOutsideClick);
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-      document.body.style.overflow = "auto";
-    };
   }, []);
+
   const closeModal = () => {
     setIsVisible(false);
     setTimeout(() => {
-      // setSideCheckoutPopUp(false);
-
       dispatch(showSideCart(false));
     }, 300); // Match this duration with the transition duration
   };
+
   // Disable background scroll
   useEffect(() => {
     // Disable scrolling when modal opens
@@ -138,8 +129,7 @@ const SideCheckoutModal = ({ setSideCheckoutPopUp }) => {
   return (
     <>
       <div className="fixed inset-0 z-50 bg-black bg-opacity-50">
-        {/* <div className="relative">
-        </div> */}
+        <div className={`relative w-full max-w-[450px] h-full bg-white ml-auto transition-transform duration-300 transform ${isVisible ? "translate-x-0" : "translate-x-full"}`}>
           <div
             ref={modalRef}
             id="sideCartElem"
@@ -626,7 +616,8 @@ const SideCheckoutModal = ({ setSideCheckoutPopUp }) => {
                                   }
                                 }
 
-                                window.scrollTo({ top: 0, behavior: "smooth" });
+                                const scrollableElement = document.querySelector('#sideCartElem'); 
+                                scrollableElement.scrollTo({ top: 0, behavior: "smooth" });
                               }}
                             >
                               Continue
@@ -638,7 +629,18 @@ const SideCheckoutModal = ({ setSideCheckoutPopUp }) => {
               </>
             }
           </div>
+
+          {/* <SaveNewAddress /> */}
+          <SaveNewAddressForm childElemClass={`!max-h-[100%]`} elemClass={`!items-end !max-w-[450px] ml-auto`}/>
+          <div className="max-w-[450px]">
+
+          </div>
+        </div>
       </div>
+
+      {/* Coupon */}
+      <CouponsModal/>
+
     </>
   );
 };
